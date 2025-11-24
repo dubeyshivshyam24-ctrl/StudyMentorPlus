@@ -8,264 +8,196 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #3b82f6;
-            --accent: #6366f1;
-            --text-main: #ffffff;
-            --text-sub: #94a3b8;
-            --success: #10b981;
+            --bg: #0f172a; --card: #1e293b; --primary: #3b82f6; --text: #ffffff; --gray: #94a3b8;
         }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0 0 80px 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 0; padding-bottom: 80px;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* HEADER & GAMIFICATION */
-        .header {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            padding: 20px;
-            border-bottom: 1px solid #334155;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        /* --- LAYOUT & NAVIGATION --- */
+        .screen { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+        .header { padding: 20px; background: linear-gradient(180deg, #1e293b, #0f172a); position: sticky; top: 0; z-index: 100; }
+        .header h2 { margin: 0; font-size: 20px; color: var(--primary); }
+        .back-btn { border: none; background: none; color: var(--gray); font-size: 16px; margin-right: 10px; cursor: pointer; }
+
+        /* --- CARDS & GRID --- */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .card {
+            background: var(--card); border: 1px solid #334155; border-radius: 16px;
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.2s;
         }
-        .user-welcome h2 { margin: 0; font-size: 20px; font-weight: 700; }
-        .user-welcome p { margin: 4px 0 0; color: var(--text-sub); font-size: 13px; }
+        .card:active { transform: scale(0.95); background: #334155; }
+        .card i { font-size: 24px; margin-bottom: 8px; display: block; }
+        .card-title { font-size: 13px; font-weight: 600; }
+
+        /* --- STUDY CONTENT --- */
+        .chapter-item {
+            background: var(--card); padding: 15px; margin-bottom: 10px; border-radius: 12px;
+            display: flex; align-items: center; cursor: pointer;
+        }
+        .chapter-info h4 { margin: 0; font-size: 14px; }
+        .chapter-info p { margin: 2px 0 0; font-size: 11px; color: var(--gray); }
         
-        .stats-container {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 12px;
-            margin-top: 15px;
-            backdrop-filter: blur(10px);
-        }
-        .stat-box { text-align: center; width: 32%; }
-        .stat-value { font-size: 16px; font-weight: bold; color: var(--primary); display: block; }
-        .stat-label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .content-box { background: #2d3748; padding: 15px; border-radius: 12px; line-height: 1.6; font-size: 14px; color: #e2e8f0; }
 
-        /* SECTIONS */
-        .section-title {
-            padding: 20px 20px 10px;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
+        /* --- QUIZ UI --- */
+        .quiz-box { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; }
+        .option-btn {
+            display: block; width: 100%; padding: 12px; margin-top: 10px;
+            background: #334155; border: none; border-radius: 8px; color: white; text-align: left;
         }
-        .section-title i { margin-right: 8px; color: var(--accent); }
+        .option-btn.correct { background: #10b981; }
+        .option-btn.wrong { background: #ef4444; }
 
-        /* GRID LAYOUT */
-        .grid-wrapper {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 20px;
-        }
-        .feature-card {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 16px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .feature-card:active { transform: scale(0.96); background: #2d3748; }
-        .card-icon { font-size: 24px; margin-bottom: 10px; display: block; }
-        .card-text { font-size: 13px; font-weight: 500; }
-
-        /* LIST LAYOUT (FOR EXAMS) */
-        .list-wrapper { padding: 0 20px; }
-        .list-item {
-            background: var(--card-bg);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            border-left: 3px solid var(--primary);
-        }
-        .list-icon { font-size: 20px; color: var(--text-sub); width: 40px; }
-        .list-content h4 { margin: 0; font-size: 14px; font-weight: 600; }
-        .list-content span { font-size: 11px; color: var(--text-sub); }
-
-        /* BOTTOM NAV */
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #1e293b;
-            border-top: 1px solid #334155;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
+            position: fixed; bottom: 0; width: 100%; background: var(--card);
+            display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155;
         }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            font-size: 20px;
-            text-align: center;
-        }
-        .nav-btn.active { color: var(--primary); }
-        .nav-btn span { display: block; font-size: 10px; margin-top: 4px; }
-
-        /* TABS LOGIC */
-        .tab-content { display: none; animation: fadeEffect 0.3s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
-
+        .nav-item { color: var(--gray); text-align: center; font-size: 20px; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { display: block; font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="tab-home" class="tab-content active">
+    <div id="screen-home" class="screen active">
         <div class="header">
-            <div class="user-welcome">
-                <h2 id="username">Welcome, Student</h2>
-                <p>Let's make progress today.</p>
-            </div>
-            <div class="stats-container">
-                <div class="stat-box">
-                    <span class="stat-value">🔥 14</span>
-                    <span class="stat-label">Streak</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value">🏆 850</span>
-                    <span class="stat-label">XP</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value">📊 B+</span>
-                    <span class="stat-label">Grade</span>
-                </div>
-            </div>
+            <h2 id="username">Hello, Student</h2>
+            <p style="margin:5px 0 0; font-size:12px; color:#94a3b8;">Your Learning Dashboard</p>
         </div>
 
-        <div class="section-title"><i class="fa-solid fa-rocket"></i> Essential Tools</div>
-        <div class="grid-wrapper">
-            <div class="feature-card" onclick="triggerBot('timetable')">
-                <span class="card-icon" style="color: #f472b6;">📅</span>
-                <span class="card-text">Smart Timetable</span>
+        <h3 style="font-size:16px; margin-top:20px;">📚 Start Learning</h3>
+        <div class="grid">
+            <div class="card" onclick="openScreen('screen-python')">
+                <i class="fa-brands fa-python" style="color: #fbbf24;"></i>
+                <span class="card-title">Python Course</span>
             </div>
-            <div class="feature-card" onclick="triggerBot('analytics')">
-                <span class="card-icon" style="color: #34d399;">📈</span>
-                <span class="card-text">My Progress</span>
+            <div class="card" onclick="openScreen('screen-science')">
+                <i class="fa-solid fa-flask" style="color: #34d399;"></i>
+                <span class="card-title">Science (10th)</span>
             </div>
-            <div class="feature-card" onclick="triggerBot('quiz')">
-                <span class="card-icon" style="color: #fbbf24;">🧠</span>
-                <span class="card-text">Daily Quiz</span>
+            <div class="card" onclick="openScreen('screen-upsc')">
+                <i class="fa-solid fa-landmark" style="color: #f472b6;"></i>
+                <span class="card-title">UPSC Notes</span>
             </div>
-            <div class="feature-card" onclick="triggerBot('doubt')">
-                <span class="card-icon" style="color: #60a5fa;">🤖</span>
-                <span class="card-text">Ask AI Doubt</span>
-            </div>
-        </div>
-
-        <div class="section-title"><i class="fa-solid fa-code"></i> Coding Academy</div>
-        <div class="grid-wrapper">
-            <div class="feature-card" onclick="triggerBot('python')">
-                <span class="card-icon" style="color: #fbbf24;">🐍</span>
-                <span class="card-text">Python</span>
-            </div>
-            <div class="feature-card" onclick="triggerBot('webdev')">
-                <span class="card-icon" style="color: #f87171;">🌐</span>
-                <span class="card-text">Web Dev</span>
+            <div class="card" onclick="openScreen('screen-quiz')">
+                <i class="fa-solid fa-brain" style="color: #60a5fa;"></i>
+                <span class="card-title">Live Quiz</span>
             </div>
         </div>
     </div>
 
-    <div id="tab-learn" class="tab-content">
+    <div id="screen-python" class="screen">
         <div class="header">
-            <div class="user-welcome">
-                <h2>Learning Hub</h2>
-                <p>Select your curriculum</p>
+            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></button>
+            <span style="font-size:18px; font-weight:bold;">Python Mastery</span>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <div class="chapter-item" onclick="showContent('py-intro')">
+                <i class="fa-brands fa-python" style="font-size:24px; margin-right:15px; color:#fbbf24;"></i>
+                <div class="chapter-info"><h4>Chapter 1: Basics</h4><p>Variables & Data Types</p></div>
+            </div>
+            
+            <div id="py-intro" style="display:none; margin-bottom:15px;" class="content-box">
+                <strong>🐍 Python Variables</strong><br><br>
+                Variables are containers for storing data values.<br>
+                <code>x = 5</code><br><code>name = "Rahul"</code><br><br>
+                <button class="option-btn" style="background:var(--primary); text-align:center;" onclick="askAI('python_doubt')">🤖 Ask AI to Explain More</button>
+            </div>
+
+            <div class="chapter-item">
+                <i class="fa-solid fa-code" style="font-size:24px; margin-right:15px; color:#fbbf24;"></i>
+                <div class="chapter-info"><h4>Chapter 2: Loops</h4><p>For & While Loops (Coming Soon)</p></div>
             </div>
         </div>
+    </div>
 
-        <div class="section-title"><i class="fa-solid fa-school"></i> School Education (CBSE)</div>
-        <div class="list-wrapper">
-            <div class="list-item" onclick="triggerBot('class_1_10')">
-                <div class="list-icon"><i class="fa-solid fa-child"></i></div>
-                <div class="list-content">
-                    <h4>Class 1st to 10th</h4>
-                    <span>All Subjects • NCERT Solutions</span>
-                </div>
-            </div>
-            <div class="list-item" onclick="triggerBot('class_11_12')">
-                <div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                <div class="list-content">
-                    <h4>Class 11th & 12th</h4>
-                    <span>Science • Commerce • Arts</span>
-                </div>
-            </div>
+    <div id="screen-science" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <span style="font-weight:bold;">Class 10 Science</span>
         </div>
+        <div style="margin-top:20px;" class="content-box">
+            <h4>⚛️ Chemical Reactions</h4>
+            <p>A chemical reaction involves a change in which one or more substances are converted into new substances.</p>
+            <ul>
+                <li>Combination Reaction</li>
+                <li>Decomposition Reaction</li>
+            </ul>
+            <button class="option-btn" style="background:var(--primary); text-align:center; margin-top:10px;" onclick="askAI('science_notes')">📄 Get Full PDF from Bot</button>
+        </div>
+    </div>
 
-        <div class="section-title"><i class="fa-solid fa-briefcase"></i> Competitive Exams</div>
-        <div class="list-wrapper">
-            <div class="list-item" onclick="triggerBot('upsc')">
-                <div class="list-icon"><i class="fa-solid fa-landmark"></i></div>
-                <div class="list-content">
-                    <h4>UPSC / IAS</h4>
-                    <span>Prelims & Mains Prep</span>
-                </div>
-            </div>
-            <div class="list-item" onclick="triggerBot('jee_neet')">
-                <div class="list-icon"><i class="fa-solid fa-flask"></i></div>
-                <div class="list-content">
-                    <h4>JEE & NEET</h4>
-                    <span>Engineering & Medical Entrance</span>
-                </div>
-            </div>
-            <div class="list-item" onclick="triggerBot('defense')">
-                <div class="list-icon"><i class="fa-solid fa-jet-fighter"></i></div>
-                <div class="list-content">
-                    <h4>Defense (NDA/AFCAT)</h4>
-                    <span>Serve the Nation</span>
-                </div>
-            </div>
+    <div id="screen-quiz" class="screen">
+        <div class="header">
+            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> Quit</button>
+            <span style="font-weight:bold;">GK Challenge</span>
+        </div>
+        <div class="quiz-box" style="margin-top:30px;">
+            <h3>Which is the largest planet?</h3>
+            <button class="option-btn" onclick="checkAnswer(this, false)">A) Earth</button>
+            <button class="option-btn" onclick="checkAnswer(this, true)">B) Jupiter</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">C) Mars</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">D) Venus</button>
+            <p id="quiz-result" style="margin-top:15px; font-weight:bold;"></p>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-btn active" onclick="switchTab('tab-home', this)">
-            <i class="fa-solid fa-house"></i><span>Home</span>
-        </button>
-        <button class="nav-btn" onclick="switchTab('tab-learn', this)">
-            <i class="fa-solid fa-book-open"></i><span>Learn</span>
-        </button>
+        <div class="nav-item active" onclick="openScreen('screen-home')"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="openScreen('screen-python')"><i class="fa-solid fa-book"></i><span>Learn</span></div>
+        <div class="nav-item" onclick="askAI('profile')"><i class="fa-solid fa-user"></i><span>Profile</span></div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Make it full screen
+        tg.expand();
 
-        // Set User Name
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        if (tg.initDataUnsafe?.user) {
             document.getElementById('username').innerText = "Hi, " + tg.initDataUnsafe.user.first_name;
         }
 
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+        // --- NAVIGATION LOGIC (App Band Nahi Hoga) ---
+        function openScreen(screenId) {
+            // Sab screens chhupao
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Jo chahiye wo dikhao
+            document.getElementById(screenId).classList.add('active');
         }
 
-        // MAIN FUNCTION: Sends data to Python Bot
-        function triggerBot(action) {
+        // --- TOGGLE CONTENT ---
+        function showContent(id) {
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // --- QUIZ LOGIC (App ke andar) ---
+        function checkAnswer(btn, isCorrect) {
+            if (isCorrect) {
+                btn.style.background = "#10b981"; // Green
+                document.getElementById('quiz-result').innerText = "✅ Correct! +10 Points";
+            } else {
+                btn.style.background = "#ef4444"; // Red
+                document.getElementById('quiz-result').innerText = "❌ Wrong Answer!";
+            }
+        }
+
+        // --- SEND TO BOT (Sirf tab jab AI chahiye) ---
+        function askAI(action) {
             tg.sendData(action);
-            // Optional: Close app automatically after selection
-            // tg.close(); 
+            // Note: Hum tg.close() nahi kar rahe, taaki user app mein hi rahe 
+            // (Lekin Telegram ka rule hai ki data bhejne par wo close ho sakta hai, 
+            // isliye hum sirf "Request" bhejenge)
         }
     </script>
 </body>
-  </html>
+    </html>
