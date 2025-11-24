@@ -53,7 +53,7 @@
         .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 50px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* NEW: CHAT UI & FORMS */
+        /* CHAT UI */
         .chat-box { height: 60vh; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
         .msg-bot { align-self: flex-start; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; }
@@ -77,6 +77,10 @@
         .stat-label { font-size: 12px; color: #aaa; margin: 5px 0 0; text-transform: uppercase; }
         .chart-container { margin: 0 20px 25px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; height: 150px; display: flex; align-items: flex-end; justify-content: space-between; }
         .chart-bar { width: 10%; background: linear-gradient(to top, var(--primary), #60a5fa); border-radius: 4px; position: relative; }
+        .active-course-container { margin: 0 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; display: flex; align-items: center; }
+        .course-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fbbf24; margin-right: 15px; }
+        .progress-bar-bg { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--stat-blue); width: 65%; border-radius: 3px; }
         .profile-header { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin-bottom: 15px; }
         .profile-name { font-size: 24px; font-weight: bold; margin: 0; }
@@ -91,10 +95,10 @@
         </div>
         <div class="section-title">Learning Hub</div>
         <div class="card-grid">
-            <div class="card" onclick="openScreen('school-select')"><i class="fa-solid fa-school" style="color:#34d399;"></i><h3>School</h3><p>1-12</p></div>
-            <div class="card" onclick="openScreen('competitive')"><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Exams</h3><p>Govt Prep</p></div>
-            <div class="card" onclick="openScreen('coding')"><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3><p>Learn Dev</p></div>
-            <div class="card" onclick="sendToBot('quiz_general')"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3><p>Test IQ</p></div>
+            <div class="card" onclick="openScreen('school-select')"><i class="fa-solid fa-school" style="color:#34d399;"></i><h3>School (1-12)</h3></div>
+            <div class="card" onclick="openScreen('competitive')"><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Govt Exams</h3></div>
+            <div class="card" onclick="openScreen('coding')"><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3></div>
+            <div class="card" onclick="sendToBot('quiz_general')"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3></div>
         </div>
         <div class="section-title">Tools</div>
         <div class="list-container">
@@ -118,7 +122,7 @@
     <div id="screen-ask-ai" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div>
         <div id="chat-box" class="chat-box">
-            <div class="message msg-bot">Hello! Upload an image or ask any question. I am using 3 AI Brains to help you! 🧠</div>
+            <div class="message msg-bot">Hello! I am your AI Tutor. Ask me anything or upload an image! 🧠</div>
         </div>
         <div class="chat-input-area">
             <button class="chat-btn" style="background:#444;" onclick="document.getElementById('img-input').click()"><i class="fa-solid fa-paperclip"></i></button>
@@ -133,22 +137,29 @@
         <div class="list-container" style="margin-top:20px;">
             <div class="list-item" onclick="showCodingSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="showCodingSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('cpp')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-c"></i></div><h3>C++</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('sql')"><div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-database"></i></div><h3>SQL / Data</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="showCodingSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
         </div>
     </div>
+
     <div id="coding-syllabus" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="syllabus-title">Syllabus</h1><div></div></div>
+        <div class="section-title">Beginner to Advance</div>
         <div id="syllabus-container" class="list-container" style="margin-top:10px;"></div>
     </div>
+
     <div id="lesson-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div>
         <div id="lesson-loader" class="loader" style="display:none;"></div>
         <div id="lesson-content" class="lesson-container"></div>
     </div>
+
     <div id="school-select" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
             <div class="list-item" onclick="loadSchoolSubjects('c1_5')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 5th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSchoolSubjects('c6_8')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>Class 6th - 8th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="loadSchoolSubjects('c9_10')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="openScreen('stream-select')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
         </div>
@@ -158,15 +169,20 @@
         <div class="card-grid">
             <div class="card" onclick="loadSchoolSubjects('sci_11_12')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3></div>
             <div class="card" onclick="loadSchoolSubjects('comm_11_12')"><i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3></div>
+            <div class="card" onclick="loadSchoolSubjects('arts_11_12')"><i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3></div>
         </div>
     </div>
+
     <div id="competitive" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
             <div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
         </div>
     </div>
+
     <div id="dynamic-list-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="goBackFromList()"><i class="fa-solid fa-arrow-left"></i></button><h1 id="list-title">Topics</h1><div style="width:35px;"></div></div>
         <div id="dynamic-list-container" class="list-container" style="margin-top:10px;"></div>
@@ -175,6 +191,11 @@
         <div class="header"><button class="back-btn" onclick="openScreen('dynamic-list-screen')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Grade</h1><div style="width:35px;"></div></div>
         <div id="classes-container" class="card-grid"></div>
     </div>
+    <div id="chapters-screen" class="screen">
+        <div class="header"><button class="back-btn" onclick="openScreen('class-selector')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="chapter-title">Chapters</h1><div style="width:35px;"></div></div>
+        <div id="chapters-container" class="list-container" style="margin-top:10px;"></div>
+    </div>
+
     <div id="profile" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div>
         <div class="profile-header">
@@ -225,7 +246,6 @@
 
         // --- 🔥 UNIVERSAL MULTI-API FUNCTION ---
         async function callAI(prompt, base64Image = null) {
-            // 1. Try Gemini (Best for Image & Text)
             if (API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) {
                 try {
                     let bodyContent = { contents: [{ parts: [{ text: prompt }] }] };
@@ -241,8 +261,6 @@
                     }
                 } catch (e) { console.log("Gemini Failed"); }
             }
-
-            // 2. Try Groq (Text Only) - If Gemini failed or no image
             if (!base64Image && API_KEYS.groq && !API_KEYS.groq.includes("PASTE")) {
                 try {
                     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -255,57 +273,34 @@
                     }
                 } catch (e) { console.log("Groq Failed"); }
             }
-
-            // 3. Try DeepSeek (Backup)
-            if (!base64Image && API_KEYS.deepseek && !API_KEYS.deepseek.includes("PASTE")) {
-                try {
-                    const response = await fetch('https://api.deepseek.com/chat/completions', {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${API_KEYS.deepseek}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ model: "deepseek-chat", messages: [{ role: "user", content: prompt }] })
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        return data.choices[0].message.content;
-                    }
-                } catch (e) { console.log("DeepSeek Failed"); }
-            }
-            
-            throw new Error("All AIs Down or API Keys Missing.");
+            // Fallback Message
+            throw new Error("AI Services Unreachable. Check Keys.");
         }
 
-        // --- 🤖 TIME TABLE GENERATOR ---
+        // --- 🤖 TIME TABLE ---
         async function generateTimeTable() {
             const cls = document.getElementById('tt-class').value;
             const hrs = document.getElementById('tt-hours').value;
             if(!cls || !hrs) return alert("Please fill details");
-            
             document.getElementById('tt-loader').style.display = 'block';
-            const prompt = `Create a detailed study timetable for ${cls} student who has ${hrs} available. Use Markdown table.`;
-            
             try {
-                const text = await callAI(prompt);
+                const text = await callAI(`Create a detailed study timetable for ${cls} student who has ${hrs} available.`);
                 document.getElementById('tt-result').innerHTML = marked.parse(text);
-            } catch (e) {
-                document.getElementById('tt-result').innerHTML = "⚠️ Failed. Check API Keys.";
-            } finally {
-                document.getElementById('tt-loader').style.display = 'none';
-            }
+            } catch (e) { document.getElementById('tt-result').innerHTML = "⚠️ Failed. Check Keys."; }
+            finally { document.getElementById('tt-loader').style.display = 'none'; }
         }
 
-        // --- 💬 ASK AI (CHAT + IMAGE) ---
+        // --- 💬 ASK AI ---
         async function sendAIChat() {
             const input = document.getElementById('chat-input');
             const msg = input.value;
             const fileInput = document.getElementById('img-input');
-            
             if(!msg && !fileInput.files.length) return;
             
-            // Add User Msg
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML += `<div class="message msg-user">${msg || "Image"}</div>`;
             input.value = "";
             
-            // Loading...
             const loadingId = Date.now();
             chatBox.innerHTML += `<div class="message msg-bot" id="${loadingId}">Thinking...</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -313,79 +308,58 @@
             let base64Image = null;
             if (fileInput.files.length > 0) {
                 base64Image = await toBase64(fileInput.files[0]);
-                fileInput.value = ""; // Reset
+                fileInput.value = "";
             }
 
             try {
                 const text = await callAI(msg || "Analyze this image", base64Image);
                 document.getElementById(loadingId).innerHTML = marked.parse(text);
-            } catch (e) {
-                document.getElementById(loadingId).innerText = "⚠️ Error: Could not connect to AI.";
-            }
+            } catch (e) { document.getElementById(loadingId).innerText = "⚠️ Error."; }
         }
+        function toBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); }); }
 
-        function toBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        // --- LESSON GENERATOR ---
+        // --- CODING LESSONS ---
         async function generateLesson(topic, lang) {
             openScreen('lesson-screen');
             document.getElementById('lesson-content').innerHTML = "";
             document.getElementById('lesson-loader').style.display = "block";
-            const prompt = `Explain '${topic}' in '${lang}' programming. Structure: Intro, Syntax, Example. Use Markdown.`;
-            
             try {
-                const text = await callAI(prompt);
+                const text = await callAI(`Explain '${topic}' in '${lang}' programming. Structure: Intro, Syntax, Example. Use Markdown.`);
                 document.getElementById('lesson-content').innerHTML = marked.parse(text);
-            } catch (e) {
-                document.getElementById('lesson-content').innerHTML = "⚠️ Error loading lesson. Using Offline backup.";
-            } finally {
-                document.getElementById('lesson-loader').style.display = "none";
-            }
+            } catch (e) { document.getElementById('lesson-content').innerHTML = "⚠️ Error loading lesson."; }
+            finally { document.getElementById('lesson-loader').style.display = "none"; }
         }
 
-        // --- STANDARD NAVIGATION & DATA (Unchanged) ---
-        // (Keeping previous logic for School/Govt Buttons sending to Bot)
-        // ... [Copying previous data arrays & nav functions here to save space] ...
-        // Just ensure all previous 'const' data arrays are present.
-        
-        const codingSyllabusList = { 'python': ['Variables', 'Loops', 'Functions', 'OOP'], 'java': ['Syntax', 'OOP'], 'web_dev': ['HTML', 'CSS'] };
-        const schoolSubjects = { 'c1_5': ['Maths', 'English'], 'c9_10': ['Science', 'Maths'], 'sci_11_12': ['Physics', 'Chemistry'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity'], 'jee_neet': ['Physics', 'Bio'] };
+        // --- DATA: RESTORED ALL SUBJECTS ---
+        const schoolSubjects = { 'c1_5': ['Maths', 'English', 'Hindi', 'EVS', 'Computer', 'GK'], 'c6_8': ['Science', 'Maths', 'Social', 'English', 'Hindi', 'Sanskrit'], 'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] };
+        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology'], 'ssc': ['Quant', 'Reasoning', 'English'], 'defense': ['Maths', 'GAT', 'English'] };
+        const codingSyllabusList = { 'python': ['Intro', 'Variables', 'Loops', 'Functions', 'OOP'], 'java': ['Syntax', 'OOP', 'Collections'], 'cpp': ['Pointers', 'STL'], 'sql': ['Select', 'Joins'], 'web_dev': ['HTML', 'CSS', 'JS'] };
+        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
 
-        function openScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            // Nav highlight logic...
-        }
-        
+        // --- NAVIGATION ---
         function showCodingSyllabus(lang) {
-            const list = codingSyllabusList[lang] || ['Basics'];
+            document.getElementById('syllabus-title').innerText = lang.toUpperCase();
             const container = document.getElementById('syllabus-container'); container.innerHTML="";
+            const list = codingSyllabusList[lang] || ['Basics'];
             list.forEach(t => {
-                const div = document.createElement('div'); div.className='list-item'; div.innerHTML=`<h3>${t}</h3>`; div.onclick=()=>generateLesson(t, lang); container.appendChild(div);
+                const div = document.createElement('div'); div.className='list-item'; div.innerHTML=`<div class="list-left"><div class="list-icon"><i class="fa-solid fa-code"></i></div><h3>${t}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
+                div.onclick=()=>generateLesson(t, lang); container.appendChild(div);
             });
             openScreen('coding-syllabus');
         }
 
-        // School/Govt Logic (Send to Bot)
-        function loadSchoolSubjects(cat) { currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
-        function openClassSelector(sub) { /* same as before */ openScreen('class-selector'); }
-        function loadSyllabus(key) { renderList(syllabusDB[key], (top)=>sendToBot(`govt_${key}_${top}`)); }
+        // SCHOOL & GOVT (Bot Interaction)
+        let currentMode="", currentCategory="", currentSubject="";
+        function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], "Select Subject", (sub)=>openClassSelector(sub)); }
+        function openClassSelector(sub) { currentSubject=sub; document.getElementById('classes-container').innerHTML = ""; let start=1, end=10; if(currentCategory.includes('11_12')) {start=11; end=12;} else if(currentCategory=='c1_5') end=5; else if(currentCategory=='c6_8') {start=6; end=8;} else if(currentCategory=='c9_10') {start=9; end=10;} for(let i=start; i<=end; i++) { const div=document.createElement('div'); div.className='card'; div.innerHTML=`<h3>Class ${i}</h3>`; div.onclick=()=>openChapters(sub, `Class ${i}`); document.getElementById('classes-container').appendChild(div); } openScreen('class-selector'); }
+        function openChapters(sub, cls) { document.getElementById('chapters-container').innerHTML=""; document.getElementById('chapter-title').innerText = cls+" "+sub; cbseChapters.forEach(chap => { const div=document.createElement('div'); div.className='list-item'; div.innerHTML=`<div class="list-left"><div class="list-icon"><i class="fa-solid fa-book"></i></div><h3>${chap}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`; div.onclick=()=>sendToBot(`notes_${sub}_${cls.replace(' ','')}_${chap}`); document.getElementById('chapters-container').appendChild(div); }); openScreen('chapters-screen'); }
+        function loadSyllabus(key) { currentMode='govt'; renderList(syllabusDB[key], key.toUpperCase(), (topic)=>sendToBot(`govt_${key}_${topic}`)); }
         
-        function renderList(items, clickHandler) {
-            // Implementation...
-            openScreen('dynamic-list-screen'); 
-        }
+        function renderList(items, title, handler) { document.getElementById('list-title').innerText=title; const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>${i}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
+        
+        function openScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
         function sendToBot(data) { tg.sendData(data); tg.close(); }
-        function goBackFromList() { openScreen('home'); }
-        let currentCategory = "";
     </script>
 </body>
-                                                                                                                            </html>
+    </html>
