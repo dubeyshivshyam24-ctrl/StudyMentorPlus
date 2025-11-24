@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Study Mentor Premium</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --accent: #6366f1;
+            --text-main: #ffffff;
+            --text-sub: #94a3b8;
+            --success: #10b981;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 80px 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* HEADER & GAMIFICATION */
+        .header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 20px;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .user-welcome h2 { margin: 0; font-size: 20px; font-weight: 700; }
+        .user-welcome p { margin: 4px 0 0; color: var(--text-sub); font-size: 13px; }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .stat-box { text-align: center; width: 32%; }
+        .stat-value { font-size: 16px; font-weight: bold; color: var(--primary); display: block; }
+        .stat-label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* SECTIONS */
+        .section-title {
+            padding: 20px 20px 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+        .section-title i { margin-right: 8px; color: var(--accent); }
+
+        /* GRID LAYOUT */
+        .grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 20px;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .feature-card:active { transform: scale(0.96); background: #2d3748; }
+        .card-icon { font-size: 24px; margin-bottom: 10px; display: block; }
+        .card-text { font-size: 13px; font-weight: 500; }
+
+        /* LIST LAYOUT (FOR EXAMS) */
+        .list-wrapper { padding: 0 20px; }
+        .list-item {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid var(--primary);
+        }
+        .list-icon { font-size: 20px; color: var(--text-sub); width: 40px; }
+        .list-content h4 { margin: 0; font-size: 14px; font-weight: 600; }
+        .list-content span { font-size: 11px; color: var(--text-sub); }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 20px;
+            text-align: center;
+        }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn span { display: block; font-size: 10px; margin-top: 4px; }
+
+        /* TABS LOGIC */
+        .tab-content { display: none; animation: fadeEffect 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+    </style>
+</head>
+<body>
+
+    <div id="tab-home" class="tab-content active">
+        <div class="header">
+            <div class="user-welcome">
+                <h2 id="username">Welcome, Student</h2>
+                <p>Let's make progress today.</p>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <span class="stat-value">🔥 14</span>
+                    <span class="stat-label">Streak</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">🏆 850</span>
+                    <span class="stat-label">XP</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value">📊 B+</span>
+                    <span class="stat-label">Grade</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-rocket"></i> Essential Tools</div>
+        <div class="grid-wrapper">
+            <div class="feature-card" onclick="triggerBot('timetable')">
+                <span class="card-icon" style="color: #f472b6;">📅</span>
+                <span class="card-text">Smart Timetable</span>
+            </div>
+            <div class="feature-card" onclick="triggerBot('analytics')">
+                <span class="card-icon" style="color: #34d399;">📈</span>
+                <span class="card-text">My Progress</span>
+            </div>
+            <div class="feature-card" onclick="triggerBot('quiz')">
+                <span class="card-icon" style="color: #fbbf24;">🧠</span>
+                <span class="card-text">Daily Quiz</span>
+            </div>
+            <div class="feature-card" onclick="triggerBot('doubt')">
+                <span class="card-icon" style="color: #60a5fa;">🤖</span>
+                <span class="card-text">Ask AI Doubt</span>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-code"></i> Coding Academy</div>
+        <div class="grid-wrapper">
+            <div class="feature-card" onclick="triggerBot('python')">
+                <span class="card-icon" style="color: #fbbf24;">🐍</span>
+                <span class="card-text">Python</span>
+            </div>
+            <div class="feature-card" onclick="triggerBot('webdev')">
+                <span class="card-icon" style="color: #f87171;">🌐</span>
+                <span class="card-text">Web Dev</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-learn" class="tab-content">
+        <div class="header">
+            <div class="user-welcome">
+                <h2>Learning Hub</h2>
+                <p>Select your curriculum</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-school"></i> School Education (CBSE)</div>
+        <div class="list-wrapper">
+            <div class="list-item" onclick="triggerBot('class_1_10')">
+                <div class="list-icon"><i class="fa-solid fa-child"></i></div>
+                <div class="list-content">
+                    <h4>Class 1st to 10th</h4>
+                    <span>All Subjects • NCERT Solutions</span>
+                </div>
+            </div>
+            <div class="list-item" onclick="triggerBot('class_11_12')">
+                <div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="list-content">
+                    <h4>Class 11th & 12th</h4>
+                    <span>Science • Commerce • Arts</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-briefcase"></i> Competitive Exams</div>
+        <div class="list-wrapper">
+            <div class="list-item" onclick="triggerBot('upsc')">
+                <div class="list-icon"><i class="fa-solid fa-landmark"></i></div>
+                <div class="list-content">
+                    <h4>UPSC / IAS</h4>
+                    <span>Prelims & Mains Prep</span>
+                </div>
+            </div>
+            <div class="list-item" onclick="triggerBot('jee_neet')">
+                <div class="list-icon"><i class="fa-solid fa-flask"></i></div>
+                <div class="list-content">
+                    <h4>JEE & NEET</h4>
+                    <span>Engineering & Medical Entrance</span>
+                </div>
+            </div>
+            <div class="list-item" onclick="triggerBot('defense')">
+                <div class="list-icon"><i class="fa-solid fa-jet-fighter"></i></div>
+                <div class="list-content">
+                    <h4>Defense (NDA/AFCAT)</h4>
+                    <span>Serve the Nation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('tab-home', this)">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </button>
+        <button class="nav-btn" onclick="switchTab('tab-learn', this)">
+            <i class="fa-solid fa-book-open"></i><span>Learn</span>
+        </button>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand(); // Make it full screen
+
+        // Set User Name
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = "Hi, " + tg.initDataUnsafe.user.first_name;
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // MAIN FUNCTION: Sends data to Python Bot
+        function triggerBot(action) {
+            tg.sendData(action);
+            // Optional: Close app automatically after selection
+            // tg.close(); 
+        }
+    </script>
+</body>
+  </html>
