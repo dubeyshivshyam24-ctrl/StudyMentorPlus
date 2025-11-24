@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME --- */
+        /* --- 🔒 LOCKED PREMIUM GLASS DESIGN --- */
         :root {
             --bg-dark: #000000;
             --glass: rgba(30, 30, 30, 0.6);
@@ -18,7 +18,6 @@
             --text: #ffffff;
             --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
         }
-        
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
         
         /* COMPONENTS */
@@ -171,7 +170,7 @@
             <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
             <div style="text-align:center; margin-top:10px;">
                 <h2 class="profile-name" id="username-display">Student</h2>
-                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span></div>
+                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span> <i class="fa-solid fa-pen" style="cursor:pointer;" onclick="alert('Coming Soon!')"></i></div>
             </div>
         </div>
         <div class="section-title" style="margin-top: 0;">Statistics</div>
@@ -204,12 +203,12 @@
         }
 
         // =======================================================
-        // ⚠️ IMPORTANT: PASTE YOUR GEMINI API KEY BELOW ⚠️
+        // ⚠️ PASTE YOUR API KEY HERE (NO SPACES) ⚠️
         // =======================================================
         const GEMINI_API_KEY = "AIzaSyBYf2TQZRcvXaU72S_Ks-1L0gjqcj-ahso"; 
         // =======================================================
 
-        // --- AI GENERATOR (MULTI-MODEL FAILSAFE) ---
+        // --- AI GENERATOR (AUTO-FIX 404) ---
         async function generateLesson(topic, lang) {
             const contentDiv = document.getElementById('lesson-content');
             const loader = document.getElementById('lesson-loader');
@@ -219,36 +218,36 @@
             loader.style.display = "block";
 
             const prompt = `Act as a senior coding instructor. Explain '${topic}' in '${lang}' programming language for a student. 
-            Structure the response as: 
-            1. **Introduction**: What is it?
-            2. **Syntax/Code**: Show a code block.
-            3. **Explanation**: How it works.
-            4. **Best Practices**: Pro tips.
-            Use Markdown for formatting.`;
+            Structure: 1. Introduction 2. Syntax/Code 3. Explanation 4. Best Practices. Use Markdown.`;
+
+            const safeKey = GEMINI_API_KEY.trim(); // Removes spaces automatically
 
             try {
-                if (GEMINI_API_KEY.includes("PASTE_KAREIN")) {
-                    throw new Error("API Key Missing! Please paste your API Key in index.html on GitHub.");
+                if (safeKey.includes("PASTE_KAREIN") || safeKey.length < 10) {
+                    throw new Error("API Key is Missing. Please edit index.html on GitHub.");
                 }
 
-                // Try gemini-1.5-flash first
-                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // 1. Try Flash Model
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${safeKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
 
-                // If Flash fails (404), try Pro
-                if (!response.ok) {
-                    console.log("Flash failed, trying Pro...");
-                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+                // 2. If 404 (Model Not Found), Try Pro Model
+                if (response.status === 404) {
+                    console.log("Flash model failed (404). Trying gemini-pro...");
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${safeKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                     });
                 }
 
-                if (!response.ok) throw new Error(`API Error: ${response.status} (Check Key or Quota)`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error.message || `API Error: ${response.status}`);
+                }
 
                 const data = await response.json();
                 const rawText = data.candidates[0].content.parts[0].text;
@@ -257,7 +256,7 @@
             } catch (error) {
                 contentDiv.innerHTML = `
                     <div style="color:#ff4444; background:rgba(255,0,0,0.1); padding:20px; border-radius:10px; text-align:center;">
-                        <h3>⚠️ System Error</h3>
+                        <h3>⚠️ Error</h3>
                         <p>${error.message}</p>
                     </div>`;
             } finally {
@@ -265,7 +264,7 @@
             }
         }
 
-        // --- CODING TOPICS LIST ---
+        // --- NAVIGATION & DATA ---
         const codingSyllabusList = {
             'python': ['Variables & Data Types', 'Loops (For/While)', 'Functions & Modules', 'Lists & Dictionaries', 'OOP Concepts'],
             'java': ['Syntax & Main Method', 'Classes & Objects', 'Inheritance', 'Exception Handling', 'Collections'],
@@ -274,7 +273,6 @@
             'web_dev': ['HTML5 Tags', 'CSS3 Flexbox/Grid', 'JavaScript Basics', 'DOM Manipulation']
         };
 
-        // --- NAVIGATION & OTHER DATA ---
         function openScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -355,4 +353,4 @@
         function sendToBot(data) { tg.sendData(data); tg.close(); }
     </script>
 </body>
-                                       </html>
+                                </html>
