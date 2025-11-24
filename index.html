@@ -122,7 +122,6 @@
     <div id="lesson-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div>
         <div id="lesson-loader" class="loader" style="display:none;"></div>
-        <div id="lesson-status" style="font-size:10px; color:#555; text-align:center; margin-top:5px;"></div>
         <div id="lesson-content" class="lesson-container"></div>
     </div>
 
@@ -200,73 +199,65 @@
         tg.ready(); tg.expand();
 
         if (tg.initDataUnsafe?.user) {
-            // Auto Set Name in Profile
-            const fullName = tg.initDataUnsafe.user.first_name + (tg.initDataUnsafe.user.last_name ? " " + tg.initDataUnsafe.user.last_name : "");
             document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
-            document.getElementById('username-display').innerText = fullName;
+            document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name;
         }
 
         // =======================================================
-        // ⚠️ PASTE YOUR 3 API KEYS HERE ⚠️
+        // ⚠️ YOUR API KEYS (Paste here) ⚠️
         // =======================================================
         const API_KEYS = {
-            'gemini': "PASTE_GEMINI_KEY_HERE", // e.g., AIzaSy...
-            'groq': "PASTE_GROQ_KEY_HERE",     // e.g., gsk_...
-            'deepseek': "PASTE_DEEPSEEK_KEY_HERE" // e.g., sk-...
+            'gemini': "PASTE_GEMINI_KEY_HERE",
+            'groq': "PASTE_GROQ_KEY_HERE",     
+            'deepseek': "PASTE_DEEPSEEK_KEY_HERE"
         };
         // =======================================================
 
-        // --- 🔥 MULTI-API WATERFALL SYSTEM ---
+        // --- 🔥 MULTI-API + OFFLINE FAILSAFE ---
         async function generateLesson(topicId, topicName, lang) {
             const contentDiv = document.getElementById('lesson-content');
             const loader = document.getElementById('lesson-loader');
-            const statusMsg = document.getElementById('lesson-status');
             
             openScreen('lesson-screen');
             contentDiv.innerHTML = "";
-            statusMsg.innerText = "Connecting to Primary Server...";
             loader.style.display = "block";
 
-            const prompt = `Act as a senior coding instructor. Explain '${topicName}' in '${lang}' programming language. Structure: 1. Intro 2. Syntax 3. Example 4. Best Practices. Use Markdown.`;
+            const prompt = `Act as a senior coding instructor. Explain '${topicName}' in '${lang}'. Structure: 1. Intro 2. Syntax 3. Example 4. Best Practices. Use Markdown.`;
 
             try {
                 // 1. TRY GEMINI
-                await fetchGemini(prompt).then(text => { render(text); throw "SUCCESS"; });
-            } catch (e) {
-                if(e === "SUCCESS") return;
-                console.log("Gemini Failed, Trying Groq...");
-                statusMsg.innerText = "Primary Busy. Switching to Secondary...";
-                
-                try {
-                    // 2. TRY GROQ
-                    await fetchGroq(prompt).then(text => { render(text); throw "SUCCESS"; });
-                } catch (e2) {
-                    if(e2 === "SUCCESS") return;
-                    console.log("Groq Failed, Trying DeepSeek...");
-                    statusMsg.innerText = "Secondary Busy. Switching to Backup...";
-
-                    try {
-                        // 3. TRY DEEPSEEK
-                        await fetchDeepSeek(prompt).then(text => { render(text); throw "SUCCESS"; });
-                    } catch (e3) {
-                        if(e3 === "SUCCESS") return;
-                        // 4. ALL FAILED -> OFFLINE MODE
-                        console.log("All APIs Failed. Loading Offline Content.");
-                        statusMsg.innerText = "Offline Mode Active";
-                        loadOfflineContent(topicId, lang);
-                    }
+                if (API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) {
+                    await fetchGemini(prompt).then(text => { render(text); throw "SUCCESS"; });
                 }
+                
+                // 2. TRY GROQ
+                if (API_KEYS.groq && !API_KEYS.groq.includes("PASTE")) {
+                    await fetchGroq(prompt).then(text => { render(text); throw "SUCCESS"; });
+                }
+
+                // 3. NO KEYS? THROW ERROR TO TRIGGER OFFLINE
+                throw "ALL_FAILED";
+
+            } catch (e) {
+                if(e === "SUCCESS") {
+                    loader.style.display = "none";
+                    return;
+                }
+                
+                // 🛑 EVERYTHING FAILED -> SHOW OFFLINE CONTENT
+                console.log("Loading Offline Backup...");
+                let backup = offlineDB[lang]?.[topicId] || `## ${topicName}\n\n**Note:** AI Service Unavailable. Here is a quick summary.\n\n- ${topicName} is a core concept in ${lang}.\n- Please check your internet or API Keys.`;
+                
+                contentDiv.innerHTML = marked.parse(backup + "\n\n> **Note:** Offline Mode Active");
             } finally {
                 loader.style.display = "none";
             }
         }
 
-        // --- API HANDLERS ---
+        // --- API CALLS ---
         async function fetchGemini(prompt) {
-            if (!API_KEYS.gemini || API_KEYS.gemini.includes("PASTE")) throw "No Key";
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
             if (!response.ok) throw "Error";
@@ -275,23 +266,9 @@
         }
 
         async function fetchGroq(prompt) {
-            if (!API_KEYS.groq || API_KEYS.groq.includes("PASTE")) throw "No Key";
             const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${API_KEYS.groq}`, 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Authorization': `Bearer ${API_KEYS.groq}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ model: "llama3-8b-8192", messages: [{ role: "user", content: prompt }] })
-            });
-            if (!response.ok) throw "Error";
-            const data = await response.json();
-            return data.choices[0].message.content;
-        }
-
-        async function fetchDeepSeek(prompt) {
-            if (!API_KEYS.deepseek || API_KEYS.deepseek.includes("PASTE")) throw "No Key";
-            const response = await fetch('https://api.deepseek.com/chat/completions', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${API_KEYS.deepseek}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: "deepseek-chat", messages: [{ role: "user", content: prompt }] })
             });
             if (!response.ok) throw "Error";
             const data = await response.json();
@@ -300,82 +277,112 @@
 
         function render(markdown) {
             document.getElementById('lesson-content').innerHTML = marked.parse(markdown);
-            document.getElementById('lesson-status').innerText = "";
         }
 
-        function loadOfflineContent(topicId, lang) {
-            let content = offlineDB[lang]?.[topicId] || "## Content Unavailable\n\nPlease check your internet connection.";
-            render(content + "\n\n> **Note:** Offline Version");
-        }
-
-        // --- OFFLINE DB ---
+        // --- OFFLINE DATABASE (BACKUP) ---
         const offlineDB = {
-            'python': { 'intro': "## Python Intro\n\nPython is awesome.", 'vars': "## Variables\n\n`x = 10`" },
-            'java': { 'intro': "## Java Intro\n\nJava is robust." }
+            'python': {
+                'intro': "## Python Intro\nPython is a high-level language.\n```python\nprint('Hello')\n```",
+                'vars': "## Variables\nContainers for storing data.\n```python\nx = 5\n```",
+                'loops': "## Loops\nIterate over sequences.\n```python\nfor i in range(5): print(i)\n```",
+                'funcs': "## Functions\nBlocks of reusable code.\n```python\ndef my_func(): print('Hi')\n```",
+                'oop': "## OOP\nObject Oriented Programming.\n```python\nclass MyClass:\n  x = 5\n```"
+            },
+            'java': {
+                'intro': "## Java Intro\nObject-oriented language.\n```java\nSystem.out.println('Hi');\n```",
+                'syntax': "## Syntax\nEvery line of code that runs must be inside a class.",
+                'oop': "## OOP\nJava is based on classes and objects.",
+                'classes': "## Classes\nBlueprints for objects.",
+                'inheritance': "## Inheritance\nSubclass inherits from superclass."
+            },
+            'cpp': {
+                'intro': "## C++ Intro\nExtension of C.\n```cpp\ncout << 'Hello';\n```",
+                'vars': "## Variables\nint, double, char, string, bool.",
+                'pointers': "## Pointers\nStore memory addresses.",
+                'oop': "## OOP\nClasses and Objects support."
+            },
+            'sql': {
+                'intro': "## SQL Intro\nStandard Query Language.",
+                'select': "## Select\nExtracts data from DB.\n```sql\nSELECT * FROM table;\n```"
+            },
+            'web_dev': {
+                'html': "## HTML\nStandard markup language.",
+                'css': "## CSS\nDescribes how HTML elements are displayed."
+            }
         };
 
-        // --- STANDARD NAVIGATION & DATA (No Change) ---
-        // (Note: Keeping the standard logic for School/Govt buttons to send to Bot)
+        // --- DATA ---
         const codingSyllabusList = {
-            'python': ['Intro & Variables', 'Loops', 'Functions', 'OOP'],
-            'java': ['Syntax', 'OOP Principles', 'Collections'],
-            'cpp': ['Basics', 'Pointers', 'STL'],
-            'sql': ['Select', 'Joins', 'Design'],
-            'web_dev': ['HTML', 'CSS', 'JS']
+            'python': [ {id:'intro', name:'Introduction'}, {id:'vars', name:'Variables'}, {id:'loops', name:'Loops'}, {id:'funcs', name:'Functions'}, {id:'oop', name:'OOP'} ],
+            'java': [ {id:'intro', name:'Introduction'}, {id:'syntax', name:'Syntax'}, {id:'oop', name:'OOP'}, {id:'classes', name:'Classes'}, {id:'inheritance', name:'Inheritance'} ],
+            'cpp': [ {id:'intro', name:'Intro'}, {id:'vars', name:'Variables'}, {id:'pointers', name:'Pointers'}, {id:'oop', name:'OOP'} ],
+            'sql': [ {id:'intro', name:'Intro'}, {id:'select', name:'Select & Where'} ],
+            'web_dev': [ {id:'html', name:'HTML Basics'}, {id:'css', name:'CSS Basics'} ]
         };
 
+        const schoolSubjects = {
+            'c1_5': ['Mathematics', 'English', 'Hindi', 'EVS', 'Computer', 'GK'],
+            'c6_8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit'],
+            'c9_10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi'],
+            'sci_11_12': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Computer Science'],
+            'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Mathematics', 'English'],
+            'arts_11_12': ['History', 'Polity', 'Geography', 'Sociology', 'Psychology']
+        };
+        const syllabusDB = {
+            'upsc': ['History', 'Polity', 'Geography', 'Economy', 'Current Affairs', 'CSAT', 'Ethics'],
+            'jee_neet': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Mock Test'],
+            'ssc': ['Reasoning', 'Quant', 'English', 'GA'],
+            'defense': ['Maths', 'GAT', 'English', 'Physics', 'History']
+        };
+
+        // --- NAVIGATION & LISTS ---
         function showCodingSyllabus(lang) {
             document.getElementById('syllabus-title').innerText = lang.toUpperCase();
             const container = document.getElementById('syllabus-container');
             container.innerHTML = "";
-            const list = codingSyllabusList[lang] || ['Basics'];
+            const list = codingSyllabusList[lang] || [{id:'intro', name:'Intro'}];
             list.forEach(topic => {
-                const div = document.createElement('div');
-                div.className = 'list-item';
-                div.innerHTML = `<div class="list-left"><div class="list-icon"><i class="fa-solid fa-code"></i></div><h3>${topic}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
-                div.onclick = () => generateLesson('topic', topic, lang);
+                const div = document.createElement('div'); div.className = 'list-item';
+                div.innerHTML = `<div class="list-left"><div class="list-icon"><i class="fa-solid fa-code"></i></div><h3>${topic.name}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
+                div.onclick = () => generateLesson(topic.id, topic.name, lang);
                 container.appendChild(div);
             });
             openScreen('coding-syllabus');
         }
 
-        function openScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            if(id==='home') document.querySelectorAll('.nav-item')[0].classList.add('active');
-            if(id==='coding') document.querySelectorAll('.nav-item')[1].classList.add('active');
-            if(id==='competitive') document.querySelectorAll('.nav-item')[2].classList.add('active');
-            if(id==='profile') document.querySelectorAll('.nav-item')[3].classList.add('active');
-        }
-        function goBackFromList() {
-            if(currentMode === 'school') openScreen('school-select');
-            else if(currentMode === 'govt') openScreen('competitive');
-            else openScreen('home');
-        }
-        // ... (School/Govt logic same as previous) ...
-        let currentMode = "";
-        
-        function loadSchoolSubjects(cat) { currentMode='school'; renderList(schoolSubjects[cat], "Select Subject", (sub) => openClassSelector(sub, cat)); }
+        function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], "Select Subject", (sub) => openClassSelector(sub, cat)); }
         function loadSyllabus(key) { currentMode='govt'; renderList(syllabusDB[key], key.toUpperCase(), (topic) => sendToBot(`govt_${key}_${topic}`)); }
-        function sendToBot(data) { tg.sendData(data); tg.close(); }
 
-        const schoolSubjects = { 'c1_5': ['Maths', 'English'], 'c6_8': ['Science', 'Maths'], 'c9_10': ['Maths', 'Science'], 'sci_11_12': ['Physics', 'Maths'], 'comm_11_12': ['Accounts'], 'arts_11_12': ['History'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity'], 'jee_neet': ['Physics', 'Bio'], 'ssc': ['Quant'], 'defense': ['Maths'] };
-        
-        function openClassSelector(sub, cat) {
-            document.getElementById('classes-container').innerHTML = "";
-            openScreen('class-selector');
-            // Add class logic here
-        }
         function renderList(items, title, handler) {
             document.getElementById('list-title').innerText=title; const container=document.getElementById('dynamic-list-container'); container.innerHTML="";
-            items.forEach(item => {
+            if(items) items.forEach(item => {
                 const div=document.createElement('div'); div.className='list-item'; div.innerHTML=`<div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>${item}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
                 div.onclick = () => handler(item); container.appendChild(div);
             });
             openScreen('dynamic-list-screen');
         }
+
+        function openClassSelector(sub, cat) {
+            const container = document.getElementById('classes-container'); container.innerHTML="";
+            let start=1, end=10; if(cat.includes('11_12')) { start=11; end=12; } else if(cat=='c1_5') end=5; else if(cat=='c6_8') { start=6; end=8; } else if(cat=='c9_10') { start=9; end=10; }
+            for(let i=start; i<=end; i++) {
+                const div = document.createElement('div'); div.className='card'; div.innerHTML=`<h3>Class ${i}</h3>`; div.onclick = () => openChapters(sub, `Class ${i}`); container.appendChild(div);
+            }
+            openScreen('class-selector');
+        }
+        function openChapters(sub, cls) {
+            const container = document.getElementById('chapters-container'); container.innerHTML="";
+            ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"].forEach(chap => {
+                const div = document.createElement('div'); div.className='list-item'; div.innerHTML=`<div class="list-left"><div class="list-icon"><i class="fa-solid fa-book"></i></div><h3>${chap}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
+                div.onclick = () => sendToBot(`notes_${sub}_${cls.replace(' ','')}_${chap}`); container.appendChild(div);
+            });
+            openScreen('chapters-screen');
+        }
+
+        function sendToBot(data) { tg.sendData(data); tg.close(); }
+        function openScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
+        let currentMode="", currentCategory="";
     </script>
 </body>
-                                                                                                       </html>
+    </html>
