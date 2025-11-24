@@ -7,32 +7,49 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME (NO CHANGE) --- */
-        :root { --bg-dark: #000000; --glass: rgba(30, 30, 30, 0.6); --glass-border: rgba(255, 255, 255, 0.1); --primary: #2563eb; --accent: #7c3aed; --text: #ffffff; --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308; }
+        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME --- */
+        :root {
+            --bg-dark: #000000;
+            --glass: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --accent: #7c3aed;
+            --text: #ffffff;
+            --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
+        }
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        
+        /* CLICK ANIMATION */
+        .card:active, .list-item:active { transform: scale(0.95) !important; background: rgba(255,255,255,0.15) !important; }
+
+        /* COMPONENTS */
         .header { padding: 20px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
         .header h1 { font-size: 20px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
         .back-btn { font-size: 18px; color: #aaa; cursor: pointer; border: none; background: none; margin-right: 15px; }
+
         .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 15px; text-align: center; backdrop-filter: blur(10px); transition: transform 0.1s; cursor: pointer; }
-        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
         .card i { font-size: 28px; margin-bottom: 10px; display: block; }
         .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
         .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
+
         .list-container { padding: 0 20px; margin-top: 10px; }
-        .list-item { background: var(--glass); margin-bottom: 12px; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .list-item:active { background: rgba(255,255,255,0.1); }
+        .list-item { background: var(--glass); margin-bottom: 12px; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.1s; }
         .list-left { display: flex; align-items: center; }
         .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; color: var(--primary); }
         .arrow { color: #555; font-size: 14px; }
+
         .screen { display: none; animation: fadeIn 0.3s; }
         .screen.active { display: block; }
         @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
         .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
         .nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); z-index: 1000; }
         .nav-item { font-size: 22px; color: #888; background: none; border: none; }
         .nav-item.active { color: #60a5fa; transform: translateY(-2px); }
+
         .stats-container { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 25px; gap: 10px; }
         .stat-card { flex: 1; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align: center; }
         .stat-value { font-size: 24px; font-weight: bold; margin: 0; }
@@ -104,6 +121,7 @@
             <div class="list-item" onclick="loadSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="loadSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="loadSyllabus('cpp')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-c"></i></div><h3>C++</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('sql')"><div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-database"></i></div><h3>SQL / Data</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="loadSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
             <div class="list-item" onclick="sendToBot('quiz_coding')"><div class="list-left"><div class="list-icon" style="color:#ffffff;"><i class="fa-solid fa-bug"></i></div><h3>Coding Quiz</h3></div></div>
         </div>
@@ -174,36 +192,37 @@
             document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        // --- DATA: School Subjects ---
+        // --- DATASETS ---
         const schoolSubjects = {
             'c1_5': ['Mathematics', 'English', 'Hindi', 'EVS', 'Computer', 'GK'],
             'c6_8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit'],
             'c9_10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi'],
-            'sci_11_12': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English'],
+            'sci_11_12': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Computer Sc.'],
             'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Mathematics', 'English'],
             'arts_11_12': ['History', 'Polity', 'Geography', 'Sociology', 'Psychology']
         };
 
-        // --- DATA: Syllabus for Coding & Govt ---
         const syllabusDB = {
             'upsc': ['History', 'Polity', 'Geography', 'Economy', 'Current Affairs', 'CSAT'],
             'jee_neet': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Mock Test'],
-            'ssc': ['Reasoning', 'Quantitative Aptitude', 'English', 'General Awareness'],
+            'ssc': ['Reasoning', 'Quant', 'English', 'GA'],
             'defense': ['General Ability', 'Mathematics', 'English', 'Physics', 'History'],
-            'python': ['Introduction', 'Variables', 'Loops', 'Functions', 'OOP Concepts'],
-            'java': ['Syntax', 'OOP Principles', 'Classes & Objects', 'Inheritance'],
-            'cpp': ['Basics', 'Pointers', 'STL', 'Memory Management'],
-            'web_dev': ['HTML5', 'CSS3', 'JavaScript DOM', 'Responsive Design']
+            'python': ['Intro & Variables', 'Control Flow', 'Functions', 'OOP Concepts', 'File Handling'],
+            'java': ['Syntax', 'OOP Principles', 'Classes', 'Inheritance', 'Collections'],
+            'cpp': ['Basics', 'Pointers', 'STL', 'Memory Mgmt', 'OOP'],
+            'sql': ['Queries', 'Joins', 'Aggregations', 'Normalization', 'Keys'],
+            'web_dev': ['HTML5', 'CSS3', 'JavaScript', 'DOM', 'React Basics']
         };
 
-        let currentMode = ""; // 'school', 'govt', 'code'
-        let currentCategory = ""; // 'upsc', 'c1_5'
+        let currentMode = "";
+        let currentCategory = "";
 
+        // --- NAVIGATION ---
         function openScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             
-            // Nav Highlight
+            // Nav Highlight Logic
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             if(id === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
             if(id === 'coding') document.querySelectorAll('.nav-item')[1].classList.add('active');
@@ -218,7 +237,7 @@
             else openScreen('home');
         }
 
-        // --- SCHOOL LOGIC (Subject -> Class Selector) ---
+        // --- SCHOOL LOGIC ---
         function loadSchoolSubjects(category) {
             currentMode = 'school';
             currentCategory = category;
@@ -238,25 +257,28 @@
             for(let i=start; i<=end; i++) {
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.innerHTML = `<h3>Class ${i}</h3><p>View Notes</p>`;
-                div.onclick = () => sendToBot(`school_${subject}_Class${i}`);
+                div.innerHTML = `<h3>Class ${i}</h3><p>Get Notes</p>`;
+                // Correctly pass parameters
+                div.onclick = () => sendToBot(`syllabus_${subject}_Class${i}`);
                 container.appendChild(div);
             }
             openScreen('class-selector');
         }
 
-        // --- GOVT & CODING LOGIC (Exam/Lang -> Topics) ---
+        // --- GOVT & CODING LOGIC ---
         function loadSyllabus(key) {
             currentMode = (['upsc','jee_neet','ssc','defense'].includes(key)) ? 'govt' : 'code';
             currentCategory = key;
             
             const list = syllabusDB[key];
             renderList(list, "Select Topic", (topic) => {
+                // Data Format: govt_Exam_Topic OR code_Lang_Topic
                 const prefix = currentMode === 'govt' ? 'govt' : 'code';
                 sendToBot(`${prefix}_${key}_${topic}`);
             });
         }
 
+        // --- HELPER ---
         function renderList(items, title, clickHandler) {
             document.getElementById('list-title').innerText = title;
             const container = document.getElementById('dynamic-list-container');
@@ -276,6 +298,7 @@
 
         function sendToBot(data) {
             tg.sendData(data);
+            tg.close(); // Force close app to show bot reply
         }
     </script>
 </body>
