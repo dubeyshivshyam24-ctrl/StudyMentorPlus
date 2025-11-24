@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME --- */
+        /* --- 🔒 LOCKED PREMIUM GLASS DESIGN --- */
         :root {
             --bg-dark: #000000;
             --glass: rgba(30, 30, 30, 0.6);
@@ -18,7 +18,6 @@
             --text: #ffffff;
             --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
         }
-        
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
         
         /* COMPONENTS */
@@ -50,7 +49,14 @@
         /* LESSON CONTENT STYLING */
         .lesson-container { padding: 20px; color: #e2e8f0; line-height: 1.7; font-size: 15px; }
         .lesson-container h1, .lesson-container h2 { color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 20px; }
+        .lesson-container h3 { color: #c084fc; margin-top: 20px; }
+        .lesson-container strong { color: #fff; }
+        .lesson-container code { background: #334155; padding: 2px 5px; border-radius: 4px; color: #f472b6; font-family: monospace; }
         .lesson-container pre { background: #111827; padding: 15px; border-radius: 10px; overflow-x: auto; border-left: 4px solid var(--primary); margin: 15px 0; }
+        .lesson-container pre code { background: none; color: #a5b4fc; padding: 0; }
+        .lesson-container ul { padding-left: 20px; margin-bottom: 15px; }
+        .lesson-container li { margin-bottom: 8px; color: #cbd5e1; }
+
         .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 50px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -70,7 +76,7 @@
         .nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); z-index: 1000; }
         .nav-item { font-size: 22px; color: #888; background: none; border: none; }
         .nav-item.active { color: #60a5fa; transform: translateY(-2px); }
-
+        
         .stats-container { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 25px; gap: 10px; }
         .stat-card { flex: 1; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align: center; }
         .stat-value { font-size: 24px; font-weight: bold; margin: 0; }
@@ -88,7 +94,6 @@
 </head>
 <body>
 
-    <!-- 🏠 1. HOME -->
     <div id="home" class="screen active">
         <div class="header">
             <h1>Study Dashboard</h1>
@@ -101,7 +106,6 @@
             <div class="card" onclick="openScreen('coding')"><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3></div>
             <div class="card" onclick="sendToBot('quiz_general')"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3></div>
         </div>
-        
         <div class="section-title">Resources & Tools</div>
         <div class="list-container">
             <div class="list-item" onclick="openScreen('materials')">
@@ -113,12 +117,10 @@
         </div>
     </div>
 
-    <!-- 📂 NEW: STUDY MATERIALS SCREEN -->
     <div id="materials" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Important Links</h1><div></div></div>
         <div class="section-title">Official Channels</div>
         <div class="list-container" style="margin-top:10px;">
-            <!-- 👇 YAHAN APNE LINKS CHANGE KAREIN 👇 -->
             <div class="list-item" onclick="openLink('https://t.me/YourMainChannel')">
                 <div class="list-left"><div class="list-icon" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i></div><div><h3>Main Channel</h3><p style="font-size:11px; color:#aaa;">Join for Updates</p></div></div>
                 <i class="fa-solid fa-arrow-up-right-from-square arrow"></i>
@@ -127,14 +129,9 @@
                 <div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-file-pdf"></i></div><div><h3>PDF Library</h3><p style="font-size:11px; color:#aaa;">Free Books & Notes</p></div></div>
                 <i class="fa-solid fa-arrow-up-right-from-square arrow"></i>
             </div>
-            <div class="list-item" onclick="openLink('https://t.me/YourQuizChannel')">
-                <div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-lightbulb"></i></div><div><h3>Daily Quiz Group</h3><p style="font-size:11px; color:#aaa;">Practice Daily</p></div></div>
-                <i class="fa-solid fa-arrow-up-right-from-square arrow"></i>
-            </div>
         </div>
     </div>
 
-    <!-- ⏰ TIME TABLE -->
     <div id="screen-timetable" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Make Schedule</h1><div></div></div>
         <div style="padding: 20px;">
@@ -147,7 +144,6 @@
         </div>
     </div>
 
-    <!-- 🤖 ASK AI -->
     <div id="screen-ask-ai" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div>
         <div id="chat-box" class="chat-box">
@@ -161,7 +157,6 @@
         </div>
     </div>
 
-    <!-- 💻 2. CODING (ALL LANGS) -->
     <div id="coding" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
@@ -173,21 +168,18 @@
         </div>
     </div>
 
-    <!-- 📜 3. CODING SYLLABUS -->
     <div id="coding-syllabus" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="syllabus-title">Syllabus</h1><div></div></div>
         <div class="section-title">Beginner to Advance</div>
         <div id="syllabus-container" class="list-container" style="margin-top:10px;"></div>
     </div>
 
-    <!-- 📖 4. LESSON SCREEN -->
     <div id="lesson-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div>
         <div id="lesson-loader" class="loader" style="display:none;"></div>
         <div id="lesson-content" class="lesson-container"></div>
     </div>
 
-    <!-- 🏫 5. SCHOOL & GOVT (RETAINED) -->
     <div id="school-select" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
@@ -215,7 +207,6 @@
         </div>
     </div>
 
-    <!-- GENERIC LISTS -->
     <div id="dynamic-list-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="goBackFromList()"><i class="fa-solid fa-arrow-left"></i></button><h1 id="list-title">Topics</h1><div style="width:35px;"></div></div>
         <div id="dynamic-list-container" class="list-container" style="margin-top:10px;"></div>
@@ -229,7 +220,6 @@
         <div id="chapters-container" class="list-container" style="margin-top:10px;"></div>
     </div>
 
-    <!-- 👤 PROFILE -->
     <div id="profile" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div>
         <div class="profile-header">
@@ -252,7 +242,6 @@
         </div>
     </div>
 
-    <!-- NAV -->
     <div class="nav">
         <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
         <button class="nav-item" onclick="openScreen('coding')"><i class="fa-solid fa-code"></i></button>
@@ -270,7 +259,7 @@
         }
 
         // =======================================================
-        // ⚠️ PASTE API KEYS HERE ⚠️
+        // ⚠️ PASTE YOUR API KEYS HERE ⚠️
         // =======================================================
         const API_KEYS = {
             'gemini': "PASTE_GEMINI_KEY_HERE",
@@ -328,10 +317,31 @@
         function openLink(url) { tg.openTelegramLink(url); }
 
         // DATA
-        const codingSyllabusList = { 'python': ['Variables', 'Loops', 'Functions', 'OOP'], 'java': ['Syntax', 'OOP'], 'web_dev': ['HTML', 'CSS', 'JS'], 'cpp':['Basics','OOP'], 'sql':['Queries'] };
-        const schoolSubjects = { 'c1_5': ['Maths', 'English', 'Hindi'], 'c6_8': ['Maths', 'Science'], 'c9_10': ['Maths', 'Science'], 'sci_11_12': ['Physics', 'Chemistry'], 'comm_11_12': ['Accounts'], 'arts_11_12': ['History'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity'], 'jee_neet': ['Physics', 'Bio'], 'ssc': ['Quant'], 'defense': ['Maths'] };
-        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3"];
+        const codingSyllabusList = { 
+            'python': ['Intro', 'Variables', 'Loops', 'Functions', 'OOP'], 
+            'java': ['Syntax', 'OOP', 'Collections'], 
+            'cpp': ['Basics', 'Pointers', 'STL'], 
+            'sql': ['Select', 'Joins', 'Design'], 
+            'web_dev': ['HTML', 'CSS', 'JS'] 
+        };
+        
+        const schoolSubjects = { 
+            'c1_5': ['Maths', 'English', 'Hindi', 'EVS', 'Computer', 'GK'], 
+            'c6_8': ['Science', 'Maths', 'Social', 'English', 'Hindi', 'Sanskrit'], 
+            'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 
+            'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 
+            'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 
+            'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] 
+        };
+        
+        const syllabusDB = { 
+            'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 
+            'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology'], 
+            'ssc': ['Quant', 'Reasoning', 'English'], 
+            'defense': ['Maths', 'GAT', 'English'] 
+        };
+        
+        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
 
         function showCodingSyllabus(lang) { const list = codingSyllabusList[lang]||['Basics']; const c=document.getElementById('syllabus-container'); c.innerHTML=""; list.forEach(t=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${t}</h3>`; d.onclick=()=>generateLesson(t,lang); c.appendChild(d); }); openScreen('coding-syllabus'); }
         function loadSchoolSubjects(cat) { currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
@@ -342,8 +352,8 @@
         function renderList(items, handler) { const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${i}</h3>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
         function sendToBot(data) { tg.sendData(data); tg.close(); }
         function openScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        function goBackFromList() { openScreen('home'); }
-        let currentCategory="";
+        function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
+        let currentMode="", currentCategory="", currentSubject="";
     </script>
 </body>
-                                                                                                                                                              </html>
+                                </html>
