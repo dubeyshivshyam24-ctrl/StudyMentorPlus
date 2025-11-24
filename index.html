@@ -7,96 +7,180 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- PREMIUM THEME --- */
-        :root { --bg: #0f172a; --card: #1e293b; --primary: #3b82f6; --text: #fff; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
+        /* --- 💎 PREMIUM GLASSMORPHISM DESIGN (RESTORED) --- */
+        :root {
+            --bg-dark: #000000;
+            --glass: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --accent: #7c3aed;
+            --text: #ffffff;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, #000000);
+            color: var(--text);
+            margin: 0; padding: 0;
+            padding-bottom: 100px; /* Space for bottom nav */
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         /* --- ANIMATIONS --- */
-        .screen { display: none; padding: 20px; animation: fade 0.3s; }
+        @keyframes slideIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+        .fade-in { animation: slideIn 0.3s ease-out forwards; }
+
+        /* --- HEADER --- */
+        .header {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header h1 { font-size: 20px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
+
+        /* --- CARDS (GLASS STYLE) --- */
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
+        .card i { font-size: 28px; margin-bottom: 10px; display: block; }
+        .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
+        .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
+
+        /* --- SECTION HEADERS --- */
+        .section-title { padding: 0 20px; margin-top: 10px; font-size: 14px; font-weight: bold; letter-spacing: 1px; color: #94a3b8; text-transform: uppercase; }
+
+        /* --- LIST ITEMS --- */
+        .list-container { padding: 0 20px; }
+        .list-item {
+            background: var(--glass);
+            margin-bottom: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .list-item:active { transform: scale(0.98); background: rgba(255,255,255,0.15); }
+        .list-left { display: flex; align-items: center; }
+        .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; }
+        .arrow { color: #555; font-size: 14px; }
+
+        /* --- SCREENS --- */
+        .screen { display: none; }
         .screen.active { display: block; }
-        @keyframes fade { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
 
-        /* --- CARDS & LISTS --- */
-        .header { padding: 20px; background: #1e293b; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .header h2 { margin: 0; font-size: 18px; color: #60a5fa; }
-        .btn-icon { font-size: 20px; color: #94a3b8; background: none; border: none; cursor: pointer; }
+        /* --- BOTTOM NAV (FLOATING GLASS) --- */
+        .nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            display: flex; justify-content: space-around;
+            padding: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .nav-item { color: #64748b; font-size: 22px; transition: 0.3s; background: none; border: none; }
+        .nav-item.active { color: #fff; transform: translateY(-2px); text-shadow: 0 0 15px rgba(96, 165, 250, 0.8); }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .card { background: #1e293b; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #334155; transition: 0.1s; }
-        .card:active { transform: scale(0.95); background: #334155; }
-        .card i { font-size: 30px; margin-bottom: 10px; display: block; }
-        .card h3 { font-size: 14px; margin: 0; }
-
-        .list-item { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; border: 1px solid #334155; cursor: pointer; }
-        .list-item:active { background: #334155; transform: scale(0.98); }
-        .icon-box { width: 40px; height: 40px; background: #334155; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; color: var(--primary); }
-
-        /* --- BOTTOM NAV --- */
-        .nav { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155; }
-        .nav-item { font-size: 22px; color: #94a3b8; background: none; border: none; }
-        .nav-item.active { color: #60a5fa; }
     </style>
 </head>
 <body>
 
-    <div id="screen-home" class="screen active">
+    <div id="screen-home" class="screen active fade-in">
         <div class="header">
-            <h2>Dashboard</h2>
-            <button class="btn-icon"><i class="fa-solid fa-user"></i></button>
+            <div>
+                <div style="font-size:11px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Dashboard</div>
+                <h1 id="username">Student</h1>
+            </div>
+            <div class="profile-pic" onclick="sendToBot('profile')"><i class="fa-solid fa-user"></i></div>
         </div>
 
-        <div class="grid">
+        <div class="section-title">Categories</div>
+        <div class="card-grid">
             <div class="card" onclick="showSubjects('class_1_10')">
                 <i class="fa-solid fa-shapes" style="color:#34d399;"></i>
-                <h3>Class 1-10</h3>
+                <h3>Class 1-10</h3><p>All Subjects</p>
             </div>
             <div class="card" onclick="showSubjects('class_11_12')">
-                <i class="fa-solid fa-flask" style="color:#60a5fa;"></i>
-                <h3>Class 11-12</h3>
+                <i class="fa-solid fa-graduation-cap" style="color:#60a5fa;"></i>
+                <h3>Class 11-12</h3><p>Sci/Comm</p>
             </div>
+            
             <div class="card" onclick="showSubjects('upsc')">
                 <i class="fa-solid fa-landmark" style="color:#f472b6;"></i>
-                <h3>UPSC / Govt</h3>
+                <h3>UPSC/Govt</h3><p>Prep Material</p>
             </div>
+            
             <div class="card" onclick="showSubjects('coding')">
                 <i class="fa-solid fa-code" style="color:#fbbf24;"></i>
-                <h3>Coding</h3>
+                <h3>Coding</h3><p>Python/Java</p>
             </div>
         </div>
 
-        <h3 style="margin-top:25px; font-size:16px; color:#94a3b8;">QUICK TOOLS</h3>
-        <div class="list-item" onclick="sendToBot('quiz')">
-            <div class="icon-box"><i class="fa-solid fa-brain"></i></div>
-            <div><h3>Daily Quiz</h3><p style="margin:0; font-size:12px; color:#aaa;">Test your knowledge</p></div>
-        </div>
-        <div class="list-item" onclick="sendToBot('ask_ai')">
-            <div class="icon-box"><i class="fa-solid fa-robot"></i></div>
-            <div><h3>Ask AI Tutor</h3><p style="margin:0; font-size:12px; color:#aaa;">Clear doubts instantly</p></div>
+        <div class="section-title">Quick Actions</div>
+        <div class="list-container" style="margin-top:10px;">
+            <div class="list-item" onclick="sendToBot('quiz')">
+                <div class="list-left">
+                    <div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-brain"></i></div>
+                    <div><h3>Daily Quiz</h3><p style="font-size:11px; color:#aaa;">Test Knowledge</p></div>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+            <div class="list-item" onclick="sendToBot('ask_ai')">
+                <div class="list-left">
+                    <div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-robot"></i></div>
+                    <div><h3>Ask AI Tutor</h3><p style="font-size:11px; color:#aaa;">Clear Doubts</p></div>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
         </div>
     </div>
 
-    <div id="screen-list" class="screen">
+    <div id="screen-list" class="screen fade-in">
         <div class="header">
-            <button class="btn-icon" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i></button>
-            <h2 id="list-title">Subjects</h2>
-            <div></div>
-        </div>
-        <div id="list-container" style="margin-top:20px;">
+            <div class="profile-pic" onclick="goHome()" style="margin-right:15px;"><i class="fa-solid fa-arrow-left"></i></div>
+            <h1 id="list-title">Subjects</h1>
+            <div style="width:35px;"></div> </div>
+        
+        <div class="section-title">Select a Topic</div>
+        <div id="list-container" class="list-container" style="margin-top:15px;">
             </div>
     </div>
 
     <div class="nav">
         <button class="nav-item active" onclick="goHome()"><i class="fa-solid fa-house"></i></button>
         <button class="nav-item" onclick="showSubjects('coding')"><i class="fa-solid fa-code"></i></button>
+        <button class="nav-item" onclick="showSubjects('upsc')"><i class="fa-solid fa-book"></i></button>
         <button class="nav-item" onclick="sendToBot('profile')"><i class="fa-solid fa-user"></i></button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        tg.ready(); tg.expand();
 
-        // --- DATA: Isme sab subjects hain ---
+        if (tg.initDataUnsafe?.user) {
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        // --- DATA DATABASE ---
         const dataBase = {
             'class_1_10': ['Maths', 'Science', 'Social Science', 'English', 'Hindi', 'Computer'],
             'class_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'Accountancy', 'Economics'],
@@ -104,51 +188,47 @@
             'coding': ['Python', 'Java', 'C++', 'Web Dev', 'SQL', 'Data Science']
         };
 
-        // --- NAVIGATION FUNCTIONS ---
-        
+        // --- NAVIGATION ---
         function goHome() {
             document.getElementById('screen-list').classList.remove('active');
             document.getElementById('screen-home').classList.add('active');
         }
 
         function showSubjects(category) {
-            // 1. Home chupao, List dikhao
+            // 1. Switch Screen
             document.getElementById('screen-home').classList.remove('active');
             document.getElementById('screen-list').classList.add('active');
 
-            // 2. List ko clear karo
+            // 2. Update Title
+            document.getElementById('list-title').innerText = category.replace(/_/g, ' ').toUpperCase();
+
+            // 3. Generate Premium List Items
             const container = document.getElementById('list-container');
             container.innerHTML = "";
-
-            // 3. Title set karo
-            document.getElementById('list-title').innerText = category.replace('_', ' ').toUpperCase();
-
-            // 4. Naye Buttons banao
-            const subjects = dataBase[category];
             
-            if (subjects) {
-                subjects.forEach(sub => {
+            const list = dataBase[category];
+            if(list) {
+                list.forEach(sub => {
                     const div = document.createElement('div');
                     div.className = 'list-item';
                     div.innerHTML = `
-                        <div class="icon-box"><i class="fa-solid fa-book-open"></i></div>
-                        <h3>${sub}</h3>
-                        <i class="fa-solid fa-chevron-right" style="margin-left:auto; color:#555;"></i>
+                        <div class="list-left">
+                            <div class="list-icon" style="color: #c084fc;"><i class="fa-solid fa-book-open"></i></div>
+                            <div><h3>${sub}</h3><p style="font-size:11px; color:#aaa;">Get Notes</p></div>
+                        </div>
+                        <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     `;
-                    // Click karne par Bot ko data bhejo: "notes_Maths_class_1_10"
+                    // Data format: notes_Subject_Category
                     div.onclick = () => sendToBot(`notes_${sub}_${category}`);
                     container.appendChild(div);
                 });
-            } else {
-                container.innerHTML = "<p style='text-align:center; color:#aaa;'>No subjects found.</p>";
             }
         }
 
-        // --- SEND DATA TO BOT ---
+        // --- SEND TO BOT ---
         function sendToBot(data) {
             tg.sendData(data);
         }
-
     </script>
 </body>
 </html>
