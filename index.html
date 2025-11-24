@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 💎 EXACT PREMIUM DESIGN YOU WANTED --- */
+        /* --- 🔒 DESIGN LOCK: SAME PREMIUM THEME --- */
         :root {
             --bg-dark: #000000;
             --glass: rgba(30, 30, 30, 0.6);
@@ -22,16 +22,16 @@
             background: radial-gradient(circle at top left, #1e1b4b, #000000);
             color: var(--text);
             margin: 0; padding: 0;
-            padding-bottom: 90px; /* Space for bottom nav */
+            padding-bottom: 90px;
             min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ANIMATIONS --- */
+        /* ANIMATIONS */
         @keyframes slideIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
         .fade-in { animation: slideIn 0.3s ease-out forwards; }
 
-        /* --- HEADER --- */
+        /* HEADER */
         .header {
             padding: 20px;
             background: rgba(0,0,0,0.3);
@@ -41,10 +41,9 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         .header h1 { font-size: 20px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
-        .back-btn { font-size: 18px; color: #aaa; cursor: pointer; border: none; background: none; margin-right: 15px; }
+        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; z-index: 101; }
 
-        /* --- CARDS --- */
+        /* CARDS */
         .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .card {
             background: var(--glass);
@@ -59,8 +58,9 @@
         .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
         .card i { font-size: 28px; margin-bottom: 10px; display: block; }
         .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
-        
-        /* --- LISTS --- */
+        .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
+
+        /* LIST ITEMS */
         .list-container { padding: 0 20px; margin-top: 10px; }
         .list-item {
             background: var(--glass);
@@ -75,14 +75,15 @@
         .list-item:active { background: rgba(255,255,255,0.1); }
         .list-left { display: flex; align-items: center; }
         .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; color: var(--primary); }
-        
-        /* --- SCREENS --- */
+        .arrow { color: #555; font-size: 14px; }
+
+        /* SCREENS */
         .screen { display: none; }
         .screen.active { display: block; animation: slideIn 0.3s ease-out; }
 
         .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- BOTTOM NAV --- */
+        /* BOTTOM NAV */
         .nav {
             position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9);
             display: flex; justify-content: space-around; padding: 15px 0;
@@ -91,14 +92,23 @@
         .nav-item { font-size: 22px; color: #888; background: none; border: none; }
         .nav-item.active { color: #60a5fa; transform: translateY(-2px); }
 
+        /* STATS (For Profile) */
+        .stats-row { display: flex; justify-content: space-between; padding: 20px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; width: 30%; text-align: center; }
+        .stat-num { font-size: 20px; font-weight: bold; color: var(--accent); }
+        .stat-lbl { font-size: 10px; color: #aaa; }
+
     </style>
 </head>
 <body>
 
-    <div id="home" class="screen active">
+    <div id="screen-home" class="screen active fade-in">
         <div class="header">
-            <h1>Study Dashboard</h1>
-            <div class="profile-pic" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></div>
+            <div>
+                <div style="font-size:11px; color:#aaa; text-transform:uppercase;">Dashboard</div>
+                <h1 id="username">Student</h1>
+            </div>
+            <div class="profile-pic" onclick="openScreen('screen-profile')"><i class="fa-solid fa-user"></i></div>
         </div>
 
         <div class="section-title">Learning Hub</div>
@@ -121,114 +131,95 @@
         <div class="list-container">
             <div class="list-item" onclick="sendToBot('timetable')">
                 <div class="list-left"><div class="list-icon"><i class="fa-solid fa-calendar"></i></div><h3>Time Table</h3></div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
             <div class="list-item" onclick="sendToBot('ask_ai')">
                 <div class="list-left"><div class="list-icon"><i class="fa-solid fa-robot"></i></div><h3>Ask AI Tutor</h3></div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
         </div>
     </div>
 
     <div id="school-select" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div>
+        <div class="header"><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></div><h1>Select Class</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
-            <div class="list-item" onclick="loadSubjects('c1_5')">
-                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 5th</h3></div>
-                <i class="fa-solid fa-chevron-right" style="color:#555;"></i>
+            <div class="list-item" onclick="loadSubjects('c1_10')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 10th</h3></div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
-            <div class="list-item" onclick="loadSubjects('c6_8')">
-                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>Class 6th - 8th</h3></div>
-                <i class="fa-solid fa-chevron-right" style="color:#555;"></i>
+            <div class="list-item" onclick="loadSubjects('sci_11_12')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-flask"></i></div><h3>Class 11-12 (Science)</h3></div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
-            <div class="list-item" onclick="loadSubjects('c9_10')">
-                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div>
-                <i class="fa-solid fa-chevron-right" style="color:#555;"></i>
-            </div>
-            <div class="list-item" onclick="openScreen('stream-select')">
-                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div>
-                <i class="fa-solid fa-chevron-right" style="color:#555;"></i>
+            <div class="list-item" onclick="loadSubjects('comm_11_12')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-chart-pie"></i></div><h3>Class 11-12 (Commerce)</h3></div>
+                <i class="fa-solid fa-chevron-right arrow"></i>
             </div>
         </div>
     </div>
 
-    <div id="stream-select" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Stream</h1><div></div></div>
-        <div class="card-grid">
-            <div class="card" onclick="loadSubjects('sci_11_12')">
-                <i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3>
-            </div>
-            <div class="card" onclick="loadSubjects('comm_11_12')">
-                <i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3>
-            </div>
-            <div class="card" onclick="loadSubjects('arts_11_12')">
-                <i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3>
-            </div>
+    <div id="subject-list" class="screen">
+        <div class="header">
+            <div class="profile-pic" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></div>
+            <h1 id="subject-title">Subjects</h1>
+            <div style="width:35px;"></div>
         </div>
+        <div class="section-title">Choose Subject</div>
+        <div id="subjects-container" class="list-container" style="margin-top:10px;"></div>
     </div>
 
-    <div id="competitive" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div>
-        <div class="list-container" style="margin-top:20px;">
-            <div class="list-item" onclick="sendToBot('upsc')">
-                <div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('jee_neet')">
-                <div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('ssc')">
-                <div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('defense')">
-                <div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div>
-            </div>
+    <div id="class-selector" class="screen">
+        <div class="header">
+            <div class="profile-pic" onclick="openScreen('subject-list')"><i class="fa-solid fa-arrow-left"></i></div>
+            <h1>Select Grade</h1>
+            <div style="width:35px;"></div>
         </div>
+        <div class="section-title">Which Class?</div>
+        <div id="classes-container" class="card-grid"></div>
     </div>
 
-    <div id="coding" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div>
-        <div class="list-container" style="margin-top:20px;">
-            <div class="list-item" onclick="sendToBot('learn_python')">
-                <div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('learn_java')">
-                <div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('learn_web')">
-                <div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div>
-            </div>
-            <div class="list-item" onclick="sendToBot('quiz_coding')">
-                <div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-bug"></i></div><h3>Coding Quiz</h3></div>
-            </div>
+    <div id="screen-profile" class="screen fade-in">
+        <div class="header">
+            <div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></div>
+            <h1>My Profile</h1>
+            <div style="width:35px;"></div>
         </div>
-    </div>
-
-    <div id="profile" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div>
         <div style="text-align:center; margin-top:30px;">
-            <div style="width:80px; height:80px; background:#333; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:30px; color:white;"><i class="fa-solid fa-user"></i></div>
-            <h2 id="username-display" style="margin:10px 0 0;">Student</h2>
-            <p style="color:#888; font-size:12px;">Premium Member</p>
+            <div style="width:80px; height:80px; background:#333; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:30px; color:white;"><i class="fa-solid fa-user-astronaut"></i></div>
+            <h2 style="margin:10px 0 0;">Premium Student</h2>
+            <p style="color:#888; font-size:12px;">ID: #ACTIVE</p>
         </div>
-        <div class="list-container" style="margin-top:30px;">
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-num">100%</div><div class="stat-lbl">Attendance</div></div>
+            <div class="stat-box"><div class="stat-num">A+</div><div class="stat-lbl">Grade</div></div>
+        </div>
+        <div class="list-container">
             <div class="list-item" onclick="Telegram.WebApp.close()">
                 <div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div>
             </div>
         </div>
     </div>
 
-    <div id="subject-list" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="class-title">Subjects</h1><div></div></div>
-        <div class="list-container" style="margin-top:10px;">
-            <p style="color:#888; font-size:12px; margin-bottom:10px;">Select a subject to get notes from Bot</p>
+    <div id="competitive" class="screen">
+        <div class="header"><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></div><h1>Govt Exams</h1><div></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="sendToBot('upsc')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div></div>
+            <div class="list-item" onclick="sendToBot('jee_neet')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div></div>
         </div>
-        <div id="subjects-container" class="list-container">
-            </div>
+    </div>
+    <div id="coding" class="screen">
+        <div class="header"><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></div><h1>Coding</h1><div></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="sendToBot('learn_python')"><div class="list-left"><div class="list-icon"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div></div>
+            <div class="list-item" onclick="sendToBot('learn_web')"><div class="list-left"><div class="list-icon"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div></div>
+        </div>
     </div>
 
     <div class="nav">
-        <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
+        <button class="nav-item active" onclick="openScreen('screen-home')"><i class="fa-solid fa-house"></i></button>
         <button class="nav-item" onclick="openScreen('coding')"><i class="fa-solid fa-code"></i></button>
         <button class="nav-item" onclick="openScreen('competitive')"><i class="fa-solid fa-book"></i></button>
-        <button class="nav-item" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></button>
+        <button class="nav-item" onclick="openScreen('screen-profile')"><i class="fa-solid fa-user"></i></button>
     </div>
 
     <script>
@@ -236,18 +227,8 @@
         tg.ready(); tg.expand();
 
         if (tg.initDataUnsafe?.user) {
-            document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name;
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
-
-        // --- DATA ---
-        const subjectsData = {
-            'c1_5': ['English', 'Hindi', 'Mathematics', 'EVS', 'Computer'],
-            'c6_8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi', 'Sanskrit'],
-            'c9_10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi'],
-            'sci_11_12': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'Computer Science'],
-            'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Mathematics', 'English'],
-            'arts_11_12': ['History', 'Political Science', 'Geography', 'Sociology', 'Psychology']
-        };
 
         // --- NAVIGATION ---
         function openScreen(id) {
@@ -255,30 +236,59 @@
             document.getElementById(id).classList.add('active');
         }
 
-        // --- LOAD SUBJECTS ---
-        function loadSubjects(category) {
-            const container = document.getElementById('subjects-container');
-            container.innerHTML = ""; 
-            
-            const list = subjectsData[category];
-            document.getElementById('class-title').innerText = "Select Subject";
+        // --- DATA & LOGIC ---
+        let selectedCategory = "";
+        let selectedSubject = "";
 
+        const subjectsDB = {
+            'c1_10': ['Maths', 'Science', 'Social Science', 'English', 'Hindi', 'Computer'],
+            'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English', 'Computer Sc.'],
+            'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Maths', 'English']
+        };
+
+        // Step 1: Load Subjects based on Group
+        function loadSubjects(category) {
+            selectedCategory = category;
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = "";
+            document.getElementById('subject-title').innerText = "Choose Subject";
+
+            const list = subjectsDB[category];
             list.forEach(sub => {
-                const item = document.createElement('div');
-                item.className = 'list-item';
-                item.innerHTML = `
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
                     <div class="list-left">
-                        <div class="list-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="list-icon"><i class="fa-solid fa-book"></i></div>
                         <h3>${sub}</h3>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#555;"></i>
+                    <i class="fa-solid fa-chevron-right arrow"></i>
                 `;
-                // Click Logic
-                item.onclick = () => sendToBot(`notes_${sub}_${category}`);
-                container.appendChild(item);
+                // Click -> Go to Class Selector
+                div.onclick = () => openClassSelector(sub);
+                container.appendChild(div);
             });
-
             openScreen('subject-list');
+        }
+
+        // Step 2: Show Class Numbers (1-10 or 11-12)
+        function openClassSelector(subject) {
+            selectedSubject = subject;
+            const container = document.getElementById('classes-container');
+            container.innerHTML = "";
+            
+            let startClass = 1, endClass = 10;
+            if(selectedCategory.includes('11_12')) { startClass = 11; endClass = 12; }
+
+            for(let i = startClass; i <= endClass; i++) {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML = `<h3>Class ${i}</h3>`;
+                // Click -> Send Data to Bot: "syllabus_Maths_Class5"
+                div.onclick = () => sendToBot(`syllabus_${selectedSubject}_Class${i}`);
+                container.appendChild(div);
+            }
+            openScreen('class-selector');
         }
 
         function sendToBot(data) {
@@ -286,4 +296,4 @@
         }
     </script>
 </body>
-</html>
+                </html>
