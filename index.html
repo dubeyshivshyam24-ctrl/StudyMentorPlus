@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 🔒 LOCKED PREMIUM GLASS DESIGN --- */
+        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME --- */
         :root {
             --bg-dark: #000000;
             --glass: rgba(30, 30, 30, 0.6);
@@ -47,7 +47,7 @@
 
         .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* LESSON CONTENT STYLING (AI) */
+        /* LESSON CONTENT STYLING */
         .lesson-container { padding: 20px; color: #e2e8f0; line-height: 1.7; font-size: 15px; }
         .lesson-container h1, .lesson-container h2 { color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 20px; }
         .lesson-container h3 { color: #c084fc; margin-top: 20px; }
@@ -171,7 +171,7 @@
             <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
             <div style="text-align:center; margin-top:10px;">
                 <h2 class="profile-name" id="username-display">Student</h2>
-                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span> <i class="fa-solid fa-pen" style="cursor:pointer;" onclick="alert('Coming Soon!')"></i></div>
+                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span></div>
             </div>
         </div>
         <div class="section-title" style="margin-top: 0;">Statistics</div>
@@ -209,7 +209,7 @@
         const GEMINI_API_KEY = "AIzaSyBYf2TQZRcvXaU72S_Ks-1L0gjqcj-ahso"; 
         // =======================================================
 
-        // --- AI GENERATOR (USING GEMINI-PRO FOR STABILITY) ---
+        // --- AI GENERATOR (MULTI-MODEL FAILSAFE) ---
         async function generateLesson(topic, lang) {
             const contentDiv = document.getElementById('lesson-content');
             const loader = document.getElementById('lesson-loader');
@@ -228,17 +228,27 @@
 
             try {
                 if (GEMINI_API_KEY.includes("PASTE_KAREIN")) {
-                    throw new Error("API Key Missing in index.html");
+                    throw new Error("API Key Missing! Please paste your API Key in index.html on GitHub.");
                 }
 
-                // FIXED: Using 'gemini-pro' to avoid 404
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+                // Try gemini-1.5-flash first
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
 
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                // If Flash fails (404), try Pro
+                if (!response.ok) {
+                    console.log("Flash failed, trying Pro...");
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                }
+
+                if (!response.ok) throw new Error(`API Error: ${response.status} (Check Key or Quota)`);
 
                 const data = await response.json();
                 const rawText = data.candidates[0].content.parts[0].text;
@@ -247,10 +257,8 @@
             } catch (error) {
                 contentDiv.innerHTML = `
                     <div style="color:#ff4444; background:rgba(255,0,0,0.1); padding:20px; border-radius:10px; text-align:center;">
-                        <h3>⚠️ Something went wrong</h3>
+                        <h3>⚠️ System Error</h3>
                         <p>${error.message}</p>
-                        <br>
-                        <small>Please check your API Key in index.html file on GitHub.</small>
                     </div>`;
             } finally {
                 loader.style.display = "none";
@@ -347,4 +355,4 @@
         function sendToBot(data) { tg.sendData(data); tg.close(); }
     </script>
 </body>
-</html>
+                                       </html>
