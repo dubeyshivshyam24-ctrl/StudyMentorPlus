@@ -15,6 +15,7 @@
             --primary: #2563eb;
             --accent: #7c3aed;
             --text: #ffffff;
+            --code-bg: #111827;
             --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
         }
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
@@ -45,12 +46,37 @@
 
         .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* LESSON CONTENT STYLE (NEW) */
-        .lesson-content { padding: 20px; color: #e2e8f0; line-height: 1.6; }
-        .lesson-content h2 { color: #60a5fa; margin-top: 0; font-size: 22px; }
-        .lesson-content h3 { color: #c084fc; margin-top: 20px; font-size: 18px; }
-        .code-block { background: #1e1e1e; padding: 15px; border-radius: 10px; border-left: 4px solid #2563eb; font-family: monospace; font-size: 13px; color: #a5b4fc; margin: 15px 0; overflow-x: auto; }
-        .note-box { background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 13px; color: #fde047; }
+        /* --- DETAILED LESSON STYLING (Premium Blog Style) --- */
+        .lesson-container { padding: 20px; color: #e2e8f0; line-height: 1.7; font-size: 15px; }
+        .lesson-container h2 { color: #60a5fa; font-size: 24px; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .lesson-container h3 { color: #c084fc; font-size: 18px; margin-top: 25px; margin-bottom: 10px; }
+        .lesson-container p { margin-bottom: 15px; color: #cbd5e1; }
+        .lesson-container ul { margin-bottom: 15px; padding-left: 20px; color: #cbd5e1; }
+        .lesson-container li { margin-bottom: 8px; }
+        
+        .code-block { 
+            background: var(--code-bg); 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 1px solid #374151; 
+            font-family: 'Courier New', monospace; 
+            font-size: 14px; 
+            color: #a5b4fc; 
+            margin: 15px 0; 
+            overflow-x: auto; 
+            position: relative;
+        }
+        .code-block::before { content: "Example"; position: absolute; top: 5px; right: 10px; font-size: 10px; color: #6b7280; text-transform: uppercase; }
+        
+        .note-box { 
+            background: rgba(59, 130, 246, 0.1); 
+            border-left: 4px solid #3b82f6; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #93c5fd; 
+        }
 
         /* NAV & PROFILE */
         .nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); z-index: 1000; }
@@ -106,13 +132,13 @@
 
     <div id="coding-syllabus" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="syllabus-title">Syllabus</h1><div></div></div>
-        <div class="section-title">Beginner to Advance</div>
+        <div class="section-title">Course Modules</div>
         <div id="syllabus-container" class="list-container" style="margin-top:10px;"></div>
     </div>
 
     <div id="lesson-screen" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div>
-        <div id="lesson-content" class="lesson-content">
+        <div id="lesson-content" class="lesson-container">
             </div>
     </div>
 
@@ -136,10 +162,10 @@
     <div id="competitive" class="screen">
         <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div>
         <div class="list-container" style="margin-top:20px;">
-            <div class="list-item" onclick="loadGovtTopics('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
-            <div class="list-item" onclick="loadGovtTopics('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
-            <div class="list-item" onclick="loadGovtTopics('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
-            <div class="list-item" onclick="loadGovtTopics('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
         </div>
     </div>
 
@@ -162,7 +188,7 @@
             <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
             <div style="text-align:center; margin-top:10px;">
                 <h2 class="profile-name" id="username-display">Student</h2>
-                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span> <i class="fa-solid fa-pen" style="cursor:pointer;" onclick="alert('Coming Soon!')"></i></div>
+                <div style="color:#aaa; font-size:12px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:5px;"><span>Premium Member</span></div>
             </div>
         </div>
         <div class="section-title" style="margin-top: 0;">Statistics</div>
@@ -194,49 +220,158 @@
             document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        // --- IN-APP CODING CONTENT DATABASE ---
+        // --- DEEP CODING CONTENT DATABASE (W3SCHOOLS STYLE) ---
         const codingContent = {
             'python': {
-                'intro': { title: 'Intro to Python', content: 'Python is a popular, high-level programming language known for its simplicity. It is used in Web Development, Data Science, AI, and more.', code: 'print("Hello, World!")' },
-                'vars': { title: 'Variables', content: 'Variables are containers for storing data values. Python has no command for declaring a variable.', code: 'x = 5\nname = "John"\nprint(x)' },
-                'loops': { title: 'Loops', content: 'Loops are used to iterate over a sequence. Python has while loops and for loops.', code: 'for i in range(5):\n  print(i)' }
+                'intro': { 
+                    title: 'Introduction to Python', 
+                    content: `
+                        <p>Python is a popular, high-level programming language. It is used for web development, software development, mathematics, and system scripting.</p>
+                        <h3>Why Python?</h3>
+                        <ul>
+                            <li>Python works on different platforms (Windows, Mac, Linux).</li>
+                            <li>It has a simple syntax similar to English.</li>
+                            <li>Python has syntax that allows developers to write programs with fewer lines than some other programming languages.</li>
+                        </ul>
+                        <h3>Hello World Example:</h3>
+                        <div class="code-block">print("Hello, World!")</div>
+                    ` 
+                },
+                'vars': { 
+                    title: 'Python Variables', 
+                    content: `
+                        <p>Variables are containers for storing data values. Unlike other languages, Python has no command for declaring a variable. A variable is created the moment you first assign a value to it.</p>
+                        <h3>Variable Names</h3>
+                        <p>A variable name must start with a letter or the underscore character. It cannot start with a number.</p>
+                        <h3>Example:</h3>
+                        <div class="code-block">
+x = 5
+y = "John"
+print(x)
+print(y)
+                        </div>
+                        <div class="note-box">Variables do not need to be declared with any particular type, and can even change type after they have been set.</div>
+                    ` 
+                },
+                'datatypes': {
+                    title: 'Python Data Types',
+                    content: `
+                        <p>In programming, data type is an important concept. Variables can store data of different types, and different types can do different things.</p>
+                        <h3>Built-in Data Types</h3>
+                        <ul>
+                            <li>Text Type: <code>str</code></li>
+                            <li>Numeric Types: <code>int</code>, <code>float</code>, <code>complex</code></li>
+                            <li>Sequence Types: <code>list</code>, <code>tuple</code>, <code>range</code></li>
+                            <li>Mapping Type: <code>dict</code></li>
+                        </ul>
+                        <div class="code-block">
+x = 5        # int
+y = 20.5     # float
+z = 1j       # complex
+a = "Hello"  # str
+                        </div>
+                    `
+                },
+                'if_else': {
+                    title: 'Python If...Else',
+                    content: `
+                        <p>Python supports the usual logical conditions from mathematics: Equals, Not Equals, Less than, etc.</p>
+                        <h3>Syntax</h3>
+                        <div class="code-block">
+a = 33
+b = 200
+if b > a:
+  print("b is greater than a")
+else:
+  print("a is greater than b")
+                        </div>
+                        <p>The <code>elif</code> keyword is pythons way of saying "if the previous conditions were not true, then try this condition".</p>
+                    `
+                }
             },
             'java': {
-                'intro': { title: 'Intro to Java', content: 'Java is a class-based, object-oriented programming language designed to have as few implementation dependencies as possible.', code: 'System.out.println("Hello Java");' },
-                'oop': { title: 'OOP Concepts', content: 'Object-Oriented Programming creates objects that contain both data and methods.', code: 'class Car {\n  String color = "Red";\n}' }
+                'intro': {
+                    title: 'Introduction to Java',
+                    content: `
+                        <p>Java is a popular programming language, created in 1995. It is owned by Oracle, and more than 3 billion devices run Java.</p>
+                        <h3>It is used for:</h3>
+                        <ul>
+                            <li>Mobile applications (specifically Android)</li>
+                            <li>Desktop applications</li>
+                            <li>Web applications</li>
+                            <li>Web servers and application servers</li>
+                        </ul>
+                        <h3>Example:</h3>
+                        <div class="code-block">
+public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello World");
+  }
+}
+                        </div>
+                    `
+                }
             },
-            'cpp': { 'intro': { title: 'Intro to C++', content: 'C++ is a cross-platform language that can be used to create high-performance applications.', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello C++";\n  return 0;\n}' } },
-            'sql': { 'intro': { title: 'Intro to SQL', content: 'SQL stands for Structured Query Language. It is used to store, manipulate and retrieve data in databases.', code: 'SELECT * FROM Customers;' } },
-            'web_dev': { 'html': { title: 'HTML Basics', content: 'HTML is the standard markup language for Web pages. It describes the structure of a Web page.', code: '<!DOCTYPE html>\n<html>\n<body>\n<h1>Heading</h1>\n</body>\n</html>' } }
+            'web_dev': {
+                'html_intro': {
+                    title: 'HTML Introduction',
+                    content: `
+                        <p>HTML stands for Hyper Text Markup Language. It is the standard markup language for creating Web pages.</p>
+                        <h3>What is HTML?</h3>
+                        <ul>
+                            <li>HTML describes the structure of a Web page</li>
+                            <li>HTML consists of a series of elements</li>
+                            <li>HTML elements tell the browser how to display the content</li>
+                        </ul>
+                        <h3>Example:</h3>
+                        <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Page Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;My First Heading&lt;/h1&gt;
+  &lt;p&gt;My first paragraph.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                        </div>
+                    `
+                }
+            }
         };
 
         const codingSyllabusList = {
-            'python': [ {id: 'intro', name: 'Introduction'}, {id: 'vars', name: 'Variables'}, {id: 'loops', name: 'Loops & Conditions'} ],
-            'java': [ {id: 'intro', name: 'Introduction'}, {id: 'oop', name: 'OOP Principles'} ],
-            'cpp': [ {id: 'intro', name: 'Introduction to C++'} ],
-            'sql': [ {id: 'intro', name: 'Introduction to SQL'} ],
-            'web_dev': [ {id: 'html', name: 'HTML Basics'} ]
+            'python': [ 
+                {id: 'intro', name: 'Introduction'}, 
+                {id: 'vars', name: 'Variables'}, 
+                {id: 'datatypes', name: 'Data Types'}, 
+                {id: 'if_else', name: 'If...Else'},
+            ],
+            'java': [ {id: 'intro', name: 'Introduction'} ],
+            'web_dev': [ {id: 'html_intro', name: 'HTML Introduction'} ]
         };
 
-        // --- OTHER DATA ---
+        // ... (Standard Data from previous code) ...
         const schoolSubjects = {
             'c1_5': ['Mathematics', 'English', 'Hindi', 'EVS', 'Computer'],
             'c6_8': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi'],
             'c9_10': ['Mathematics', 'Science', 'Social Science', 'English', 'Hindi'],
             'sci_11_12': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English'],
-            'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Mathematics', 'English'],
+            'comm_11_12': ['Accountancy', 'Economics', 'Business Studies', 'Maths'],
             'arts_11_12': ['History', 'Polity', 'Geography', 'Sociology', 'Psychology']
         };
-        const govtTopics = {
-            'upsc': ['History', 'Polity', 'Geography', 'Economy'],
-            'jee_neet': ['Physics', 'Chemistry', 'Mathematics', 'Biology'],
+        const syllabusDB = {
+            'upsc': ['History', 'Polity', 'Geography', 'Economy', 'Current Affairs', 'CSAT'],
+            'jee_neet': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'Mock Test'],
             'ssc': ['Reasoning', 'Quant', 'English', 'GA'],
             'defense': ['Maths', 'GAT', 'English', 'Physics']
         };
-        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
+        const cbseChapters = ["Chapter 1: Introduction", "Chapter 2: Fundamentals", "Chapter 3: Advanced Concepts", "Chapter 4: Application", "Chapter 5: Summary"];
 
         let currentMode = ""; let currentCategory = ""; let currentSubject = "";
 
+        // NAVIGATION
         function openScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -253,22 +388,22 @@
             else openScreen('home');
         }
 
-        // --- IN-APP CODING LOGIC ---
+        // IN-APP CODING LOGIC
         function showCodingSyllabus(lang) {
             document.getElementById('syllabus-title').innerText = lang.toUpperCase();
             const container = document.getElementById('syllabus-container');
             container.innerHTML = "";
-            
             const list = codingSyllabusList[lang];
             if(list) {
                 list.forEach(topic => {
                     const div = document.createElement('div');
                     div.className = 'list-item';
                     div.innerHTML = `<div class="list-left"><div class="list-icon"><i class="fa-solid fa-code"></i></div><h3>${topic.name}</h3></div><i class="fa-solid fa-chevron-right arrow"></i>`;
-                    // Click opens Lesson Screen inside App
                     div.onclick = () => openLesson(lang, topic.id);
                     container.appendChild(div);
                 });
+            } else {
+                container.innerHTML = "<p style='color:#aaa; text-align:center;'>More topics coming soon!</p>";
             }
             openScreen('coding-syllabus');
         }
@@ -279,15 +414,16 @@
                 const contentDiv = document.getElementById('lesson-content');
                 contentDiv.innerHTML = `
                     <h2>${data.title}</h2>
-                    <p>${data.content}</p>
-                    <div class="code-block"><pre>${data.code}</pre></div>
-                    <div class="note-box">💡 <strong>Pro Tip:</strong> Practice this code in your editor.</div>
+                    ${data.content}
+                    <div style="margin-top:30px; text-align:center;">
+                        <button onclick="sendToBot('quiz_coding')" style="padding:10px 20px; background:var(--primary); border:none; border-radius:8px; color:white; font-weight:bold; width:100%;">Take Quiz on this Topic</button>
+                    </div>
                 `;
                 openScreen('lesson-screen');
             }
         }
 
-        // --- SCHOOL & GOVT LOGIC (Sends to Bot) ---
+        // SCHOOL & GOVT LOGIC (Bot Interaction)
         function loadSchoolSubjects(cat) {
             currentMode='school'; currentCategory=cat;
             renderList(schoolSubjects[cat], "Select Subject", (sub) => openClassSelector(sub, cat));
@@ -321,9 +457,9 @@
             openScreen('chapters-screen');
         }
 
-        function loadGovtTopics(exam) {
+        function loadSyllabus(key) {
             currentMode='govt';
-            renderList(govtTopics[exam], exam.toUpperCase(), (topic) => sendToBot(`govt_${exam}_${topic}`));
+            renderList(syllabusDB[key], key.toUpperCase(), (topic) => sendToBot(`govt_${key}_${topic}`));
         }
 
         function renderList(items, title, handler) {
@@ -342,4 +478,4 @@
         function sendToBot(data) { tg.sendData(data); tg.close(); }
     </script>
 </body>
-                </html>
+                                                                               </html>
