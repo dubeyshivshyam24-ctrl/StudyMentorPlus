@@ -3,158 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Study Mentor Premium</title>
+    <title>Study Mentor Ultra</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0f172a; --card: #1e293b; --primary: #3b82f6; --text: #ffffff; --gray: #94a3b8;
+            --bg-dark: #000000;
+            --glass: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --accent: #7c3aed;
+            --text: #ffffff;
         }
+        
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg); color: var(--text);
-            margin: 0; padding: 0; padding-bottom: 80px;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top left, #1e1b4b, #000000);
+            color: var(--text);
+            margin: 0; padding: 0;
+            padding-bottom: 90px; /* Space for bottom nav */
+            min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- LAYOUT & NAVIGATION --- */
-        .screen { display: none; padding: 20px; animation: fadeIn 0.3s; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        /* --- ANIMATIONS --- */
+        @keyframes slideIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+        .fade-in { animation: slideIn 0.4s ease-out forwards; }
 
-        .header { padding: 20px; background: linear-gradient(180deg, #1e293b, #0f172a); position: sticky; top: 0; z-index: 100; }
-        .header h2 { margin: 0; font-size: 20px; color: var(--primary); }
-        .back-btn { border: none; background: none; color: var(--gray); font-size: 16px; margin-right: 10px; cursor: pointer; }
+        /* --- HEADER --- */
+        .header {
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header h1 { font-size: 22px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 
-        /* --- CARDS & GRID --- */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        /* --- CARDS (Glassmorphism) --- */
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .card {
-            background: var(--card); border: 1px solid #334155; border-radius: 16px;
-            padding: 15px; text-align: center; cursor: pointer; transition: 0.2s;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s;
         }
-        .card:active { transform: scale(0.95); background: #334155; }
-        .card i { font-size: 24px; margin-bottom: 8px; display: block; }
-        .card-title { font-size: 13px; font-weight: 600; }
+        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
+        .card i { font-size: 28px; margin-bottom: 10px; display: block; }
+        .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
+        .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
 
-        /* --- STUDY CONTENT --- */
-        .chapter-item {
-            background: var(--card); padding: 15px; margin-bottom: 10px; border-radius: 12px;
-            display: flex; align-items: center; cursor: pointer;
-        }
-        .chapter-info h4 { margin: 0; font-size: 14px; }
-        .chapter-info p { margin: 2px 0 0; font-size: 11px; color: var(--gray); }
-        
-        .content-box { background: #2d3748; padding: 15px; border-radius: 12px; line-height: 1.6; font-size: 14px; color: #e2e8f0; }
+        /* --- SECTION HEADERS --- */
+        .section-title { padding: 0 20px; margin-top: 10px; font-size: 18px; font-weight: bold; display: flex; align-items: center; }
+        .section-title i { margin-right: 10px; color: var(--primary); }
 
-        /* --- QUIZ UI --- */
-        .quiz-box { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; }
-        .option-btn {
-            display: block; width: 100%; padding: 12px; margin-top: 10px;
-            background: #334155; border: none; border-radius: 8px; color: white; text-align: left;
+        /* --- LIST ITEMS --- */
+        .list-container { padding: 0 20px; }
+        .list-item {
+            background: var(--glass);
+            margin-bottom: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center;
+            justify-content: space-between;
         }
-        .option-btn.correct { background: #10b981; }
-        .option-btn.wrong { background: #ef4444; }
+        .list-left { display: flex; align-items: center; }
+        .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; }
+        .arrow { color: #555; font-size: 14px; }
+
+        /* --- SCREENS --- */
+        .screen { display: none; }
+        .screen.active { display: block; }
 
         /* --- BOTTOM NAV --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--card);
-            display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #334155;
+        .nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            display: flex; justify-content: space-around;
+            padding: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .nav-item { color: var(--gray); text-align: center; font-size: 20px; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item span { display: block; font-size: 10px; }
+        .nav-item { color: #888; font-size: 22px; transition: 0.3s; }
+        .nav-item.active { color: #fff; transform: translateY(-2px); text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        /* --- PROFILE STATS --- */
+        .stats-row { display: flex; justify-content: space-between; padding: 20px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; width: 30%; text-align: center; }
+        .stat-num { font-size: 20px; font-weight: bold; color: var(--accent); }
+        .stat-lbl { font-size: 10px; color: #aaa; }
+
     </style>
 </head>
 <body>
 
-    <div id="screen-home" class="screen active">
+    <div id="screen-home" class="screen active fade-in">
         <div class="header">
-            <h2 id="username">Hello, Student</h2>
-            <p style="margin:5px 0 0; font-size:12px; color:#94a3b8;">Your Learning Dashboard</p>
+            <div>
+                <div style="font-size:12px; color:#aaa;">Welcome back</div>
+                <h1 id="username">Student</h1>
+            </div>
+            <div class="profile-pic" onclick="openScreen('screen-profile')"><i class="fa-solid fa-user"></i></div>
         </div>
 
-        <h3 style="font-size:16px; margin-top:20px;">📚 Start Learning</h3>
-        <div class="grid">
-            <div class="card" onclick="openScreen('screen-python')">
-                <i class="fa-brands fa-python" style="color: #fbbf24;"></i>
-                <span class="card-title">Python Course</span>
+        <div class="section-title"><i class="fa-solid fa-layer-group"></i> Categories</div>
+        <div class="card-grid">
+            <div class="card" onclick="openScreen('screen-school')">
+                <i class="fa-solid fa-school" style="color:#34d399;"></i>
+                <h3>School</h3>
+                <p>Class 1-12</p>
             </div>
-            <div class="card" onclick="openScreen('screen-science')">
-                <i class="fa-solid fa-flask" style="color: #34d399;"></i>
-                <span class="card-title">Science (10th)</span>
+            <div class="card" onclick="openScreen('screen-exams')">
+                <i class="fa-solid fa-building-columns" style="color:#f472b6;"></i>
+                <h3>Exams</h3>
+                <p>UPSC, JEE, SSC</p>
             </div>
-            <div class="card" onclick="openScreen('screen-upsc')">
-                <i class="fa-solid fa-landmark" style="color: #f472b6;"></i>
-                <span class="card-title">UPSC Notes</span>
+            <div class="card" onclick="openScreen('screen-code')">
+                <i class="fa-solid fa-code" style="color:#60a5fa;"></i>
+                <h3>Coding</h3>
+                <p>Python, Java, C++</p>
             </div>
-            <div class="card" onclick="openScreen('screen-quiz')">
-                <i class="fa-solid fa-brain" style="color: #60a5fa;"></i>
-                <span class="card-title">Live Quiz</span>
+            <div class="card" onclick="openScreen('screen-tools')">
+                <i class="fa-solid fa-briefcase" style="color:#fbbf24;"></i>
+                <h3>Tools</h3>
+                <p>Quiz, Time Table</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-fire"></i> Trending Now</div>
+        <div class="list-container" style="margin-top:10px;">
+            <div class="list-item" onclick="triggerBot('quiz_general')">
+                <div class="list-left">
+                    <div class="list-icon"><i class="fa-solid fa-brain"></i></div>
+                    <div><h3>Daily GK Quiz</h3><p>Test your knowledge</p></div>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+            <div class="list-item" onclick="triggerBot('ask_ai')">
+                <div class="list-left">
+                    <div class="list-icon"><i class="fa-solid fa-robot"></i></div>
+                    <div><h3>Ask AI Tutor</h3><p>Solve any doubt</p></div>
+                </div>
+                <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
         </div>
     </div>
 
-    <div id="screen-python" class="screen">
-        <div class="header">
-            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i></button>
-            <span style="font-size:18px; font-weight:bold;">Python Mastery</span>
-        </div>
-        
-        <div style="margin-top: 20px;">
-            <div class="chapter-item" onclick="showContent('py-intro')">
-                <i class="fa-brands fa-python" style="font-size:24px; margin-right:15px; color:#fbbf24;"></i>
-                <div class="chapter-info"><h4>Chapter 1: Basics</h4><p>Variables & Data Types</p></div>
+    <div id="screen-school" class="screen fade-in">
+        <div class="header"><h1>School Hub</h1><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-xmark"></i></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="triggerBot('class_1_10')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-child"></i></div><div><h3>Class 1st - 10th</h3><p>All Subjects</p></div></div>
             </div>
-            
-            <div id="py-intro" style="display:none; margin-bottom:15px;" class="content-box">
-                <strong>🐍 Python Variables</strong><br><br>
-                Variables are containers for storing data values.<br>
-                <code>x = 5</code><br><code>name = "Rahul"</code><br><br>
-                <button class="option-btn" style="background:var(--primary); text-align:center;" onclick="askAI('python_doubt')">🤖 Ask AI to Explain More</button>
+            <div class="list-item" onclick="triggerBot('class_11_12')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><div><h3>Class 11th - 12th</h3><p>Science & Commerce</p></div></div>
             </div>
-
-            <div class="chapter-item">
-                <i class="fa-solid fa-code" style="font-size:24px; margin-right:15px; color:#fbbf24;"></i>
-                <div class="chapter-info"><h4>Chapter 2: Loops</h4><p>For & While Loops (Coming Soon)</p></div>
+            <div class="card" style="margin-top:20px;" onclick="triggerBot('quiz_school')">
+                <i class="fa-solid fa-vial" style="color:#34d399;"></i>
+                <h3>Take Science Quiz</h3>
+                <p>Based on Class 10 Syllabus</p>
             </div>
         </div>
     </div>
 
-    <div id="screen-science" class="screen">
-        <div class="header">
-            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <span style="font-weight:bold;">Class 10 Science</span>
+    <div id="screen-exams" class="screen fade-in">
+        <div class="header"><h1>Govt & Prep</h1><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-xmark"></i></div></div>
+        <div class="card-grid">
+            <div class="card" onclick="triggerBot('upsc')"><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>UPSC / IAS</h3></div>
+            <div class="card" onclick="triggerBot('jee_neet')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>JEE / NEET</h3></div>
+            <div class="card" onclick="triggerBot('ssc')"><i class="fa-solid fa-train" style="color:#fbbf24;"></i><h3>SSC / RRB</h3></div>
+            <div class="card" onclick="triggerBot('defense')"><i class="fa-solid fa-jet-fighter" style="color:#ef4444;"></i><h3>NDA / CDS</h3></div>
         </div>
-        <div style="margin-top:20px;" class="content-box">
-            <h4>⚛️ Chemical Reactions</h4>
-            <p>A chemical reaction involves a change in which one or more substances are converted into new substances.</p>
-            <ul>
-                <li>Combination Reaction</li>
-                <li>Decomposition Reaction</li>
-            </ul>
-            <button class="option-btn" style="background:var(--primary); text-align:center; margin-top:10px;" onclick="askAI('science_notes')">📄 Get Full PDF from Bot</button>
-        </div>
-    </div>
-
-    <div id="screen-quiz" class="screen">
-        <div class="header">
-            <button class="back-btn" onclick="openScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> Quit</button>
-            <span style="font-weight:bold;">GK Challenge</span>
-        </div>
-        <div class="quiz-box" style="margin-top:30px;">
-            <h3>Which is the largest planet?</h3>
-            <button class="option-btn" onclick="checkAnswer(this, false)">A) Earth</button>
-            <button class="option-btn" onclick="checkAnswer(this, true)">B) Jupiter</button>
-            <button class="option-btn" onclick="checkAnswer(this, false)">C) Mars</button>
-            <button class="option-btn" onclick="checkAnswer(this, false)">D) Venus</button>
-            <p id="quiz-result" style="margin-top:15px; font-weight:bold;"></p>
+        <div class="list-container">
+            <div class="list-item" onclick="triggerBot('quiz_upsc')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-book"></i></div><div><h3>UPSC Mock Quiz</h3><p>History & Polity</p></div></div>
+            </div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="openScreen('screen-home')"><i class="fa-solid fa-house"></i><span>Home</span></div>
-        <div class="nav-item" onclick="openScreen('screen-python')"><i class="fa-solid fa-book"></i><span>Learn</span></div>
-        <div class="nav-item" onclick="askAI('profile')"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+    <div id="screen-code" class="screen fade-in">
+        <div class="header"><h1>Code Lab</h1><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-xmark"></i></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="triggerBot('learn_python')">
+                <div class="list-left"><div class="list-icon"><i class="fa-brands fa-python" style="color:#fbbf24;"></i></div><div><h3>Python</h3></div></div>
+            </div>
+            <div class="list-item" onclick="triggerBot('learn_java')">
+                <div class="list-left"><div class="list-icon"><i class="fa-brands fa-java" style="color:#ef4444;"></i></div><div><h3>Java</h3></div></div>
+            </div>
+            <div class="list-item" onclick="triggerBot('learn_cpp')">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-c" style="color:#60a5fa;"></i></div><div><h3>C++</h3></div></div>
+            </div>
+            <div class="list-item" onclick="triggerBot('learn_web')">
+                <div class="list-left"><div class="list-icon"><i class="fa-brands fa-js" style="color:#fbbf24;"></i></div><div><h3>JavaScript / HTML</h3></div></div>
+            </div>
+            <div class="card" onclick="triggerBot('quiz_coding')" style="margin-top:15px;">
+                <i class="fa-solid fa-bug" style="color:#f472b6;"></i>
+                <h3>Debug Quiz</h3>
+                <p>Find errors in code</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-profile" class="screen fade-in">
+        <div class="header"><h1>My Profile</h1><div class="profile-pic" onclick="openScreen('screen-home')"><i class="fa-solid fa-xmark"></i></div></div>
+        <div style="text-align:center; margin-top:30px;">
+            <div style="width:80px; height:80px; background:linear-gradient(45deg, #2563eb, #7c3aed); border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:30px; color:white;"><i class="fa-solid fa-user-astronaut"></i></div>
+            <h2 style="margin:10px 0 0;">Premium Member</h2>
+            <p style="color:#888;">ID: #839201</p>
+        </div>
+        <div class="stats-row">
+            <div class="stat-box"><div class="stat-num">12</div><div class="stat-lbl">Quizzes</div></div>
+            <div class="stat-box"><div class="stat-num">85%</div><div class="stat-lbl">Accuracy</div></div>
+            <div class="stat-box"><div class="stat-num">🔥 5</div><div class="stat-lbl">Streak</div></div>
+        </div>
+        <div class="list-container">
+            <div class="list-item">
+                <div class="list-left"><div class="list-icon"><i class="fa-solid fa-shield-halved"></i></div><div><h3>Data Privacy</h3><p>100% Secure</p></div></div>
+            </div>
+            <div class="list-item" onclick="Telegram.WebApp.close()">
+                <div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><div><h3>Logout App</h3></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-item active" onclick="openScreen('screen-home')"><i class="fa-solid fa-house"></i></div>
+        <div class="nav-item" onclick="openScreen('screen-code')"><i class="fa-solid fa-code"></i></div>
+        <div class="nav-item" onclick="openScreen('screen-exams')"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="nav-item" onclick="openScreen('screen-profile')"><i class="fa-solid fa-user"></i></div>
     </div>
 
     <script>
@@ -162,42 +246,21 @@
         tg.ready();
         tg.expand();
 
+        // User Name Set
         if (tg.initDataUnsafe?.user) {
-            document.getElementById('username').innerText = "Hi, " + tg.initDataUnsafe.user.first_name;
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        // --- NAVIGATION LOGIC (App Band Nahi Hoga) ---
-        function openScreen(screenId) {
-            // Sab screens chhupao
+        // Navigation Logic
+        function openScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Jo chahiye wo dikhao
-            document.getElementById(screenId).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
-        // --- TOGGLE CONTENT ---
-        function showContent(id) {
-            const el = document.getElementById(id);
-            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-        }
-
-        // --- QUIZ LOGIC (App ke andar) ---
-        function checkAnswer(btn, isCorrect) {
-            if (isCorrect) {
-                btn.style.background = "#10b981"; // Green
-                document.getElementById('quiz-result').innerText = "✅ Correct! +10 Points";
-            } else {
-                btn.style.background = "#ef4444"; // Red
-                document.getElementById('quiz-result').innerText = "❌ Wrong Answer!";
-            }
-        }
-
-        // --- SEND TO BOT (Sirf tab jab AI chahiye) ---
-        function askAI(action) {
+        // Send Data to Bot
+        function triggerBot(action) {
             tg.sendData(action);
-            // Note: Hum tg.close() nahi kar rahe, taaki user app mein hi rahe 
-            // (Lekin Telegram ka rule hai ki data bhejne par wo close ho sakta hai, 
-            // isliye hum sirf "Request" bhejenge)
         }
     </script>
 </body>
-    </html>
+</html>
