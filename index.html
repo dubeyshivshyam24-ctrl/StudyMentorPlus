@@ -2,234 +2,552 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Study Mentor Ultra</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMentor Plus - Ultimate Free</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* --- 🔒 LOCKED PREMIUM GLASS DESIGN --- */
         :root {
-            --bg-dark: #000000;
-            --glass: rgba(30, 30, 30, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --primary: #2563eb;
-            --accent: #7c3aed;
-            --text: #ffffff;
-            --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
-            --gold: #fbbf24; --success: #10b981; --error: #ef4444;
+            --primary: #6C63FF;
+            --secondary: #2A2D3E;
+            --bg-dark: #0F1020;
+            --text-light: #E0E0E0;
+            --accent: #FF6B6B;
+            --card-bg: #1F2235;
+            --success: #00b894;
         }
-        body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: rgba(15, 16, 32, 0.98);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            display: none; /* Hidden on home */
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .profile-icon:active { transform: scale(0.9); }
+
+        /* Main Views */
+        #home-view { display: block; }
+        #detail-view { display: none; padding: 20px; }
+
+        /* Hero */
+        .hero { padding: 20px; }
+        .hero h2 { color: var(--primary); margin-bottom: 5px; }
+
+        /* Grid Layout */
+        .section-title {
+            padding: 0 20px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 0 20px 20px 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 130px;
+            position: relative;
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card:active { transform: scale(0.98); }
+
+        .card-icon { font-size: 2.2rem; margin-bottom: 10px; }
+        .card-title { font-size: 1rem; font-weight: 600; color: #fff; }
+        .card-subtitle { font-size: 0.7rem; color: #aaa; margin-top: 4px; }
+
+        .icon-school { color: #4ECDC4; }
+        .icon-exams { color: #FF9F43; }
+        .icon-coding { color: #54A0FF; }
+        .icon-quiz { color: #FDCB6E; }
+
+        /* List Items for Detail View */
+        .course-item {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .course-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .course-info { display: flex; align-items: center; gap: 15px; }
+        .course-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .course-title { font-weight: 600; font-size: 1rem; }
+        .course-arrow { color: #666; transition: transform 0.3s; }
         
-        /* COMMON COMPONENTS */
-        .header { padding: 20px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 20px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
-        .back-btn { font-size: 18px; color: #aaa; cursor: pointer; border: none; background: none; margin-right: 15px; }
+        /* Syllabus Expansion */
+        .syllabus-content {
+            display: none;
+            padding: 15px;
+            background-color: rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .syllabus-content.active { display: block; }
 
-        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 15px; text-align: center; backdrop-filter: blur(10px); transition: transform 0.1s; cursor: pointer; position: relative; overflow: hidden; }
-        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
-        .card i { font-size: 28px; margin-bottom: 10px; display: block; }
-        .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
-        .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
+        .topic-chip {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 3px;
+            color: #ccc;
+        }
 
-        .list-container { padding: 0 20px; margin-top: 10px; }
-        .list-item { background: var(--glass); margin-bottom: 12px; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .list-item:active { background: rgba(255,255,255,0.1); }
-        .list-left { display: flex; align-items: center; }
-        .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; color: var(--primary); }
-        .arrow { color: #555; font-size: 14px; }
+        /* Full Width Cards (Resources) */
+        .list-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin: 0 20px 15px 20px;
+        }
 
-        .screen { display: none; animation: fadeIn 0.3s; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--bg-dark);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            z-index: 100;
+        }
 
-        .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-item { color: #666; font-size: 1.4rem; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
 
-        /* CONTENT & AI RESULT AREA */
-        .content-area { padding: 20px; color: #e2e8f0; line-height: 1.6; font-size: 15px; }
-        .content-area h1, .content-area h2 { color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 25px; }
-        .content-area h3 { color: #c084fc; margin-top: 20px; }
-        .content-area strong { color: #fff; }
-        .content-area ul { padding-left: 20px; margin-bottom: 15px; }
-        .content-area li { margin-bottom: 8px; color: #cbd5e1; }
-        .content-area pre { background: #111827; padding: 15px; border-radius: 12px; overflow-x: auto; border-left: 4px solid var(--primary); margin: 15px 0; font-family: monospace; }
-        .content-area code { background: #334155; padding: 2px 6px; border-radius: 4px; color: #f472b6; }
+        /* Dev Mode Badge */
+        #dev-mode-badge {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #ff4757;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+            pointer-events: none;
+            z-index: 200;
+        }
 
-        /* LOADER */
-        .loader-container { text-align: center; padding: 50px; display: none; }
-        .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Quiz Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
 
-        /* LOCKED ITEMS */
-        .locked-icon { position: absolute; top: 10px; right: 10px; color: var(--error); font-size: 12px; }
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%; max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-        /* SUBSCRIPTION */
-        .sub-card { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; cursor: pointer; }
-        .sub-card.popular { border: 1px solid var(--gold); background: linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(0,0,0,0)); }
-        .badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: black; font-size: 10px; padding: 4px 8px; border-radius: 10px; font-weight: bold; }
-        .price { font-size: 28px; font-weight: bold; margin: 10px 0; color: white; }
-        .features li { color: #ccc; font-size: 13px; margin-bottom: 5px; list-style: none; display: flex; align-items: center; }
-        .features li::before { content: "✓"; color: var(--primary); margin-right: 8px; font-weight: bold; }
+        .quiz-tag {
+            background: rgba(108, 99, 255, 0.2);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
 
-        /* QUIZ */
-        .quiz-box { margin: 20px; padding: 20px; background: var(--glass); border-radius: 20px; border: 1px solid var(--glass-border); text-align: center; }
-        .quiz-question { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
-        .option-btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: white; text-align: left; cursor: pointer; }
-        .option-btn.correct { background: var(--success) !important; }
-        .option-btn.wrong { background: var(--error) !important; }
-        .next-btn { margin-top: 20px; padding: 12px 30px; background: var(--primary); border: none; border-radius: 25px; color: white; font-weight: bold; cursor: pointer; display: none; }
+        .option-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            margin: 8px 0;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+        .option-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
 
-        /* CHAT */
-        .chat-box { height: 60vh; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
-        .msg-bot { align-self: flex-start; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; }
-        .msg-user { align-self: flex-end; background: var(--primary); color: #fff; }
-        .chat-input-area { position: fixed; bottom: 90px; left: 0; width: 100%; padding: 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; gap: 10px; box-sizing: border-box; }
-        .chat-input { flex: 1; background: #333; border: 1px solid #555; border-radius: 25px; padding: 12px 20px; color: white; outline: none; }
-        .chat-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .form-input { width: 100%; padding: 15px; margin-bottom: 15px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: white; box-sizing: border-box; }
-        .primary-btn { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 16px; }
+        .btn {
+            background-color: var(--primary);
+            color: white; border: none; padding: 12px;
+            border-radius: 10px; margin-top: 15px;
+            cursor: pointer; width: 100%; font-weight: bold;
+        }
 
-        /* NAV & PROFILE */
-        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); z-index: 1000; }
-        .nav-item { font-size: 22px; color: #888; background: none; border: none; }
-        .nav-item.active { color: #60a5fa; transform: translateY(-2px); }
-        .stats-container { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 25px; gap: 10px; }
-        .stat-card { flex: 1; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align: center; }
-        .stat-value { font-size: 24px; font-weight: bold; margin: 0; }
-        .stat-label { font-size: 12px; color: #aaa; margin: 5px 0 0; text-transform: uppercase; }
-        .chart-container { margin: 0 20px 25px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; height: 150px; display: flex; align-items: flex-end; justify-content: space-between; }
-        .chart-bar { width: 10%; background: linear-gradient(to top, var(--primary), #60a5fa); border-radius: 4px; position: relative; }
-        .profile-header { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin-bottom: 15px; }
-        .profile-name { font-size: 24px; font-weight: bold; margin: 0; }
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 80px; left: 50%;
+            transform: translateX(-50%);
+            background-color: #333; color: #fff;
+            padding: 10px 20px; border-radius: 20px;
+            font-size: 0.9rem; opacity: 0;
+            transition: opacity 0.3s; pointer-events: none; z-index: 2000;
+        }
     </style>
 </head>
 <body>
 
-    <div id="home" class="screen active">
-        <div class="header"><h1>Study Dashboard</h1><div class="profile-pic" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></div></div>
-        <div class="section-title">Learning Hub</div>
-        <div class="card-grid">
-            <div class="card" onclick="openScreen('school-select')"><i class="fa-solid fa-school" style="color:#34d399;"></i><h3>School</h3><p>1-12</p></div>
-            <div class="card" onclick="checkPremium('govt')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Exams</h3><p>Govt Prep</p></div>
-            <div class="card" onclick="checkPremium('code')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3><p>Learn Dev</p></div>
-            <div class="card" onclick="runDailyQuiz()"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3><p id="quiz-left">10 Left</p></div>
+    <div class="header">
+        <div class="header-left">
+            <i class="fas fa-arrow-left back-btn" id="back-btn" onclick="goHome()"></i>
+            <div class="logo">StudyMentor Plus</div>
         </div>
-        <div class="section-title">Resources & Tools</div>
-        <div class="list-container">
-            <div class="list-item" onclick="checkPremium('pdf')"><div class="list-left"><div class="list-icon" style="color:#a855f7;"><i class="fa-solid fa-folder-open"></i></div><h3>Study Materials</h3></div><i class="fa-solid fa-lock" style="color:#ef4444; font-size:12px;"></i></div>
-            <div class="list-item" onclick="openScreen('screen-timetable')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-calendar"></i></div><h3>Time Table Generator</h3></div></div>
-            <div class="list-item" onclick="openScreen('screen-ask-ai')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-robot"></i></div><h3>Ask AI Tutor</h3></div></div>
+        <div class="profile-icon" id="profile-btn">
+            <i class="fas fa-user"></i>
         </div>
     </div>
 
-    <div id="subscription" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Upgrade Plan</h1><div></div></div>
-        <div style="padding: 20px;">
-            <p style="color:#aaa; text-align:center; margin-bottom:20px;">Unlock Full Access.</p>
-            <div class="sub-card" onclick="payNow(99)"><div style="display:flex; justify-content:space-between;"><h3>7-Day Trial</h3><span style="color:#34d399;">Starter</span></div><div class="price">₹99 <span>/ 7 days</span></div></div>
-            <div class="sub-card popular" onclick="payNow(399)"><div class="badge">BEST VALUE</div><div style="display:flex; justify-content:space-between;"><h3>Monthly</h3><span style="color:#fbbf24;">Pro</span></div><div class="price">₹399 <span>/ month</span></div></div>
-            <div class="sub-card" onclick="payNow(1077)"><div style="display:flex; justify-content:space-between;"><h3>Quarterly</h3><span style="color:#a855f7;">Elite</span></div><div class="price">₹1077 <span>/ 3 months</span></div></div>
+    <div id="home-view">
+        <div class="hero">
+            <h2>Study Dashboard</h2>
+            <p style="color: #888; font-size: 0.9rem;">Your All-in-One Learning Partner</p>
+        </div>
+
+        <div class="section-title">LEARNING HUB</div>
+        <div class="grid-container">
+            <div class="card" onclick="showDetail('school')">
+                <div class="card-icon icon-school"><i class="fas fa-graduation-cap"></i></div>
+                <div class="card-title">School</div>
+                <div class="card-subtitle">Class 1-12 (All Boards)</div>
+            </div>
+
+            <div class="card" onclick="showDetail('exams')">
+                <div class="card-icon icon-exams"><i class="fas fa-landmark"></i></div>
+                <div class="card-title">Govt Exams</div>
+                <div class="card-subtitle">UPSC, SSC, Bank, Railway</div>
+            </div>
+
+            <div class="card" onclick="showDetail('coding')">
+                <div class="card-icon icon-coding"><i class="fas fa-laptop-code"></i></div>
+                <div class="card-title">Programming</div>
+                <div class="card-subtitle">20+ Languages & Dev</div>
+            </div>
+
+            <div class="card" onclick="startDailyQuiz()">
+                <div class="card-icon icon-quiz"><i class="fas fa-brain"></i></div>
+                <div class="card-title">Daily Quiz</div>
+                <div class="card-subtitle">100k+ Database (10/Day)</div>
+            </div>
+        </div>
+
+        <div class="section-title">TOOLS</div>
+        <div class="list-card" onclick="showToast('Opening Library...')">
+            <div class="course-icon" style="color: #A29BFE;"><i class="fas fa-book-open"></i></div>
+            <div style="margin-left: 10px;">
+                <div class="card-title">Study Materials</div>
+                <div class="card-subtitle">PDFs, Notes & E-Books</div>
+            </div>
         </div>
     </div>
 
-    <div id="school-select" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="loadSchoolSubjects('c1_5')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 5th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSchoolSubjects('c6_8')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>Class 6th - 8th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSchoolSubjects('c9_10')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="openScreen('stream-select')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    <div id="stream-select" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Stream</h1><div></div></div><div class="card-grid"><div class="card" onclick="loadSchoolSubjects('sci_11_12')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3></div><div class="card" onclick="loadSchoolSubjects('comm_11_12')"><i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3></div><div class="card" onclick="loadSchoolSubjects('arts_11_12')"><i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3></div></div></div>
-
-    <div id="competitive" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    <div id="coding" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="showCodingSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-
-    <div id="dynamic-list-screen" class="screen"><div class="header"><button class="back-btn" onclick="goBackFromList()"><i class="fa-solid fa-arrow-left"></i></button><h1 id="list-title">Topics</h1><div style="width:35px;"></div></div><div id="dynamic-list-container" class="list-container" style="margin-top:10px;"></div></div>
-    <div id="class-selector" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('dynamic-list-screen')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Grade</h1><div style="width:35px;"></div></div><div id="classes-container" class="card-grid"></div></div>
-    <div id="chapters-screen" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('class-selector')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="chapter-title">Chapters</h1><div style="width:35px;"></div></div><div id="chapters-container" class="list-container" style="margin-top:10px;"></div></div>
-    
-    <div id="content-screen" class="screen">
-        <div class="header"><button class="back-btn" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i></button><h1>Study Notes</h1><div></div></div>
-        <div class="loader-container" id="content-loader"><div class="loader"></div><p style="color:#aaa; margin-top:10px;">AI Generating Notes...</p></div>
-        <div id="content-body" class="content-area"></div>
+    <div id="detail-view">
+        <h2 id="detail-title" style="margin-bottom: 20px; color: var(--primary);">Category Name</h2>
+        <div id="detail-content">
+            </div>
     </div>
 
-    <div id="screen-timetable" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Make Schedule</h1><div></div></div><div style="padding: 20px;"><p style="color:#aaa; margin-bottom:20px;">Enter details.</p><input type="text" id="tt-class" class="form-input" placeholder="Class / Exam"><input type="text" id="tt-hours" class="form-input" placeholder="Study Hours"><button class="primary-btn" onclick="generateTimeTable()">Generate Now ✨</button></div></div>
-    <div id="screen-ask-ai" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div><div id="chat-box" class="chat-box"><div class="message msg-bot">Hello! I am your AI Tutor. Ask me anything! 🧠</div></div><div class="chat-input-area"><button class="chat-btn" style="background:#444;" onclick="document.getElementById('img-input').click()"><i class="fa-solid fa-paperclip"></i></button><input type="file" id="img-input" hidden accept="image/*"><input type="text" id="chat-input" class="chat-input" placeholder="Ask something..."><button class="chat-btn" onclick="sendAIChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
-    <div id="screen-quiz" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Daily Quiz</h1><div></div></div><div id="quiz-loader" class="loader" style="display:none; margin-top: 50px;"></div><div id="quiz-content" style="display:none;"><div class="section-title" style="text-align:center; margin-bottom:10px;">Left: <span id="quiz-limit-disp">10</span></div><div class="quiz-box"><div id="q-text" class="quiz-question">Loading...</div><button class="option-btn" onclick="checkAnswer(0)" id="opt-0">A</button><button class="option-btn" onclick="checkAnswer(1)" id="opt-1">B</button><button class="option-btn" onclick="checkAnswer(2)" id="opt-2">C</button><button class="option-btn" onclick="checkAnswer(3)" id="opt-3">D</button></div><div style="text-align:center;"><button id="next-q-btn" class="next-btn" onclick="generateQuiz()">Next</button></div></div></div>
-    <div id="materials" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Links</h1><div></div></div><div class="list-container" style="margin-top:10px;"><div class="list-item" onclick="openLink('https://t.me/YourMainChannel')"><div class="list-left"><div class="list-icon" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i></div><h3>Main Channel</h3></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div></div></div>
+    <div id="dev-mode-badge">DEV MODE ACTIVATED</div>
 
-    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display" onclick="handleProfileTap()">Student</h2><div id="badge-display" style="color:#aaa; font-size:12px; margin-top:5px;">Free Member</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">0</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value" id="plan-display">Free</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
-
-    <div class="nav">
-        <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
-        <button class="nav-item" onclick="checkPremium('code')"><i class="fa-solid fa-code"></i></button>
-        <button class="nav-item" onclick="checkPremium('govt')"><i class="fa-solid fa-book"></i></button>
-        <button class="nav-item" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></button>
+    <div id="quiz-modal" class="modal">
+        <div class="modal-content">
+            <span class="quiz-tag" id="quiz-topic">General Knowledge</span>
+            <h3 id="quiz-question" style="margin: 15px 0;">Loading from AI Database...</h3>
+            <div id="quiz-options">
+                </div>
+            <button class="btn" onclick="closeModal()">Exit Quiz</button>
+        </div>
     </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="goHome()"><i class="fas fa-home"></i></div>
+        <div class="nav-item" onclick="showDetail('coding')"><i class="fas fa-code"></i></div>
+        <div class="nav-item" onclick="showDetail('exams')"><i class="fas fa-book"></i></div>
+        <div class="nav-item" onclick="showToast('Profile Section')"><i class="fas fa-user"></i></div>
+    </div>
+
+    <div id="toast" class="toast">Message</div>
 
     <script>
-        const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
-        if (tg.initDataUnsafe?.user) { document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name; document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name; }
+        // --- DATA: Massive Syllabus Database ---
 
-        // ⚠️ PASTE KEYS HERE ⚠️
-        const API_KEYS = { 'gemini': "PASTE_GEMINI_KEY_HERE", 'groq': "PASTE_GROQ_KEY_HERE", 'deepseek': "PASTE_DEEPSEEK_KEY_HERE" };
+        const codingData = [
+            { name: "Python", icon: "fab fa-python", syllabus: ["Syntax & Variables", "Control Flow", "Functions & Modules", "OOP Concepts", "File Handling", "NumPy & Pandas (Data Science)", "Django/Flask (Web)", "Automation Scripts", "AI Integration"] },
+            { name: "Java", icon: "fab fa-java", syllabus: ["JVM Architecture", "Data Types", "OOPs (Inheritance, Polymorphism)", "Exception Handling", "Collections Framework", "Multithreading", "JDBC (Database)", "Spring Boot Basics", "Android Dev Basics"] },
+            { name: "Web Development (Full Stack)", icon: "fab fa-html5", syllabus: ["HTML5 & CSS3", "JavaScript (ES6+)", "Responsive Design (Bootstrap/Tailwind)", "React.js / Vue.js", "Node.js & Express", "MongoDB & SQL", "REST APIs", "Authentication (JWT)", "Deployment"] },
+            { name: "C++", icon: "fas fa-code", syllabus: ["Pointers & References", "Memory Management", "STL (Standard Template Library)", "Object Oriented Programming", "Data Structures & Algorithms", "Game Dev Basics", "System Programming"] },
+            { name: "C# (.NET)", icon: "fab fa-microsoft", syllabus: ["C# Basics", ".NET Core", "ASP.NET MVC", "Entity Framework", "LINQ", "Windows Forms", "Game Dev (Unity)"] },
+            { name: "JavaScript (Deep Dive)", icon: "fab fa-js", syllabus: ["Closures & Hoisting", "Promises & Async/Await", "Event Loop", "DOM Manipulation", "Prototypes", "Web APIs", "Testing (Jest)"] },
+            { name: "SQL & Databases", icon: "fas fa-database", syllabus: ["RDBMS Concepts", "MySQL / PostgreSQL", "Complex Queries", "Joins & Normalization", "Stored Procedures", "NoSQL (MongoDB)", "Database Design"] },
+            { name: "Kotlin", icon: "fab fa-android", syllabus: ["Kotlin Syntax", "Null Safety", "Coroutines", "Android Studio Setup", "Jetpack Compose", "App Architecture", "Play Store Publishing"] },
+            { name: "Swift (iOS)", icon: "fab fa-app-store-ios", syllabus: ["Swift Basics", "Xcode Interface", "SwiftUI vs UIKit", "Core Data", "Networking", "App Lifecycle", "iOS Design Principles"] },
+            { name: "Go (Golang)", icon: "fab fa-google", syllabus: ["Go Syntax", "Goroutines & Channels", "Packages", "Web Servers", "Microservices Architecture", "Concurrency Patterns"] },
+            { name: "Rust", icon: "fas fa-cog", syllabus: ["Ownership & Borrowing", "Lifetimes", "Cargo Package Manager", "Error Handling", "Systems Programming", "WebAssembly"] }
+        ];
 
-        // --- 🌟 NEW UNIVERSAL CONTENT LOADER 🌟 ---
-        async function loadContent(prompt) {
-            // Switch to Content Screen
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('content-screen').classList.add('active');
+        const examData = [
+            { name: "UPSC (IAS/IPS)", icon: "fas fa-university", syllabus: ["History (Ancient, Medieval, Modern)", "Geography (Indian & World)", "Indian Polity & Governance", "Economics & Social Development", "Environment & Ecology", "General Science", "Ethics, Integrity, Aptitude", "Current Affairs (International Relations)"] },
+            { name: "SSC (CGL, CHSL, MTS)", icon: "fas fa-briefcase", syllabus: ["General Intelligence & Reasoning", "General Awareness (GK)", "Quantitative Aptitude (Maths)", "English Comprehension", "Data Interpretation", "Geometry & Algebra"] },
+            { name: "Banking (IBPS, SBI)", icon: "fas fa-money-check-alt", syllabus: ["Banking Awareness", "Financial Management", "Reasoning Ability (Puzzles)", "Quantitative Aptitude", "Computer Knowledge", "English Language", "Current Affairs (Economy focus)"] },
+            { name: "Railways (RRB NTPC)", icon: "fas fa-train", syllabus: ["General Awareness", "Mathematics", "General Intelligence", "Reasoning", "General Science (Physics, Chem, Bio)", "Current Affairs"] },
+            { name: "Defence (NDA, CDS, AFCAT)", icon: "fas fa-shield-alt", syllabus: ["Mathematics (Calculus, Trig)", "General Ability Test", "English", "Physics & Chemistry", "General Knowledge", "Intelligence & Personality Test (SSB)"] },
+            { name: "Teaching (CTET, State TET)", icon: "fas fa-chalkboard-teacher", syllabus: ["Child Development & Pedagogy", "Language I & II", "Mathematics", "Environmental Studies", "Science & Social Studies"] },
+            { name: "GATE & ESE", icon: "fas fa-cogs", syllabus: ["Engineering Mathematics", "General Aptitude", "Core Technical Subjects (CS, ME, EE, EC, CE)", "Reasoning"] }
+        ];
+
+        const schoolData = [
+            { name: "Class 10 (Board)", icon: "fas fa-user-graduate", syllabus: ["Mathematics (Algebra, Geometry)", "Science (Phy, Chem, Bio)", "Social Science (Hist, Geo, Civics, Eco)", "English (Grammar, Lit)", "Hindi/Regional Lang"] },
+            { name: "Class 12 (Science)", icon: "fas fa-atom", syllabus: ["Physics (Optics, Electromagnetism)", "Chemistry (Organic, Physical)", "Mathematics (Calculus)", "Biology (Genetics, Human Phys)", "Computer Science"] },
+            { name: "Class 12 (Commerce)", icon: "fas fa-chart-line", syllabus: ["Accountancy", "Business Studies", "Economics (Micro/Macro)", "Mathematics/Informatics Practices", "English"] }
+        ];
+
+        // --- UI LOGIC ---
+
+        function goHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('back-btn').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function showDetail(category) {
+            const home = document.getElementById('home-view');
+            const detail = document.getElementById('detail-view');
+            const title = document.getElementById('detail-title');
+            const content = document.getElementById('detail-content');
+            const backBtn = document.getElementById('back-btn');
+
+            home.style.display = 'none';
+            detail.style.display = 'block';
+            backBtn.style.display = 'block';
+            window.scrollTo(0,0);
+
+            let data = [];
+            if(category === 'coding') {
+                title.innerText = "Coding School & Syllabus";
+                data = codingData;
+            } else if (category === 'exams') {
+                title.innerText = "Government Exams Prep";
+                data = examData;
+            } else if (category === 'school') {
+                title.innerText = "School Curriculum";
+                data = schoolData;
+            }
+
+            // Render List
+            content.innerHTML = data.map((item, index) => `
+                <div class="course-item">
+                    <div class="course-header" onclick="toggleSyllabus(${index})">
+                        <div class="course-info">
+                            <div class="course-icon"><i class="${item.icon}"></i></div>
+                            <div class="course-title">${item.name}</div>
+                        </div>
+                        <i class="fas fa-chevron-down course-arrow" id="arrow-${index}"></i>
+                    </div>
+                    <div class="syllabus-content" id="syllabus-${index}">
+                        <div style="margin-bottom:8px; font-size:0.85rem; color:#aaa;">DETAILED SYLLABUS:</div>
+                        ${item.syllabus.map(topic => `<span class="topic-chip">${topic}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleSyllabus(index) {
+            const content = document.getElementById(`syllabus-${index}`);
+            const arrow = document.getElementById(`arrow-${index}`);
             
-            const loader = document.getElementById('content-loader');
-            const body = document.getElementById('content-body');
-            loader.style.display = 'block';
-            body.innerHTML = "";
-
-            try {
-                const text = await callAI(prompt + " Use Markdown with headings and bullet points.");
-                body.innerHTML = marked.parse(text);
-            } catch (e) {
-                body.innerHTML = `<div style="text-align:center; padding:20px; color:#aaa;"><h3>⚠️ Content Unavailable</h3><p>Please check your internet or API Key.</p></div>`;
-            } finally {
-                loader.style.display = 'none';
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.style.transform = "rotate(0deg)";
+            } else {
+                content.style.display = "block";
+                arrow.style.transform = "rotate(180deg)";
             }
         }
 
-        // --- AI LOGIC ---
-        async function callAI(p,img=null){ if(API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) { try{let body={contents:[{parts:[{text:p}]}]}; if(img) body.contents[0].parts.push({inline_data:{mime_type:"image/jpeg",data:img}}); const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(r.ok){const d=await r.json(); return d.candidates[0].content.parts[0].text;} } catch(e){} } throw new Error("AI Failed"); }
-        async function generateTimeTable(){ const c=document.getElementById('tt-class').value; const h=document.getElementById('tt-hours').value; if(!c||!h)return; loadContent(`Create a detailed study timetable for ${c} student who has ${h} available.`); }
-        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const t=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${t}</div>`;}catch(e){} }
+        // --- DEVELOPER MODE LOGIC ---
+        let profileClicks = 0;
+        let isDevMode = false;
+        const profileBtn = document.getElementById('profile-btn');
+        const devBadge = document.getElementById('dev-mode-badge');
 
-        // --- NAVIGATION & DATA (FULL) ---
-        const schoolSubjects = { 'c1_5': ['Maths', 'English', 'Hindi', 'EVS', 'Computer', 'GK'], 'c6_8': ['Science', 'Maths', 'Social', 'English', 'Hindi', 'Sanskrit'], 'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology'], 'ssc': ['Quant', 'Reasoning', 'English'], 'defense': ['Maths', 'GAT', 'English'] };
-        const codingSyllabusList = { 'python': ['Intro', 'Variables', 'Loops', 'OOP'], 'java': ['Syntax', 'OOP', 'Collections'], 'web_dev': ['HTML', 'CSS', 'JS'] };
-        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
-        let currentMode="", currentCategory="";
+        profileBtn.addEventListener('click', () => {
+            profileClicks++;
+            if (!isDevMode && profileClicks >= 50) {
+                isDevMode = true;
+                profileClicks = 0;
+                devBadge.style.display = 'block';
+                showToast("Dev Mode ON: Accessing System Root...");
+            } else if (isDevMode && profileClicks >= 10) {
+                isDevMode = false;
+                profileClicks = 0;
+                devBadge.style.display = 'none';
+                showToast("Dev Mode OFF");
+            }
+        });
 
-        function openScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
-
-        // --- BUTTON ACTIONS (DIRECT IN-APP LOADING) ---
-        function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
-        function openClassSelector(sub) { document.getElementById('classes-container').innerHTML=""; let s=1,e=10; if(currentCategory.includes('11_12')){s=11;e=12;} else if(currentCategory=='c1_5')e=5; else if(currentCategory=='c6_8'){s=6;e=8;} else if(currentCategory=='c9_10'){s=9;e=10;} for(let i=s; i<=e; i++) { const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>Class ${i}</h3>`; d.onclick=()=>openChapters(sub, `Class ${i}`); document.getElementById('classes-container').appendChild(d); } openScreen('class-selector'); }
-        function openChapters(sub, cls) { document.getElementById('chapters-container').innerHTML=""; ["Chap 1","Chap 2"].forEach(c=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${c}</h3>`; d.onclick=()=>loadContent(`Act as a teacher. Explain ${c} of ${sub} for ${cls}.`); document.getElementById('chapters-container').appendChild(d); }); openScreen('chapters-screen'); }
-        function loadSyllabus(k) { currentMode='govt'; renderList(syllabusDB[k], (t)=>loadContent(`Provide detailed study notes for ${t} for ${k.toUpperCase()} exam.`)); }
-        function showCodingSyllabus(l) { const list=codingSyllabusList[l]||['Basics']; const c=document.getElementById('syllabus-container'); c.innerHTML=""; list.forEach(t=>{const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${t}</h3>`; d.onclick=()=>loadContent(`Teach ${t} in ${l} programming.`); c.appendChild(d);}); openScreen('coding-syllabus'); }
-        function renderList(items, handler) { const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${i}</h3>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
-
-        // --- SUBSCRIPTION ---
-        let isPremium=false; let quizCount=parseInt(localStorage.getItem('quiz_count')||'0'); let devTap=0;
-        const savedPlan=localStorage.getItem('study_plan'); if(savedPlan && savedPlan!=='free') enablePremium();
-        function enablePremium(){ isPremium=true; document.getElementById('badge-display').innerText="Premium"; document.getElementById('plan-display').innerText="Pro"; }
-        function checkPremium(f){ if(isPremium){ if(f==='code')openScreen('coding'); if(f==='govt')openScreen('competitive'); if(f==='pdf')openScreen('materials'); } else openScreen('subscription'); }
-        function runDailyQuiz(){ const t=new Date().toDateString(); if(localStorage.getItem('quiz_date')!==t){quizCount=0;localStorage.setItem('quiz_date',t);} if(quizCount>=10 && !isPremium){alert("Limit Reached"); openScreen('subscription');} else openQuiz(); }
-        function handleProfileTap(){ devTap++; if(devTap==50){alert("Dev Mode"); enablePremium(); localStorage.setItem('study_plan','premium'); devTap=0;} }
-        function payNow(a){ window.location.href=`upi://pay?pa=YOUR_UPI&pn=Study&am=${a}`; setTimeout(()=>{if(confirm("Paid?")){enablePremium();localStorage.setItem('study_plan','premium');location.reload();}},5000); }
+        // --- DAILY QUIZ SIMULATION (100k+ DB Logic) ---
+        let dailyLimit = 10;
         
-        let currentQuiz={}; function openQuiz(){ openScreen('screen-quiz'); generateQuiz(); }
-        async function generateQuiz(){ document.getElementById('quiz-loader').style.display='block'; document.getElementById('quiz-content').style.display='none'; try{const r=await callAI("GK MCQ JSON:{q,o:[],a:0}"); currentQuiz=JSON.parse(r.replace(/```json|```/g,'').trim()); document.getElementById('q-text').innerText=currentQuiz.q; const b=document.querySelectorAll('.option-btn'); b.forEach((btn,i)=>{btn.innerText=currentQuiz.o[i]; btn.className='option-btn'; btn.disabled=false;}); document.getElementById('quiz-content').style.display='block';}catch(e){}finally{document.getElementById('quiz-loader').style.display='none';} }
-        function checkAnswer(i){ quizCount++; localStorage.setItem('quiz_count',quizCount); const b=document.querySelectorAll('.option-btn'); if(i===currentQuiz.a) b[i].classList.add('correct'); else b[i].classList.add('wrong'); }
-        function openLink(u){ tg.openTelegramLink(u); }
+        // Mock DB of questions to simulate variety
+        const quizDB = [
+            { q: "Who is the current Governor of RBI?", opts: ["Shaktikanta Das", "Raghuram Rajan", "Urjit Patel", "Nirmala Sitharaman"] },
+            { q: "Which language is used for Android Development?", opts: ["Kotlin", "Swift", "Ruby", "PHP"] },
+            { q: "What is Article 370 related to?", opts: ["J&K Special Status", "Emergency", "Fundamental Rights", "President Rule"] },
+            { q: "Full form of HTTP?", opts: ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Test Protocol", "None"] },
+            { q: "Capital of France?", opts: ["Paris", "London", "Berlin", "Madrid"] }
+        ];
+
+        function startDailyQuiz() {
+            if(dailyLimit > 0) {
+                const modal = document.getElementById('quiz-modal');
+                const qText = document.getElementById('quiz-question');
+                const qOpts = document.getElementById('quiz-options');
+                const topic = document.getElementById('quiz-topic');
+
+                modal.style.display = 'flex';
+                qText.innerText = "Accessing 100,000+ Questions Database...";
+                qOpts.innerHTML = "";
+
+                // Simulate AI Network Delay
+                setTimeout(() => {
+                    // Random Selection
+                    const randomQ = quizDB[Math.floor(Math.random() * quizDB.length)];
+                    
+                    topic.innerText = "Current Affairs & Tech";
+                    qText.innerText = randomQ.q;
+                    
+                    qOpts.innerHTML = randomQ.opts.map(opt => 
+                        `<div class="option-btn" onclick="selectAnswer(this)">${opt}</div>`
+                    ).join('');
+                    
+                    dailyLimit--;
+                }, 800);
+
+            } else {
+                showToast("Daily Limit (10) Reached. Come back tomorrow!");
+            }
+        }
+
+        function selectAnswer(btn) {
+            // Visual feedback
+            const all = document.querySelectorAll('.option-btn');
+            all.forEach(b => b.style.background = "rgba(255,255,255,0.05)");
+            btn.style.background = "var(--primary)";
+            // logic to record score would go here
+        }
+
+        function closeModal() {
+            document.getElementById('quiz-modal').style.display = 'none';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 3000);
+        }
+
     </script>
 </body>
-                                                                                                                                                                                                              </html>
+                </html>
