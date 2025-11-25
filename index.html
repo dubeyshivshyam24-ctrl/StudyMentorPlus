@@ -185,7 +185,7 @@
     <div id="screen-ask-ai" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div><div id="chat-box" class="chat-box"><div class="message msg-bot">Hello! Ask me anything! 🧠</div></div><div class="chat-input-area"><button class="chat-btn" style="background:#444;" onclick="document.getElementById('img-input').click()"><i class="fa-solid fa-paperclip"></i></button><input type="file" id="img-input" hidden accept="image/*"><input type="text" id="chat-input" class="chat-input" placeholder="Ask something..."><button class="chat-btn" onclick="sendAIChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
     <div id="screen-quiz" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Daily Quiz</h1><div></div></div><div id="quiz-loader" class="loader" style="display:none; margin-top: 50px;"></div><div id="quiz-content" style="display:none;"><div class="section-title" style="text-align:center; margin-bottom:10px;">Left: <span id="quiz-limit-disp">10</span></div><div class="quiz-box"><div id="q-text" class="quiz-question">Loading...</div><button class="option-btn" onclick="checkAnswer(0)" id="opt-0">A</button><button class="option-btn" onclick="checkAnswer(1)" id="opt-1">B</button><button class="option-btn" onclick="checkAnswer(2)" id="opt-2">C</button><button class="option-btn" onclick="checkAnswer(3)" id="opt-3">D</button></div><div style="text-align:center;"><button id="next-q-btn" class="next-btn" onclick="generateQuiz()">Next</button></div></div></div>
 
-    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display" onclick="activateDevMode()">Student</h2><div id="badge-display" style="color:#aaa; font-size:12px; margin-top:5px;">Free Member</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">0</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value" id="plan-display">Free</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
+    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display" onclick="handleProfileTap()">Student</h2><div id="badge-display" style="color:#aaa; font-size:12px; margin-top:5px;">Free Member</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">0</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value" id="plan-display">Free</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
 
     <div class="nav">
         <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
@@ -198,63 +198,77 @@
         const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
         if (tg.initDataUnsafe?.user) { document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name; document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name; }
 
+        // ⚠️ API KEYS ⚠️
         const API_KEYS = { 'gemini': "PASTE_GEMINI_KEY_HERE", 'groq': "PASTE_GROQ_KEY_HERE", 'deepseek': "PASTE_DEEPSEEK_KEY_HERE" };
 
-        // --- SUBSCRIPTION LOGIC (50 TAPS = UNLOCK, 10 OPENS = LOCK) ---
-        let isPremium = false; let quizCount = parseInt(localStorage.getItem('quiz_count') || '0'); const QUIZ_LIMIT = 10; let devTapCount = 0;
+        // --- SUBSCRIPTION LOGIC (FIXED: 50 Taps Enable / 5 Taps Disable) ---
+        let isPremium = false; 
+        let quizCount = parseInt(localStorage.getItem('quiz_count') || '0'); 
+        const QUIZ_LIMIT = 10;
         
-        // Check Plan & Usage Limit
+        // Dev Mode Counters
+        let enableTapCount = 0;
+        let disableTapCount = 0;
+
         const savedPlan = localStorage.getItem('study_plan');
-        const isDevMode = localStorage.getItem('is_dev_mode');
-        
-        if(savedPlan && savedPlan !== 'free') {
-            if (isDevMode === 'true') {
-                let opens = parseInt(localStorage.getItem('dev_opens') || '0');
-                opens++;
-                if (opens > 10) {
-                    // Expire Dev Mode
-                    localStorage.setItem('study_plan', 'free');
-                    localStorage.removeItem('is_dev_mode');
-                    localStorage.removeItem('dev_opens');
-                    alert("Developer Mode Expired (10 Uses).");
-                } else {
-                    localStorage.setItem('dev_opens', opens);
-                    enablePremium();
-                }
-            } else {
-                // Paid User (No limit)
-                enablePremium();
-            }
+        if(savedPlan && savedPlan !== 'free') { enablePremium(); }
+
+        function enablePremium() {
+            isPremium = true;
+            document.getElementById('badge-display').innerText = "Premium Member";
+            document.getElementById('badge-display').style.color = "#fbbf24";
+            document.getElementById('plan-display').innerText = "Pro";
         }
 
-        function enablePremium() { isPremium=true; document.getElementById('badge-display').innerText="Premium Member"; document.getElementById('badge-display').style.color="#fbbf24"; document.getElementById('plan-display').innerText="Pro"; }
-        
-        // 50 TAPS DEVELOPER MODE
-        function activateDevMode() {
-            devTapCount++;
-            if(devTapCount === 50) {
-                alert("👨‍💻 Developer Mode Activated (Valid for 10 Opens)");
-                enablePremium();
-                localStorage.setItem('study_plan', 'premium');
-                localStorage.setItem('is_dev_mode', 'true');
-                localStorage.setItem('dev_opens', '0');
-                devTapCount = 0;
+        function disablePremium() {
+            isPremium = false;
+            document.getElementById('badge-display').innerText = "Free Member";
+            document.getElementById('badge-display').style.color = "#aaa";
+            document.getElementById('plan-display').innerText = "Free";
+            localStorage.setItem('study_plan', 'free');
+            localStorage.removeItem('is_dev_mode');
+        }
+
+        // 🔥 DEV MODE LOGIC
+        function handleProfileTap() {
+            const isDev = localStorage.getItem('is_dev_mode') === 'true';
+
+            if (!isDev) {
+                // Enable (50 Taps)
+                enableTapCount++;
+                if (enableTapCount === 50) {
+                    alert("👨‍💻 Developer Mode Activated!");
+                    enablePremium();
+                    localStorage.setItem('study_plan', 'premium');
+                    localStorage.setItem('is_dev_mode', 'true');
+                    enableTapCount = 0;
+                }
+            } else {
+                // Disable (5 Taps)
+                disableTapCount++;
+                if (disableTapCount === 5) {
+                    if(confirm("🔴 Deactivate Developer Mode?")) {
+                        disablePremium();
+                        alert("Developer Mode Deactivated.");
+                        disableTapCount = 0;
+                    }
+                }
             }
         }
 
         function checkPremium(feature) { if (isPremium) { if(feature === 'code') openScreen('coding'); if(feature === 'govt') openScreen('competitive'); if(feature === 'pdf') openScreen('materials'); } else { openScreen('subscription'); } }
         function runDailyQuiz() { if (quizCount >= 10 && !isPremium) { alert("Daily Limit Reached!"); openScreen('subscription'); } else { openQuiz(); } }
-        function payNow(amt) { window.location.href=`upi://pay?pa=YOUR_UPI@bank&pn=StudyMentor&am=${amt}&cu=INR`; setTimeout(()=>{if(confirm("Payment Done?")){enablePremium();localStorage.setItem('study_plan','premium');localStorage.removeItem('is_dev_mode');location.reload();}},5000); }
+        function payNow(amt) { window.location.href=`upi://pay?pa=YOUR_UPI@bank&pn=StudyMentor&am=${amt}&cu=INR`; setTimeout(()=>{if(confirm("Payment Done?")){enablePremium();localStorage.setItem('study_plan','premium');location.reload();}},5000); }
 
         // --- AI LOGIC ---
         async function callAI(p,img=null){ if(API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) { try{let body={contents:[{parts:[{text:p}]}]}; if(img) body.contents[0].parts.push({inline_data:{mime_type:"image/jpeg",data:img}}); const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(r.ok){const d=await r.json(); return d.candidates[0].content.parts[0].text;} } catch(e){} } throw new Error("AI Failed"); }
-        async function generateTimeTable(){ const cls=document.getElementById('tt-class').value; const hrs=document.getElementById('tt-hours').value; if(!cls||!hrs)return; document.getElementById('tt-loader').style.display='block'; try{const text=await callAI(`Time table for ${cls}, ${hrs} hrs. Markdown.`); document.getElementById('tt-result').innerHTML=marked.parse(text);}catch(e){document.getElementById('tt-result').innerText="Error";}finally{document.getElementById('tt-loader').style.display='none';} }
-        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const t=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${t}</div>`;}catch(e){} }
+        async function generateTimeTable(){ const cls=document.getElementById('tt-class').value; const hrs=document.getElementById('tt-hours').value; if(!cls||!hrs)return; document.getElementById('tt-loader').style.display='block'; try{const text=await callAI(`Time table for ${cls}, ${hrs} hrs. Markdown.`); document.getElementById('tt-result').innerHTML=marked.parse(text);}catch(e){document.getElementById('tt-result').innerText="Offline Mode: Failed.";}finally{document.getElementById('tt-loader').style.display='none';} }
+        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const text=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${text}</div>`;}catch(e){} }
         async function generateLesson(t,l){ openScreen('lesson-screen'); document.getElementById('lesson-content').innerHTML=""; try{const txt=await callAI(`Explain ${t} in ${l}. Markdown.`); document.getElementById('lesson-content').innerHTML=marked.parse(txt);}catch(e){} }
 
         // --- NAVIGATION ---
         const schoolSubjects = { 'c1_5': ['Maths', 'English', 'Hindi', 'EVS', 'Computer', 'GK'], 'c6_8': ['Science', 'Maths', 'Social', 'English', 'Hindi', 'Sanskrit'], 'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology', 'Mock Test'], 'ssc': ['Quant', 'Reasoning', 'English', 'GA'], 'defense': ['Maths', 'GAT', 'English'] };
+        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology', 'Mock Test'], 'ssc': ['Quant', 'Reasoning', 'English'], 'defense': ['Maths', 'GAT', 'English'] };
         const codingSyllabusList = { 'python': ['Intro', 'Variables', 'Loops', 'OOP'], 'java': ['Syntax', 'OOP', 'Collections'], 'cpp': ['Basics', 'Pointers'], 'sql': ['Select', 'Joins'], 'web_dev': ['HTML', 'CSS', 'JS'] };
         const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
 
@@ -263,10 +277,9 @@
         let currentMode="", currentCategory="";
         function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
         function openClassSelector(sub) { document.getElementById('classes-container').innerHTML=""; let s=1,e=10; if(currentCategory.includes('11_12')){s=11;e=12;} else if(currentCategory=='c1_5') e=5; else if(currentCategory=='c6_8') {s=6;e=8;} else if(currentCategory=='c9_10') {s=9;e=10;} for(let i=s; i<=e; i++) { const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>Class ${i}</h3>`; d.onclick=()=>openChapters(sub, `Class ${i}`); document.getElementById('classes-container').appendChild(d); } openScreen('class-selector'); }
-        function openChapters(sub,cls){ document.getElementById('chapters-container').innerHTML=""; cbseChapters.forEach(c=>{const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${c}</h3>`; d.onclick=()=>sendToBot(`notes_${sub}_cls_${c}`); document.getElementById('chapters-container').appendChild(d);}); openScreen('chapters-screen'); }
+        function openChapters(sub, cls) { document.getElementById('chapters-container').innerHTML=""; ["Chap 1","Chap 2"].forEach(c=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${c}</h3>`; d.onclick=()=>sendToBot(`notes_${sub}_${cls}_${c}`); document.getElementById('chapters-container').appendChild(d); }); openScreen('chapters-screen'); }
         function loadSyllabus(k){ currentMode='govt'; renderList(syllabusDB[k], (t)=>sendToBot(`govt_${k}_${t}`)); }
         function showCodingSyllabus(l){ const lst=codingSyllabusList[l]; const c=document.getElementById('syllabus-container'); c.innerHTML=""; lst.forEach(t=>{const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${t}</h3>`; d.onclick=()=>generateLesson(t,l); c.appendChild(d);}); openScreen('coding-syllabus'); }
-        
         function renderList(items, handler) { const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${i}</h3>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
         function sendToBot(d){ tg.sendData(d); tg.close(); }
         function openLink(u){ tg.openTelegramLink(u); }
@@ -277,4 +290,4 @@
         function checkAnswer(i){ quizCount++; localStorage.setItem('quiz_count', quizCount); const btns=document.querySelectorAll('.option-btn'); if(i===currentQuiz.a) btns[i].classList.add('correct'); else {btns[i].classList.add('wrong'); btns[currentQuiz.a].classList.add('correct');} }
     </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </html>
+                                                                                                                                                                                                                                                                                </html>
