@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMentor Plus - Ultimate Free</title>
+    <title>StudyMentor Plus</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #6C63FF;
             --secondary: #2A2D3E;
             --bg-dark: #0F1020;
+            --card-bg: #1F2235;
             --text-light: #E0E0E0;
             --accent: #FF6B6B;
-            --card-bg: #1F2235;
-            --success: #00b894;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -27,82 +27,73 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             min-height: 100vh;
-            padding-bottom: 70px; /* Space for bottom nav */
+            padding-bottom: 80px;
         }
 
-        /* Header */
+        /* --- HEADER (Old Style) --- */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background-color: rgba(15, 16, 32, 0.98);
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(15,16,32,1) 0%, rgba(15,16,32,0.8) 100%);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .back-btn {
-            display: none; /* Hidden on home */
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px;
         }
 
         .logo {
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: #fff;
+            letter-spacing: 0.5px;
         }
 
         .profile-icon {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             background-color: #333;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.1s;
+            border: 2px solid var(--primary);
         }
-        .profile-icon:active { transform: scale(0.9); }
 
-        /* Main Views */
-        #home-view { display: block; }
-        #detail-view { display: none; padding: 20px; }
-
-        /* Hero */
-        .hero { padding: 20px; }
-        .hero h2 { color: var(--primary); margin-bottom: 5px; }
-
-        /* Grid Layout */
-        .section-title {
-            padding: 0 20px;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+        /* --- HERO --- */
+        .hero {
+            padding: 10px 20px 20px;
+        }
+        .hero h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        .hero p {
             color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* --- GRID LAYOUT (Old Premium Cards) --- */
+        .section-label {
+            padding: 0 20px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
         }
 
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            padding: 0 20px 20px 20px;
+            padding: 0 20px;
         }
 
         .card {
-            background-color: var(--card-bg);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
             display: flex;
@@ -110,444 +101,426 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            height: 130px;
+            height: 140px;
             position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
             transition: transform 0.2s;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
         }
+        .card:active { transform: scale(0.96); }
 
-        .card:active { transform: scale(0.98); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #fff; }
+        .card-subtitle { font-size: 0.75rem; color: #aaa; margin-top: 5px; }
 
-        .card-icon { font-size: 2.2rem; margin-bottom: 10px; }
-        .card-title { font-size: 1rem; font-weight: 600; color: #fff; }
-        .card-subtitle { font-size: 0.7rem; color: #aaa; margin-top: 4px; }
+        .icon-school { color: #00cec9; }
+        .icon-exams { color: #fdcb6e; }
+        .icon-coding { color: #0984e3; }
+        .icon-quiz { color: #e17055; }
 
-        .icon-school { color: #4ECDC4; }
-        .icon-exams { color: #FF9F43; }
-        .icon-coding { color: #54A0FF; }
-        .icon-quiz { color: #FDCB6E; }
-
-        /* List Items for Detail View */
-        .course-item {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .course-header {
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            background: rgba(255,255,255,0.02);
-        }
-
-        .course-info { display: flex; align-items: center; gap: 15px; }
-        .course-icon {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            background: rgba(108, 99, 255, 0.1);
-            color: var(--primary);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .course-title { font-weight: 600; font-size: 1rem; }
-        .course-arrow { color: #666; transition: transform 0.3s; }
-        
-        /* Syllabus Expansion */
-        .syllabus-content {
-            display: none;
-            padding: 15px;
-            background-color: rgba(0,0,0,0.2);
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .syllabus-content.active { display: block; }
-
-        .topic-chip {
-            display: inline-block;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            margin: 3px;
-            color: #ccc;
-        }
-
-        /* Full Width Cards (Resources) */
-        .list-card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
+        /* --- TOOLS LIST (Full Width) --- */
+        .tools-container {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             gap: 15px;
-            cursor: pointer;
             border: 1px solid rgba(255,255,255,0.05);
-            margin: 0 20px 15px 20px;
         }
+        .tool-icon {
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .tool-text h4 { color: #fff; font-size: 1rem; }
+        .tool-text p { color: #888; font-size: 0.8rem; }
 
-        /* Bottom Nav */
+        /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: var(--bg-dark);
+            background-color: rgba(15, 16, 32, 0.95);
+            backdrop-filter: blur(10px);
             border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: space-around;
             padding: 15px 0;
-            z-index: 100;
+            z-index: 999;
         }
-
-        .nav-item { color: #666; font-size: 1.4rem; cursor: pointer; }
+        .nav-item { color: #666; font-size: 1.5rem; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        /* Dev Mode Badge */
-        #dev-mode-badge {
-            display: none;
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background-color: #ff4757;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
-            pointer-events: none;
-            z-index: 200;
-        }
-
-        /* Quiz Modal */
-        .modal {
-            display: none;
+        /* --- FULL SCREEN OVERLAYS (For Syllabus/Content) --- */
+        .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.95);
-            z-index: 1000;
-            align-items: center; justify-content: center;
+            background-color: var(--bg-dark);
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
             padding: 20px;
+            animation: slideIn 0.3s ease;
         }
 
-        .modal-content {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            width: 100%; max-width: 400px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+        @keyframes slideIn {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
-        .quiz-tag {
-            background: rgba(108, 99, 255, 0.2);
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+        .overlay-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+        .back-btn { font-size: 1.5rem; margin-right: 15px; cursor: pointer; }
+        
+        /* Syllabus List Styles */
+        .chapter-item {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
             margin-bottom: 10px;
-            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .chapter-head {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .chapter-title { font-weight: bold; color: #fff; }
+        .topic-list {
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid var(--primary);
+            display: none; /* Hidden by default */
+        }
+        .topic-item {
+            display: block;
+            font-size: 0.9rem;
+            color: #aaa;
+            padding: 5px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
         }
 
-        .option-btn {
+        /* Telegram Button Style */
+        .tg-btn {
+            background: #229ED9;
+            color: white;
             width: 100%;
-            padding: 12px;
-            background: rgba(255,255,255,0.05);
-            margin: 8px 0;
-            border-radius: 8px;
-            text-align: left;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-        .option-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
-
-        .btn {
-            background-color: var(--primary);
-            color: white; border: none; padding: 12px;
-            border-radius: 10px; margin-top: 15px;
-            cursor: pointer; width: 100%; font-weight: bold;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: bold;
+            text-decoration: none;
         }
 
-        /* Toast */
-        .toast {
-            position: fixed; bottom: 80px; left: 50%;
-            transform: translateX(-50%);
-            background-color: #333; color: #fff;
-            padding: 10px 20px; border-radius: 20px;
-            font-size: 0.9rem; opacity: 0;
-            transition: opacity 0.3s; pointer-events: none; z-index: 2000;
+        /* Developer Badge */
+        #dev-badge {
+            position: fixed; top: 10px; right: 70px;
+            background: red; color: white; padding: 2px 8px;
+            font-size: 10px; border-radius: 4px; display: none;
         }
+        
+        /* Quiz Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 3000;
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-box {
+            background: var(--card-bg); padding: 25px; border-radius: 20px;
+            width: 100%; max-width: 400px; text-align: center;
+        }
+        .option {
+            background: rgba(255,255,255,0.05); padding: 12px; margin: 8px 0;
+            border-radius: 8px; text-align: left; cursor: pointer;
+        }
+        .option:hover { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="header-left">
-            <i class="fas fa-arrow-left back-btn" id="back-btn" onclick="goHome()"></i>
-            <div class="logo">StudyMentor Plus</div>
-        </div>
-        <div class="profile-icon" id="profile-btn">
+        <div class="logo">StudyMentor Plus</div>
+        <div id="dev-badge">DEV MODE</div>
+        <div class="profile-icon" id="profile-trigger">
             <i class="fas fa-user"></i>
         </div>
     </div>
 
-    <div id="home-view">
-        <div class="hero">
-            <h2>Study Dashboard</h2>
-            <p style="color: #888; font-size: 0.9rem;">Your All-in-One Learning Partner</p>
+    <div class="hero">
+        <h2>Study Dashboard</h2>
+        <p>Welcome back, Aspirant!</p>
+    </div>
+
+    <div class="section-label">Learning Hub</div>
+    <div class="grid-container">
+        <div class="card" onclick="openOverlay('school')">
+            <div class="card-icon icon-school"><i class="fas fa-graduation-cap"></i></div>
+            <div class="card-title">School</div>
+            <div class="card-subtitle">Class 1-12</div>
         </div>
 
-        <div class="section-title">LEARNING HUB</div>
-        <div class="grid-container">
-            <div class="card" onclick="showDetail('school')">
-                <div class="card-icon icon-school"><i class="fas fa-graduation-cap"></i></div>
-                <div class="card-title">School</div>
-                <div class="card-subtitle">Class 1-12 (All Boards)</div>
-            </div>
-
-            <div class="card" onclick="showDetail('exams')">
-                <div class="card-icon icon-exams"><i class="fas fa-landmark"></i></div>
-                <div class="card-title">Govt Exams</div>
-                <div class="card-subtitle">UPSC, SSC, Bank, Railway</div>
-            </div>
-
-            <div class="card" onclick="showDetail('coding')">
-                <div class="card-icon icon-coding"><i class="fas fa-laptop-code"></i></div>
-                <div class="card-title">Programming</div>
-                <div class="card-subtitle">20+ Languages & Dev</div>
-            </div>
-
-            <div class="card" onclick="startDailyQuiz()">
-                <div class="card-icon icon-quiz"><i class="fas fa-brain"></i></div>
-                <div class="card-title">Daily Quiz</div>
-                <div class="card-subtitle">100k+ Database (10/Day)</div>
-            </div>
+        <div class="card" onclick="openOverlay('exams')">
+            <div class="card-icon icon-exams"><i class="fas fa-university"></i></div>
+            <div class="card-title">Exams</div>
+            <div class="card-subtitle">Govt & Competitive</div>
         </div>
 
-        <div class="section-title">TOOLS</div>
-        <div class="list-card" onclick="showToast('Opening Library...')">
-            <div class="course-icon" style="color: #A29BFE;"><i class="fas fa-book-open"></i></div>
-            <div style="margin-left: 10px;">
-                <div class="card-title">Study Materials</div>
-                <div class="card-subtitle">PDFs, Notes & E-Books</div>
-            </div>
+        <div class="card" onclick="openOverlay('coding')">
+            <div class="card-icon icon-coding"><i class="fas fa-code"></i></div>
+            <div class="card-title">Coding</div>
+            <div class="card-subtitle">Full Stack & AI</div>
+        </div>
+
+        <div class="card" onclick="startQuiz()">
+            <div class="card-icon icon-quiz"><i class="fas fa-brain"></i></div>
+            <div class="card-title">Daily Quiz</div>
+            <div class="card-subtitle">Unlimited Practice</div>
         </div>
     </div>
 
-    <div id="detail-view">
-        <h2 id="detail-title" style="margin-bottom: 20px; color: var(--primary);">Category Name</h2>
-        <div id="detail-content">
+    <div class="section-label">Resources & Tools</div>
+    <div class="tools-container">
+        <div class="tool-card" onclick="openOverlay('materials')">
+            <div class="tool-icon" style="color: #a29bfe;"><i class="fas fa-folder-open"></i></div>
+            <div class="tool-text">
+                <h4>Study Materials</h4>
+                <p>Join Telegram Channels</p>
             </div>
-    </div>
+        </div>
 
-    <div id="dev-mode-badge">DEV MODE ACTIVATED</div>
+        <div class="tool-card" onclick="openOverlay('ai-tutor')">
+            <div class="tool-icon" style="color: #ff7675;"><i class="fas fa-robot"></i></div>
+            <div class="tool-text">
+                <h4>AI Tutor</h4>
+                <p>Ask Doubts Instantly</p>
+            </div>
+        </div>
 
-    <div id="quiz-modal" class="modal">
-        <div class="modal-content">
-            <span class="quiz-tag" id="quiz-topic">General Knowledge</span>
-            <h3 id="quiz-question" style="margin: 15px 0;">Loading from AI Database...</h3>
-            <div id="quiz-options">
-                </div>
-            <button class="btn" onclick="closeModal()">Exit Quiz</button>
+        <div class="tool-card" onclick="alert('Time Table Generator Starting...')">
+            <div class="tool-icon" style="color: #74b9ff;"><i class="fas fa-calendar-alt"></i></div>
+            <div class="tool-text">
+                <h4>Time Table</h4>
+                <p>Smart Planner</p>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="goHome()"><i class="fas fa-home"></i></div>
-        <div class="nav-item" onclick="showDetail('coding')"><i class="fas fa-code"></i></div>
-        <div class="nav-item" onclick="showDetail('exams')"><i class="fas fa-book"></i></div>
-        <div class="nav-item" onclick="showToast('Profile Section')"><i class="fas fa-user"></i></div>
+        <div class="nav-item active"><i class="fas fa-home"></i></div>
+        <div class="nav-item"><i class="fas fa-search"></i></div>
+        <div class="nav-item"><i class="fas fa-bell"></i></div>
+        <div class="nav-item" onclick="openOverlay('profile')"><i class="fas fa-user-cog"></i></div>
     </div>
 
-    <div id="toast" class="toast">Message</div>
+    <div id="content-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left back-btn" onclick="closeOverlay()"></i>
+            <h2 id="overlay-title">Title</h2>
+        </div>
+        <div id="overlay-body">
+            </div>
+    </div>
+
+    <div id="quiz-modal" class="modal">
+        <div class="modal-box">
+            <h3 style="color:var(--primary); margin-bottom:10px;">Daily Quiz</h3>
+            <p id="q-text" style="font-size:1.1rem; margin-bottom:20px;">Question goes here?</p>
+            <div id="q-options"></div>
+            <button onclick="closeQuiz()" style="margin-top:20px; padding:10px 20px; background:#333; color:white; border:none; border-radius:5px;">Close</button>
+        </div>
+    </div>
 
     <script>
-        // --- DATA: Massive Syllabus Database ---
+        // --- DATA OBJECTS ---
+        const schoolData = [
+            { title: "Class 1-5 (Primary)", topics: ["Maths Basics", "English Grammar", "EVS", "Hindi"] },
+            { title: "Class 6-8 (Middle)", topics: ["Algebra", "Science", "History", "Geography", "Civics"] },
+            { title: "Class 9-10 (Secondary)", topics: ["Real Numbers", "Polynomials", "Trigonometry", "Physics", "Chemistry", "Biology", "Democratic Politics"] },
+            { title: "Class 11-12 (Science)", topics: ["Physics (Mechanics)", "Chemistry (Organic)", "Maths (Calculus)", "Computer Science"] },
+            { title: "Class 11-12 (Commerce)", topics: ["Accountancy", "Economics", "Business Studies", "IP"] },
+            { title: "Class 11-12 (Arts)", topics: ["History", "Political Science", "Sociology", "Psychology"] }
+        ];
 
         const codingData = [
-            { name: "Python", icon: "fab fa-python", syllabus: ["Syntax & Variables", "Control Flow", "Functions & Modules", "OOP Concepts", "File Handling", "NumPy & Pandas (Data Science)", "Django/Flask (Web)", "Automation Scripts", "AI Integration"] },
-            { name: "Java", icon: "fab fa-java", syllabus: ["JVM Architecture", "Data Types", "OOPs (Inheritance, Polymorphism)", "Exception Handling", "Collections Framework", "Multithreading", "JDBC (Database)", "Spring Boot Basics", "Android Dev Basics"] },
-            { name: "Web Development (Full Stack)", icon: "fab fa-html5", syllabus: ["HTML5 & CSS3", "JavaScript (ES6+)", "Responsive Design (Bootstrap/Tailwind)", "React.js / Vue.js", "Node.js & Express", "MongoDB & SQL", "REST APIs", "Authentication (JWT)", "Deployment"] },
-            { name: "C++", icon: "fas fa-code", syllabus: ["Pointers & References", "Memory Management", "STL (Standard Template Library)", "Object Oriented Programming", "Data Structures & Algorithms", "Game Dev Basics", "System Programming"] },
-            { name: "C# (.NET)", icon: "fab fa-microsoft", syllabus: ["C# Basics", ".NET Core", "ASP.NET MVC", "Entity Framework", "LINQ", "Windows Forms", "Game Dev (Unity)"] },
-            { name: "JavaScript (Deep Dive)", icon: "fab fa-js", syllabus: ["Closures & Hoisting", "Promises & Async/Await", "Event Loop", "DOM Manipulation", "Prototypes", "Web APIs", "Testing (Jest)"] },
-            { name: "SQL & Databases", icon: "fas fa-database", syllabus: ["RDBMS Concepts", "MySQL / PostgreSQL", "Complex Queries", "Joins & Normalization", "Stored Procedures", "NoSQL (MongoDB)", "Database Design"] },
-            { name: "Kotlin", icon: "fab fa-android", syllabus: ["Kotlin Syntax", "Null Safety", "Coroutines", "Android Studio Setup", "Jetpack Compose", "App Architecture", "Play Store Publishing"] },
-            { name: "Swift (iOS)", icon: "fab fa-app-store-ios", syllabus: ["Swift Basics", "Xcode Interface", "SwiftUI vs UIKit", "Core Data", "Networking", "App Lifecycle", "iOS Design Principles"] },
-            { name: "Go (Golang)", icon: "fab fa-google", syllabus: ["Go Syntax", "Goroutines & Channels", "Packages", "Web Servers", "Microservices Architecture", "Concurrency Patterns"] },
-            { name: "Rust", icon: "fas fa-cog", syllabus: ["Ownership & Borrowing", "Lifetimes", "Cargo Package Manager", "Error Handling", "Systems Programming", "WebAssembly"] }
+            { title: "Python Masterclass", topics: ["Variables & Loops", "Functions", "OOPs", "File Handling", "NumPy", "Pandas", "Matplotlib", "Django Basics"] },
+            { title: "Web Development", topics: ["HTML5", "CSS3 Flexbox/Grid", "JavaScript ES6", "React JS", "Node JS", "MongoDB", "Express"] },
+            { title: "Java & Android", topics: ["Core Java", "Collections", "Multithreading", "Android Studio", "Kotlin Basics", "Jetpack Compose"] },
+            { title: "C++ & DSA", topics: ["Pointers", "Arrays & Strings", "Linked Lists", "Stacks & Queues", "Trees & Graphs", "Dynamic Programming"] },
+            { title: "AI & ML", topics: ["Linear Regression", "Neural Networks", "TensorFlow", "NLP Basics", "OpenAI API"] }
         ];
 
         const examData = [
-            { name: "UPSC (IAS/IPS)", icon: "fas fa-university", syllabus: ["History (Ancient, Medieval, Modern)", "Geography (Indian & World)", "Indian Polity & Governance", "Economics & Social Development", "Environment & Ecology", "General Science", "Ethics, Integrity, Aptitude", "Current Affairs (International Relations)"] },
-            { name: "SSC (CGL, CHSL, MTS)", icon: "fas fa-briefcase", syllabus: ["General Intelligence & Reasoning", "General Awareness (GK)", "Quantitative Aptitude (Maths)", "English Comprehension", "Data Interpretation", "Geometry & Algebra"] },
-            { name: "Banking (IBPS, SBI)", icon: "fas fa-money-check-alt", syllabus: ["Banking Awareness", "Financial Management", "Reasoning Ability (Puzzles)", "Quantitative Aptitude", "Computer Knowledge", "English Language", "Current Affairs (Economy focus)"] },
-            { name: "Railways (RRB NTPC)", icon: "fas fa-train", syllabus: ["General Awareness", "Mathematics", "General Intelligence", "Reasoning", "General Science (Physics, Chem, Bio)", "Current Affairs"] },
-            { name: "Defence (NDA, CDS, AFCAT)", icon: "fas fa-shield-alt", syllabus: ["Mathematics (Calculus, Trig)", "General Ability Test", "English", "Physics & Chemistry", "General Knowledge", "Intelligence & Personality Test (SSB)"] },
-            { name: "Teaching (CTET, State TET)", icon: "fas fa-chalkboard-teacher", syllabus: ["Child Development & Pedagogy", "Language I & II", "Mathematics", "Environmental Studies", "Science & Social Studies"] },
-            { name: "GATE & ESE", icon: "fas fa-cogs", syllabus: ["Engineering Mathematics", "General Aptitude", "Core Technical Subjects (CS, ME, EE, EC, CE)", "Reasoning"] }
+            { title: "UPSC CSE", topics: ["Ancient History", "Modern History", "Polity (Laxmikant)", "Economy", "Geography", "Ethics", "Current Affairs"] },
+            { title: "SSC CGL/CHSL", topics: ["Quantitative Aptitude", "Reasoning", "English Comprehension", "General Awareness"] },
+            { title: "Banking (IBPS/SBI)", topics: ["Banking Awareness", "Data Interpretation", "Logical Reasoning", "English Language"] },
+            { title: "Railways (NTPC)", topics: ["General Science", "Maths", "General Intelligence"] },
+            { title: "Defence (NDA/CDS)", topics: ["Mathematics", "GAT", "SSB Interview Tips"] }
         ];
 
-        const schoolData = [
-            { name: "Class 10 (Board)", icon: "fas fa-user-graduate", syllabus: ["Mathematics (Algebra, Geometry)", "Science (Phy, Chem, Bio)", "Social Science (Hist, Geo, Civics, Eco)", "English (Grammar, Lit)", "Hindi/Regional Lang"] },
-            { name: "Class 12 (Science)", icon: "fas fa-atom", syllabus: ["Physics (Optics, Electromagnetism)", "Chemistry (Organic, Physical)", "Mathematics (Calculus)", "Biology (Genetics, Human Phys)", "Computer Science"] },
-            { name: "Class 12 (Commerce)", icon: "fas fa-chart-line", syllabus: ["Accountancy", "Business Studies", "Economics (Micro/Macro)", "Mathematics/Informatics Practices", "English"] }
-        ];
+        // --- FUNCTIONS ---
 
-        // --- UI LOGIC ---
-
-        function goHome() {
-            document.getElementById('home-view').style.display = 'block';
-            document.getElementById('detail-view').style.display = 'none';
-            document.getElementById('back-btn').style.display = 'none';
-            window.scrollTo(0,0);
-        }
-
-        function showDetail(category) {
-            const home = document.getElementById('home-view');
-            const detail = document.getElementById('detail-view');
-            const title = document.getElementById('detail-title');
-            const content = document.getElementById('detail-content');
-            const backBtn = document.getElementById('back-btn');
-
-            home.style.display = 'none';
-            detail.style.display = 'block';
-            backBtn.style.display = 'block';
-            window.scrollTo(0,0);
-
-            let data = [];
-            if(category === 'coding') {
-                title.innerText = "Coding School & Syllabus";
-                data = codingData;
-            } else if (category === 'exams') {
-                title.innerText = "Government Exams Prep";
-                data = examData;
-            } else if (category === 'school') {
-                title.innerText = "School Curriculum";
-                data = schoolData;
-            }
-
-            // Render List
-            content.innerHTML = data.map((item, index) => `
-                <div class="course-item">
-                    <div class="course-header" onclick="toggleSyllabus(${index})">
-                        <div class="course-info">
-                            <div class="course-icon"><i class="${item.icon}"></i></div>
-                            <div class="course-title">${item.name}</div>
-                        </div>
-                        <i class="fas fa-chevron-down course-arrow" id="arrow-${index}"></i>
-                    </div>
-                    <div class="syllabus-content" id="syllabus-${index}">
-                        <div style="margin-bottom:8px; font-size:0.85rem; color:#aaa;">DETAILED SYLLABUS:</div>
-                        ${item.syllabus.map(topic => `<span class="topic-chip">${topic}</span>`).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleSyllabus(index) {
-            const content = document.getElementById(`syllabus-${index}`);
-            const arrow = document.getElementById(`arrow-${index}`);
+        function openOverlay(type) {
+            const overlay = document.getElementById('content-overlay');
+            const title = document.getElementById('overlay-title');
+            const body = document.getElementById('overlay-body');
             
-            if (content.style.display === "block") {
-                content.style.display = "none";
-                arrow.style.transform = "rotate(0deg)";
-            } else {
-                content.style.display = "block";
-                arrow.style.transform = "rotate(180deg)";
+            overlay.style.display = 'block';
+            body.innerHTML = ''; // Clear previous
+
+            if (type === 'school') {
+                title.innerText = "School Curriculum";
+                renderAccordion(schoolData, body);
+            } else if (type === 'exams') {
+                title.innerText = "Govt Exams Prep";
+                renderAccordion(examData, body);
+            } else if (type === 'coding') {
+                title.innerText = "Programming School";
+                renderAccordion(codingData, body);
+            } else if (type === 'materials') {
+                title.innerText = "Study Materials (Telegram)";
+                body.innerHTML = `
+                    <p style="margin-bottom:20px; color:#aaa; text-align:center;">Join our premium channels for free notes.</p>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram"></i> Join UPSC Channel (@upsc_notes)</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram"></i> Join Coding Channel (@code_master)</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram"></i> Join School Notes (@school_help)</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram"></i> Join Current Affairs (@daily_gk)</a>
+                `;
+            } else if (type === 'ai-tutor') {
+                title.innerText = "AI Tutor";
+                body.innerHTML = `
+                    <div style="text-align:center; margin-top:50px;">
+                        <i class="fas fa-robot" style="font-size:4rem; color:var(--primary);"></i>
+                        <h3 style="margin-top:20px;">Hi, I am your AI Tutor.</h3>
+                        <p style="color:#aaa;">Ask me anything about your syllabus.</p>
+                        <input type="text" placeholder="Type your doubt here..." style="width:100%; padding:15px; margin-top:20px; border-radius:10px; border:none; outline:none;">
+                    </div>
+                `;
+            } else if (type === 'profile') {
+                title.innerText = "My Profile";
+                body.innerHTML = `
+                    <div style="text-align:center;">
+                        <div style="width:80px; height:80px; background:#333; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:2rem;"><i class="fas fa-user"></i></div>
+                        <h3>Student Name</h3>
+                        <p style="color:#aaa;">Premium Member (Free)</p>
+                        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:20px 0;">
+                        <div class="chapter-item">My Progress</div>
+                        <div class="chapter-item">Saved Notes</div>
+                        <div class="chapter-item">Settings</div>
+                    </div>
+                `;
             }
         }
 
-        // --- DEVELOPER MODE LOGIC ---
-        let profileClicks = 0;
-        let isDevMode = false;
-        const profileBtn = document.getElementById('profile-btn');
-        const devBadge = document.getElementById('dev-mode-badge');
+        function renderAccordion(data, container) {
+            data.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.innerHTML = `
+                    <div class="chapter-head" onclick="toggleTopic(this)">
+                        <span class="chapter-title">${item.title}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="topic-list">
+                        ${item.topics.map(t => `<span class="topic-item">${t}</span>`).join('')}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
 
-        profileBtn.addEventListener('click', () => {
-            profileClicks++;
-            if (!isDevMode && profileClicks >= 50) {
-                isDevMode = true;
-                profileClicks = 0;
-                devBadge.style.display = 'block';
-                showToast("Dev Mode ON: Accessing System Root...");
-            } else if (isDevMode && profileClicks >= 10) {
-                isDevMode = false;
-                profileClicks = 0;
-                devBadge.style.display = 'none';
-                showToast("Dev Mode OFF");
+        function toggleTopic(element) {
+            const list = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            if (list.style.display === 'block') {
+                list.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                list.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
             }
-        });
+        }
 
-        // --- DAILY QUIZ SIMULATION (100k+ DB Logic) ---
-        let dailyLimit = 10;
-        
-        // Mock DB of questions to simulate variety
-        const quizDB = [
-            { q: "Who is the current Governor of RBI?", opts: ["Shaktikanta Das", "Raghuram Rajan", "Urjit Patel", "Nirmala Sitharaman"] },
-            { q: "Which language is used for Android Development?", opts: ["Kotlin", "Swift", "Ruby", "PHP"] },
-            { q: "What is Article 370 related to?", opts: ["J&K Special Status", "Emergency", "Fundamental Rights", "President Rule"] },
-            { q: "Full form of HTTP?", opts: ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Test Protocol", "None"] },
-            { q: "Capital of France?", opts: ["Paris", "London", "Berlin", "Madrid"] }
+        function closeOverlay() {
+            document.getElementById('content-overlay').style.display = 'none';
+        }
+
+        // --- QUIZ LOGIC (UNLIMITED) ---
+        const questions = [
+            { q: "What is the capital of India?", o: ["Delhi", "Mumbai", "Kolkata", "Chennai"] },
+            { q: "Who invented Python?", o: ["Guido van Rossum", "James Gosling", "Elon Musk", "Dennis Ritchie"] },
+            { q: "Full form of CPU?", o: ["Central Processing Unit", "Central Program Unit", "Control Power Unit", "None"] },
+            { q: "Largest planet in solar system?", o: ["Jupiter", "Mars", "Earth", "Saturn"] },
+            { q: "HTML stands for?", o: ["HyperText Markup Language", "HyperText Make Language", "HyperLinks Text Mark", "None"] }
         ];
 
-        function startDailyQuiz() {
-            if(dailyLimit > 0) {
-                const modal = document.getElementById('quiz-modal');
-                const qText = document.getElementById('quiz-question');
-                const qOpts = document.getElementById('quiz-options');
-                const topic = document.getElementById('quiz-topic');
-
-                modal.style.display = 'flex';
-                qText.innerText = "Accessing 100,000+ Questions Database...";
-                qOpts.innerHTML = "";
-
-                // Simulate AI Network Delay
-                setTimeout(() => {
-                    // Random Selection
-                    const randomQ = quizDB[Math.floor(Math.random() * quizDB.length)];
-                    
-                    topic.innerText = "Current Affairs & Tech";
-                    qText.innerText = randomQ.q;
-                    
-                    qOpts.innerHTML = randomQ.opts.map(opt => 
-                        `<div class="option-btn" onclick="selectAnswer(this)">${opt}</div>`
-                    ).join('');
-                    
-                    dailyLimit--;
-                }, 800);
-
-            } else {
-                showToast("Daily Limit (10) Reached. Come back tomorrow!");
-            }
+        function startQuiz() {
+            document.getElementById('quiz-modal').style.display = 'flex';
+            loadRandomQuestion();
         }
 
-        function selectAnswer(btn) {
-            // Visual feedback
-            const all = document.querySelectorAll('.option-btn');
-            all.forEach(b => b.style.background = "rgba(255,255,255,0.05)");
-            btn.style.background = "var(--primary)";
-            // logic to record score would go here
+        function loadRandomQuestion() {
+            const qObj = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('q-text').innerText = qObj.q;
+            document.getElementById('q-options').innerHTML = qObj.o.map(opt => 
+                `<div class="option" onclick="answerQuiz()">${opt}</div>`
+            ).join('');
         }
 
-        function closeModal() {
+        function answerQuiz() {
+            // Instant feedback logic here
+            alert("Answer Recorded! Loading next...");
+            loadRandomQuestion(); // Infinite Loop
+        }
+
+        function closeQuiz() {
             document.getElementById('quiz-modal').style.display = 'none';
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => toast.style.opacity = '0', 3000);
-        }
+        // --- DEVELOPER MODE (Hidden Setting) ---
+        let clicks = 0;
+        let devMode = false;
+        document.getElementById('profile-trigger').addEventListener('click', () => {
+            clicks++;
+            if (!devMode && clicks >= 50) {
+                devMode = true;
+                clicks = 0;
+                document.getElementById('dev-badge').style.display = 'block';
+                alert("Developer Mode ON");
+            } else if (devMode && clicks >= 10) {
+                devMode = false;
+                clicks = 0;
+                document.getElementById('dev-badge').style.display = 'none';
+                alert("Developer Mode OFF");
+            } else if(devMode) {
+                 // Open Profile if Dev Mode is ON but not triggering OFF
+                 openOverlay('profile');
+            } else if(clicks < 50) {
+                // Normal user behavior - open profile immediately if not trying to activate dev mode
+                // To avoid delay, we can just open profile. 
+                // But for the secret trick, user usually spams click.
+                // Let's just open profile for now on single click if not spamming.
+                if(clicks === 1) setTimeout(() => { if(clicks < 5) openOverlay('profile'); clicks=0; }, 400);
+            }
+        });
 
     </script>
 </body>
-                </html>
+    </html>
