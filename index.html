@@ -9,7 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- 🔒 LOCKED PREMIUM GLASS DESIGN --- */
-        :root { --bg-dark: #000000; --glass: rgba(30, 30, 30, 0.6); --glass-border: rgba(255, 255, 255, 0.1); --primary: #2563eb; --accent: #7c3aed; --text: #ffffff; --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308; --gold: #fbbf24; --success: #10b981; --error: #ef4444; }
+        :root {
+            --bg-dark: #000000;
+            --glass: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #2563eb;
+            --accent: #7c3aed;
+            --text: #ffffff;
+            --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308;
+            --gold: #fbbf24; --success: #10b981; --error: #ef4444;
+        }
+        
         body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
         
         /* COMPONENTS */
@@ -35,17 +45,8 @@
         .screen { display: none; animation: fadeIn 0.3s; }
         .screen.active { display: block; }
         @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-        .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-        .locked-icon { position: absolute; top: 10px; right: 10px; color: var(--error); font-size: 12px; }
 
-        /* SUBSCRIPTION UI */
-        .sub-card { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; cursor: pointer; }
-        .sub-card.popular { border: 1px solid var(--gold); background: linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(0,0,0,0)); }
-        .badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: black; font-size: 10px; padding: 4px 8px; border-radius: 10px; font-weight: bold; }
-        .price { font-size: 28px; font-weight: bold; margin: 10px 0; color: white; }
-        .price span { font-size: 14px; color: #aaa; font-weight: normal; }
-        .features li { color: #ccc; font-size: 13px; margin-bottom: 5px; list-style: none; display: flex; align-items: center; }
-        .features li::before { content: "✓"; color: var(--primary); margin-right: 8px; font-weight: bold; }
+        .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 
         /* QUIZ UI */
         .quiz-box { margin: 20px; padding: 20px; background: var(--glass); border-radius: 20px; border: 1px solid var(--glass-border); text-align: center; }
@@ -82,6 +83,10 @@
         .stat-label { font-size: 12px; color: #aaa; margin: 5px 0 0; text-transform: uppercase; }
         .chart-container { margin: 0 20px 25px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; height: 150px; display: flex; align-items: flex-end; justify-content: space-between; }
         .chart-bar { width: 10%; background: linear-gradient(to top, var(--primary), #60a5fa); border-radius: 4px; position: relative; }
+        .active-course-container { margin: 0 20px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; display: flex; align-items: center; }
+        .course-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fbbf24; margin-right: 15px; }
+        .progress-bar-bg { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--stat-blue); width: 65%; border-radius: 3px; }
         .profile-header { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin-bottom: 15px; }
         .profile-name { font-size: 24px; font-weight: bold; margin: 0; }
@@ -90,47 +95,81 @@
 <body>
 
     <div id="home" class="screen active">
-        <div class="header"><h1>Study Dashboard</h1><div class="profile-pic" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></div></div>
+        <div class="header">
+            <h1>Study Dashboard</h1>
+            <div class="profile-pic" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></div>
+        </div>
         <div class="section-title">Learning Hub</div>
         <div class="card-grid">
             <div class="card" onclick="openScreen('school-select')"><i class="fa-solid fa-school" style="color:#34d399;"></i><h3>School</h3><p>1-12</p></div>
-            <div class="card" onclick="checkPremium('govt')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Exams</h3><p>Govt Prep</p></div>
-            <div class="card" onclick="checkPremium('code')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3><p>Learn Dev</p></div>
-            <div class="card" onclick="runDailyQuiz()"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3><p id="quiz-left">10 Left</p></div>
+            <div class="card" onclick="openScreen('competitive')"><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Exams</h3><p>Govt Prep</p></div>
+            <div class="card" onclick="openScreen('coding')"><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3><p>Learn Dev</p></div>
+            <div class="card" onclick="openQuiz()"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3><p>Unlimited</p></div>
         </div>
         <div class="section-title">Resources & Tools</div>
         <div class="list-container">
-            <div class="list-item" onclick="checkPremium('pdf')"><div class="list-left"><div class="list-icon" style="color:#a855f7;"><i class="fa-solid fa-folder-open"></i></div><h3>Study Materials</h3></div><i class="fa-solid fa-lock" style="color:#ef4444; font-size:12px;"></i></div>
+            <div class="list-item" onclick="openScreen('materials')"><div class="list-left"><div class="list-icon" style="color:#a855f7;"><i class="fa-solid fa-folder-open"></i></div><h3>Study Materials</h3></div></div>
             <div class="list-item" onclick="openScreen('screen-timetable')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-calendar"></i></div><h3>Time Table Generator</h3></div></div>
             <div class="list-item" onclick="openScreen('screen-ask-ai')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-robot"></i></div><h3>Ask AI Tutor</h3></div></div>
         </div>
     </div>
 
-    <div id="subscription" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Upgrade Plan</h1><div></div></div><div style="padding: 20px;"><p style="color:#aaa; text-align:center; margin-bottom:20px;">Unlock Coding, Govt Exams & PDFs.</p><div class="sub-card" onclick="payNow(99)"><div style="display:flex; justify-content:space-between;"><h3>7-Day Trial</h3><span style="color:#34d399;">Starter</span></div><div class="price">₹99 <span>/ 7 days</span></div><ul class="features" style="padding:0; margin-top:10px;"><li>Unlimited Access</li></ul></div><div class="sub-card popular" onclick="payNow(399)"><div class="badge">BEST VALUE</div><div style="display:flex; justify-content:space-between;"><h3>Monthly</h3><span style="color:#fbbf24;">Pro</span></div><div class="price">₹399 <span>/ month</span></div><ul class="features" style="padding:0; margin-top:10px;"><li>Full Content Access</li><li>Unlimited AI Doubts</li></ul></div><div class="sub-card" onclick="payNow(1077)"><div style="display:flex; justify-content:space-between;"><h3>Quarterly</h3><span style="color:#a855f7;">Elite</span></div><div class="price">₹1077 <span>/ 3 months</span></div><p style="font-size:12px; color:#34d399; margin-top:5px;">(10% Discount Applied)</p></div></div></div>
+    <div id="school-select" class="screen">
+        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="loadSchoolSubjects('c1_5')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 5th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSchoolSubjects('c6_8')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>Class 6th - 8th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSchoolSubjects('c9_10')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="openScreen('stream-select')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+        </div>
+    </div>
+    <div id="stream-select" class="screen">
+        <div class="header"><button class="back-btn" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Stream</h1><div></div></div>
+        <div class="card-grid">
+            <div class="card" onclick="loadSchoolSubjects('sci_11_12')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3></div>
+            <div class="card" onclick="loadSchoolSubjects('comm_11_12')"><i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3></div>
+            <div class="card" onclick="loadSchoolSubjects('arts_11_12')"><i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3></div>
+        </div>
+    </div>
 
-    <div id="school-select" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="loadSchoolSubjects('c1_5')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-shapes"></i></div><h3>Class 1st - 5th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSchoolSubjects('c6_8')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-book-open"></i></div><h3>Class 6th - 8th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSchoolSubjects('c9_10')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="openScreen('stream-select')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    <div id="stream-select" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Stream</h1><div></div></div><div class="card-grid"><div class="card" onclick="loadSchoolSubjects('sci_11_12')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3></div><div class="card" onclick="loadSchoolSubjects('comm_11_12')"><i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3></div><div class="card" onclick="loadSchoolSubjects('arts_11_12')"><i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3></div></div></div>
+    <div id="competitive" class="screen">
+        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="loadSyllabus('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+        </div>
+    </div>
 
-    <div id="competitive" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    <div id="coding" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="showCodingSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('cpp')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-c"></i></div><h3>C++</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('sql')"><div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-database"></i></div><h3>SQL / Data</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
+    <div id="coding" class="screen">
+        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div>
+        <div class="list-container" style="margin-top:20px;">
+            <div class="list-item" onclick="showCodingSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('cpp')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-c"></i></div><h3>C++</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('sql')"><div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-database"></i></div><h3>SQL / Data</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+            <div class="list-item" onclick="showCodingSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+        </div>
+    </div>
     <div id="coding-syllabus" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('coding')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="syllabus-title">Syllabus</h1><div></div></div><div id="syllabus-container" class="list-container" style="margin-top:10px;"></div></div>
     <div id="lesson-screen" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div><div id="lesson-loader" class="loader" style="display:none;"></div><div id="lesson-content" class="lesson-container"></div></div>
-    <div id="materials" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Important Links</h1><div></div></div><div class="section-title">Official Channels</div><div class="list-container" style="margin-top:10px;"><div class="list-item" onclick="openLink('https://t.me/YourMainChannel')"><div class="list-left"><div class="list-icon" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i></div><div><h3>Main Channel</h3><p style="font-size:11px; color:#aaa;">Join for Updates</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div><div class="list-item" onclick="openLink('https://t.me/YourNotesChannel')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-file-pdf"></i></div><div><h3>PDF Library</h3><p style="font-size:11px; color:#aaa;">Free Books & Notes</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div></div></div>
 
     <div id="dynamic-list-screen" class="screen"><div class="header"><button class="back-btn" onclick="goBackFromList()"><i class="fa-solid fa-arrow-left"></i></button><h1 id="list-title">Topics</h1><div style="width:35px;"></div></div><div id="dynamic-list-container" class="list-container" style="margin-top:10px;"></div></div>
     <div id="class-selector" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('dynamic-list-screen')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Grade</h1><div style="width:35px;"></div></div><div id="classes-container" class="card-grid"></div></div>
     <div id="chapters-screen" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('class-selector')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="chapter-title">Chapters</h1><div style="width:35px;"></div></div><div id="chapters-container" class="list-container" style="margin-top:10px;"></div></div>
     
+    <div id="materials" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Important Links</h1><div></div></div><div class="section-title">Official Channels</div><div class="list-container" style="margin-top:10px;"><div class="list-item" onclick="openLink('https://t.me/YourMainChannel')"><div class="list-left"><div class="list-icon" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i></div><div><h3>Main Channel</h3><p style="font-size:11px; color:#aaa;">Join for Updates</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div><div class="list-item" onclick="openLink('https://t.me/YourNotesChannel')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-file-pdf"></i></div><div><h3>PDF Library</h3><p style="font-size:11px; color:#aaa;">Free Books & Notes</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div></div></div>
     <div id="screen-timetable" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Make Schedule</h1><div></div></div><div style="padding: 20px;"><p style="color:#aaa; margin-bottom:20px;">Enter details.</p><input type="text" id="tt-class" class="form-input" placeholder="Class / Exam"><input type="text" id="tt-hours" class="form-input" placeholder="Study Hours"><button class="primary-btn" onclick="generateTimeTable()">Generate Now ✨</button><div id="tt-loader" class="loader" style="display:none;"></div><div id="tt-result" class="lesson-container" style="margin-top:20px;"></div></div></div>
     <div id="screen-ask-ai" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div><div id="chat-box" class="chat-box"><div class="message msg-bot">Hello! Ask me anything! 🧠</div></div><div class="chat-input-area"><button class="chat-btn" style="background:#444;" onclick="document.getElementById('img-input').click()"><i class="fa-solid fa-paperclip"></i></button><input type="file" id="img-input" hidden accept="image/*"><input type="text" id="chat-input" class="chat-input" placeholder="Ask something..."><button class="chat-btn" onclick="sendAIChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
-    <div id="screen-quiz" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Daily Quiz</h1><div></div></div><div id="quiz-loader" class="loader" style="display:none; margin-top: 50px;"></div><div id="quiz-content" style="display:none;"><div class="section-title" style="text-align:center; margin-bottom:10px;">Left Today: <span id="quiz-limit-disp">10</span></div><div class="quiz-box"><div id="q-text" class="quiz-question">Loading...</div><button class="option-btn" onclick="checkAnswer(0)" id="opt-0">A</button><button class="option-btn" onclick="checkAnswer(1)" id="opt-1">B</button><button class="option-btn" onclick="checkAnswer(2)" id="opt-2">C</button><button class="option-btn" onclick="checkAnswer(3)" id="opt-3">D</button></div><div style="text-align:center;"><button id="next-q-btn" class="next-btn" onclick="generateQuiz()">Next</button></div></div></div>
+    <div id="screen-quiz" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Daily Quiz</h1><div></div></div><div id="quiz-loader" class="loader" style="display:none; margin-top: 50px;"></div><div id="quiz-content" style="display:none;"><div class="section-title" style="text-align:center; margin-bottom:10px;">Infinite Questions</div><div class="quiz-box"><div id="q-text" class="quiz-question">Loading...</div><button class="option-btn" onclick="checkAnswer(0)" id="opt-0">A</button><button class="option-btn" onclick="checkAnswer(1)" id="opt-1">B</button><button class="option-btn" onclick="checkAnswer(2)" id="opt-2">C</button><button class="option-btn" onclick="checkAnswer(3)" id="opt-3">D</button></div><div style="text-align:center;"><button id="next-q-btn" class="next-btn" onclick="generateQuiz()">Next</button></div></div></div>
 
-    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display" onclick="handleProfileTap()">Student</h2><div id="badge-display" style="color:#aaa; font-size:12px; margin-top:5px;">Free Member</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">0</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value" id="plan-display">Free</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
+    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display">Student</h2><div style="color:#aaa; font-size:12px; margin-top:5px;">Full Access</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">∞</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value">Pro</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
 
     <div class="nav">
         <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
-        <button class="nav-item" onclick="checkPremium('code')"><i class="fa-solid fa-code"></i></button>
-        <button class="nav-item" onclick="checkPremium('govt')"><i class="fa-solid fa-book"></i></button>
+        <button class="nav-item" onclick="openScreen('coding')"><i class="fa-solid fa-code"></i></button>
+        <button class="nav-item" onclick="openScreen('competitive')"><i class="fa-solid fa-book"></i></button>
         <button class="nav-item" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></button>
     </div>
 
@@ -138,81 +177,38 @@
         const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
         if (tg.initDataUnsafe?.user) { document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name; document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name; }
 
-        // =======================================================
-        // ⚠️ PASTE API KEY HERE ⚠️
-        // =======================================================
         const API_KEYS = { 'gemini': "PASTE_GEMINI_KEY_HERE", 'groq': "PASTE_GROQ_KEY_HERE", 'deepseek': "PASTE_DEEPSEEK_KEY_HERE" };
-        // =======================================================
 
-        // --- SUBSCRIPTION LOGIC ---
-        let isPremium = false; 
-        let quizCount = parseInt(localStorage.getItem('quiz_count') || '0'); 
-        const QUIZ_LIMIT = 10;
-        let devTapCount = 0;
-        let tapTimer = null;
-
-        const savedPlan = localStorage.getItem('study_plan');
-        if(savedPlan && savedPlan !== 'free') { enablePremium(); }
-
-        function enablePremium() { isPremium=true; document.getElementById('badge-display').innerText="Premium Member"; document.getElementById('badge-display').style.color="#fbbf24"; document.getElementById('plan-display').innerText="Pro"; }
-        function disablePremium() { isPremium=false; document.getElementById('badge-display').innerText="Free Member"; document.getElementById('badge-display').style.color="#aaa"; document.getElementById('plan-display').innerText="Free"; localStorage.setItem('study_plan', 'free'); localStorage.removeItem('is_dev_mode'); }
-
-        function handleProfileTap() {
-            devTapCount++;
-            clearTimeout(tapTimer);
-            tapTimer = setTimeout(() => { devTapCount = 0; }, 2000);
-            const isDev = localStorage.getItem('is_dev_mode') === 'true';
-            if (!isDev && devTapCount === 50) { alert("👨‍💻 Dev Mode ON"); enablePremium(); localStorage.setItem('study_plan', 'premium'); localStorage.setItem('is_dev_mode', 'true'); devTapCount = 0; }
-            else if (isDev && devTapCount === 5) { if(confirm("🔴 Turn OFF Dev Mode?")) { disablePremium(); devTapCount = 0; } }
-        }
-
-        function checkPremium(f) { if (isPremium) { if(f==='code') openScreen('coding'); if(f==='govt') openScreen('competitive'); if(f==='pdf') openScreen('materials'); } else { openScreen('subscription'); } }
-        function runDailyQuiz() { 
-            const today = new Date().toDateString();
-            if(localStorage.getItem('quiz_date') !== today) { quizCount = 0; localStorage.setItem('quiz_date', today); }
-            if (quizCount >= QUIZ_LIMIT && !isPremium) { alert("Daily Limit (10) Reached! Upgrade for unlimited."); openScreen('subscription'); } else { openQuiz(); } 
-        }
-        function payNow(amt) { window.location.href=`upi://pay?pa=YOUR_UPI@bank&pn=StudyMentor&am=${amt}&cu=INR`; setTimeout(()=>{if(confirm("Payment Done?")){enablePremium();localStorage.setItem('study_plan','premium');location.reload();}},5000); }
-
-        // --- AI LOGIC ---
-        async function callAI(p,img=null){ 
-            // Alert if Gemini Key is missing
-            if (!API_KEYS.gemini || API_KEYS.gemini.includes("PASTE")) { alert("⚠️ API Key Missing! Please add Key in GitHub code."); throw new Error("Key Missing"); }
-            
-            try{
-                let body={contents:[{parts:[{text:p}]}]}; if(img) body.contents[0].parts.push({inline_data:{mime_type:"image/jpeg",data:img}}); 
-                const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini.trim()}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); 
-                if(r.ok){const d=await r.json(); return d.candidates[0].content.parts[0].text;} 
-            } catch(e){} 
-            throw new Error("AI Failed"); 
-        }
+        // --- AI LOGIC (Hybrid) ---
+        async function callAI(p,img=null){ if(API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) { try{let body={contents:[{parts:[{text:p}]}]}; if(img) body.contents[0].parts.push({inline_data:{mime_type:"image/jpeg",data:img}}); const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(r.ok){const d=await r.json(); return d.candidates[0].content.parts[0].text;} } catch(e){} } throw new Error("AI Failed"); }
         async function generateTimeTable(){ const cls=document.getElementById('tt-class').value; const hrs=document.getElementById('tt-hours').value; if(!cls||!hrs)return; document.getElementById('tt-loader').style.display='block'; try{const text=await callAI(`Time table for ${cls}, ${hrs} hrs. Markdown.`); document.getElementById('tt-result').innerHTML=marked.parse(text);}catch(e){document.getElementById('tt-result').innerText="Offline Mode: Failed.";}finally{document.getElementById('tt-loader').style.display='none';} }
-        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const t=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${marked.parse(t)}</div>`;}catch(e){} }
-        async function generateLesson(t,l){ openScreen('lesson-screen'); document.getElementById('lesson-content').innerHTML=""; document.getElementById('lesson-loader').style.display="block"; try{const txt=await callAI(`Explain '${t}' in '${l}'. Markdown.`); document.getElementById('lesson-content').innerHTML=marked.parse(txt);}catch(e){} finally{document.getElementById('lesson-loader').style.display="none";} }
+        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const t=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${t}</div>`;}catch(e){} }
+        async function generateLesson(t,l){ openScreen('lesson-screen'); document.getElementById('lesson-content').innerHTML=""; try{const txt=await callAI(`Explain ${t} in ${l}. Markdown.`); document.getElementById('lesson-content').innerHTML=marked.parse(txt);}catch(e){} }
 
-        // --- NAVIGATION & DATA ---
+        // --- NAVIGATION ---
         function openScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
         function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
+        
         let currentMode="", currentCategory="";
-
         const schoolSubjects = { 'c1_5': ['Maths', 'English', 'Hindi', 'EVS', 'Computer', 'GK'], 'c6_8': ['Science', 'Maths', 'Social', 'English', 'Hindi', 'Sanskrit'], 'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology'], 'ssc': ['Quant', 'Reasoning', 'English'], 'defense': ['Maths', 'GAT', 'English'] };
+        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco', 'Current Affairs'], 'jee_neet': ['Physics', 'Chemistry', 'Maths', 'Biology', 'Mock Test'], 'ssc': ['Quant', 'Reasoning', 'English', 'GA'], 'defense': ['Maths', 'GAT', 'English'] };
         const codingSyllabusList = { 'python': ['Intro', 'Variables', 'Loops', 'OOP'], 'java': ['Syntax', 'OOP', 'Collections'], 'cpp': ['Basics', 'Pointers'], 'sql': ['Select', 'Joins'], 'web_dev': ['HTML', 'CSS', 'JS'] };
         const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
 
         function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
         function openClassSelector(sub) { document.getElementById('classes-container').innerHTML=""; let s=1,e=10; if(currentCategory.includes('11_12')){s=11;e=12;} else if(currentCategory=='c1_5') e=5; else if(currentCategory=='c6_8') {s=6;e=8;} else if(currentCategory=='c9_10') {s=9;e=10;} for(let i=s; i<=e; i++) { const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>Class ${i}</h3>`; d.onclick=()=>openChapters(sub, `Class ${i}`); document.getElementById('classes-container').appendChild(d); } openScreen('class-selector'); }
         function openChapters(sub, cls) { document.getElementById('chapters-container').innerHTML=""; ["Chap 1","Chap 2"].forEach(c=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${c}</h3>`; d.onclick=()=>sendToBot(`notes_${sub}_${cls}_${c}`); document.getElementById('chapters-container').appendChild(d); }); openScreen('chapters-screen'); }
-        function loadSyllabus(k){ currentMode='govt'; renderList(syllabusDB[k], key.toUpperCase(), (t)=>sendToBot(`govt_${k}_${t}`)); }
+        function loadSyllabus(k){ currentMode='govt'; renderList(syllabusDB[k], (t)=>sendToBot(`govt_${k}_${t}`)); }
         function showCodingSyllabus(l){ const lst=codingSyllabusList[l]; const c=document.getElementById('syllabus-container'); c.innerHTML=""; lst.forEach(t=>{const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${t}</h3>`; d.onclick=()=>generateLesson(t,l); c.appendChild(d);}); openScreen('coding-syllabus'); }
+        
         function renderList(items, handler) { const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${i}</h3>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
         function sendToBot(d){ tg.sendData(d); tg.close(); }
         function openLink(u){ tg.openTelegramLink(u); }
         
         let currentQuiz={}; 
-        function openQuiz(){ document.getElementById('quiz-limit-disp').innerText = 10 - quizCount; openScreen('screen-quiz'); generateQuiz(); }
+        function openQuiz(){ openScreen('screen-quiz'); generateQuiz(); }
         async function generateQuiz() { document.getElementById('quiz-loader').style.display='block'; document.getElementById('quiz-content').style.display='none'; try{const raw=await callAI("GK MCQ JSON: {q,o:[],a:0}"); currentQuiz=JSON.parse(raw.replace(/```json|```/g,'').trim()); document.getElementById('q-text').innerText=currentQuiz.q; const btns=document.querySelectorAll('.option-btn'); btns.forEach((b,i)=>{b.innerText=currentQuiz.o[i];b.className='option-btn';b.disabled=false;}); document.getElementById('quiz-content').style.display='block';}catch(e){}finally{document.getElementById('quiz-loader').style.display='none';} }
-        function checkAnswer(i){ quizCount++; localStorage.setItem('quiz_count', quizCount); const btns=document.querySelectorAll('.option-btn'); if(i===currentQuiz.a) btns[i].classList.add('correct'); else {btns[i].classList.add('wrong'); btns[currentQuiz.a].classList.add('correct');} }
+        function checkAnswer(i){ const btns=document.querySelectorAll('.option-btn'); if(i===currentQuiz.a) btns[i].classList.add('correct'); else {btns[i].classList.add('wrong'); btns[currentQuiz.a].classList.add('correct');} }
     </script>
 </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </html>
+                </html>
