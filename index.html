@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMentor Plus - 3D Ultimate</title>
+    <title>StudyMentor Plus - 3D Ultimate Fixed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -38,7 +38,7 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .profile-btn {
+        .profile-btn-header {
             width: 45px; height: 45px;
             background: linear-gradient(145deg, #23263b, #1c1e30);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -71,9 +71,10 @@
             background: #1F2235; padding: 18px 20px; border-radius: 16px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 5px 5px 10px #0b0c18, -5px -5px 10px #25283e;
+            cursor: pointer; /* Added cursor pointer */
         }
 
-        /* --- Bottom Nav (Fixed) --- */
+        /* --- Bottom Nav --- */
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; background: rgba(30, 34, 55, 0.95); backdrop-filter: blur(10px);
@@ -98,26 +99,40 @@
             z-index: 10;
         }
 
-        /* --- Accordion Styles --- */
+        /* --- Accordion & Buttons Styles --- */
         .syllabus-item {
             background: #1F2235; margin: 15px 20px; border-radius: 12px; overflow: hidden;
             box-shadow: 4px 4px 8px #0b0c18;
         }
         .syllabus-head { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
-        .syllabus-body { display: none; padding: 15px; border-top: 1px solid #333; background: #181a2e; }
+        .syllabus-body { display: none; padding: 15px; border-top: 1px solid rgba(255,255,255,0.05); background: #181a2e; }
 
-        /* Buttons in Accordion */
         .topic-row {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #333;
+            margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);
         }
-        .action-btn {
-            font-size: 0.75rem; padding: 5px 10px; border-radius: 5px; text-decoration: none; margin-left: 5px; cursor: pointer;
-        }
-        .btn-dl { background: rgba(108, 99, 255, 0.2); color: #8c85ff; border: 1px solid #6C63FF; }
-        .btn-bot { background: rgba(255, 107, 107, 0.2); color: #ff8787; border: 1px solid #FF6B6B; }
+        .topic-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .subject-name { font-size: 0.95rem; color: #E0E0E0; }
 
-        /* --- AI Chat Interface --- */
+        .btn-group { display: flex; gap: 8px; }
+        .action-btn {
+            font-size: 0.7rem; padding: 6px 12px; border-radius: 6px; text-decoration: none; cursor: pointer;
+            font-weight: 600; letter-spacing: 0.5px; transition: 0.2s;
+        }
+        /* Notes Button (Blueish as in screenshot) */
+        .btn-notes { 
+            background: rgba(74, 105, 189, 0.2); color: #6a89cc; border: 1px solid #4a69bd;
+        }
+        .btn-notes:hover { background: rgba(74, 105, 189, 0.4); }
+        
+        /* Old Papers Button (Reddish as in screenshot) */
+        .btn-papers { 
+            background: rgba(235, 77, 75, 0.2); color: #ff7675; border: 1px solid #eb4d4b; 
+        }
+        .btn-papers:hover { background: rgba(235, 77, 75, 0.4); }
+
+        /* --- AI Tutor Chat Interface --- */
         .chat-container { display: flex; flex-direction: column; height: calc(100% - 70px); }
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .chat-input-area {
@@ -132,16 +147,31 @@
         .msg.ai { align-self: flex-start; background: #2A2D3E; color: #ddd; border-bottom-left-radius: 2px; }
 
         /* --- Time Table UI --- */
-        .tt-form { padding: 20px; background: #1F2235; margin: 20px; border-radius: 15px; }
-        .tt-input { width: 100%; padding: 10px; margin: 5px 0 15px; background: #0F1020; border: 1px solid #333; color: white; border-radius: 8px; }
+        .tt-form { padding: 20px; background: #1F2235; margin: 20px; border-radius: 15px; box-shadow: inset 5px 5px 10px #0b0c18, inset -5px -5px 10px #25283e; }
+        .tt-input { width: 100%; padding: 12px; margin: 5px 0 15px; background: #0F1020; border: 1px solid #333; color: white; border-radius: 10px; outline:none; }
         .tt-list { padding: 0 20px; }
-        .tt-item { background: #2A2D3E; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); }
+        .tt-item { background: #1F2235; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); box-shadow: 5px 5px 10px #0b0c18; }
 
         /* --- Telegram Buttons --- */
         .tg-btn {
-            display: flex; align-items: center; width: 100%; background: #229ED9; color: white;
+            display: flex; align-items: center; width: 100%; background: linear-gradient(45deg, #229ED9, #6DD5FA); color: white;
             padding: 15px; border-radius: 12px; margin-bottom: 12px; text-decoration: none; font-weight: bold;
             box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3);
+        }
+
+        /* --- Profile Overlay Specifics --- */
+        .profile-header-section {
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15,16,32,0) 0%, rgba(108, 99, 255, 0.1) 100%);
+        }
+        .profile-big-icon {
+            width: 100px; height: 100px; margin: 0 auto 20px;
+            background: linear-gradient(145deg, #23263b, #1c1e30);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: var(--primary);
+            box-shadow: 8px 8px 16px #080911, -8px -8px 16px #262943;
+            border: 2px solid rgba(108, 99, 255, 0.3);
         }
 
     </style>
@@ -150,7 +180,7 @@
 
     <div class="header">
         <div class="logo">StudyMentor+</div>
-        <div class="profile-btn" onclick="showProfile()">
+        <div class="profile-btn-header" onclick="openProfile()">
             <i class="fas fa-user" style="color:#fff;"></i>
         </div>
     </div>
@@ -211,7 +241,38 @@
         <div class="nav-item active" onclick="closeAllOverlays()"><i class="fas fa-home"></i></div>
         <div class="nav-item" onclick="openCoding()"><i class="fas fa-code"></i></div>
         <div class="nav-item" onclick="openGovt()"><i class="fas fa-book"></i></div>
-        <div class="nav-item" onclick="showProfile()"><i class="fas fa-user"></i></div>
+        <div class="nav-item" onclick="openProfile()"><i class="fas fa-user"></i></div>
+    </div>
+
+    <div id="profile-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
+            <h3 style="margin-left:15px; color:white;">My Profile</h3>
+        </div>
+        <div class="profile-header-section">
+            <div class="profile-big-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2 style="color:white;">Student Name</h2>
+            <p style="color:var(--primary); font-weight:bold; margin-top:5px;">Premium Member (Lifetime)</p>
+        </div>
+        <div class="list-container">
+             <div class="list-card">
+                <span>My Downloads</span><i class="fas fa-chevron-right"></i>
+            </div>
+             <div class="list-card">
+                <span>Saved Notes</span><i class="fas fa-chevron-right"></i>
+            </div>
+             <div class="list-card">
+                <span>Quiz Stats</span><i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="list-card" style="margin-top:20px;">
+                <span>Settings</span><i class="fas fa-cog"></i>
+            </div>
+            <div class="list-card" style="background: rgba(235, 77, 75, 0.1); border: 1px solid rgba(235, 77, 75, 0.3);">
+                <span style="color: #ff7675;">Log Out</span><i class="fas fa-sign-out-alt" style="color: #ff7675;"></i>
+            </div>
+        </div>
     </div>
 
     <div id="content-overlay" class="overlay">
@@ -229,12 +290,12 @@
         </div>
         <div class="chat-container">
             <div class="chat-box" id="chat-box">
-                <div class="msg ai">Hello Student! I am your AI Tutor. You can type your question or upload an image.</div>
+                <div class="msg ai">Hello! I am your AI study partner. Ask me anything or upload a question image.</div>
             </div>
             <div class="chat-input-area">
-                <i class="fas fa-image" style="font-size:1.2rem; color:#888;"></i>
-                <input type="text" class="chat-input" id="user-input" placeholder="Ask a doubt...">
-                <i class="fas fa-paper-plane" style="font-size:1.2rem; color:var(--primary);" onclick="sendMessage()"></i>
+                <i class="fas fa-image" style="font-size:1.2rem; color:#888; cursor:pointer;" onclick="alert('Image Upload feature coming soon!')"></i>
+                <input type="text" class="chat-input" id="user-input" placeholder="Type your doubt...">
+                <i class="fas fa-paper-plane" style="font-size:1.2rem; color:var(--primary); cursor:pointer;" onclick="sendMessage()"></i>
             </div>
         </div>
     </div>
@@ -245,11 +306,11 @@
             <h3 style="margin-left:15px; color:white;">Time Table Maker</h3>
         </div>
         <div class="tt-form">
-            <label>Subject</label>
-            <input type="text" id="tt-sub" class="tt-input" placeholder="e.g. Maths">
-            <label>Time</label>
+            <label style="color:#ccc; font-size:0.9rem;">Subject / Task</label>
+            <input type="text" id="tt-sub" class="tt-input" placeholder="e.g. Maths Revision">
+            <label style="color:#ccc; font-size:0.9rem;">Time</label>
             <input type="time" id="tt-time" class="tt-input">
-            <button onclick="addSchedule()" style="width:100%; background:var(--primary); padding:10px; border:none; color:white; border-radius:8px;">Add to Schedule</button>
+            <button onclick="addSchedule()" style="width:100%; background:var(--primary); padding:12px; border:none; color:white; border-radius:10px; font-weight:bold; cursor:pointer; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);">Add to Schedule</button>
         </div>
         <div id="tt-list" class="tt-list">
             </div>
@@ -257,27 +318,50 @@
 
     <script>
         // --- DATA ---
-        const codingLangs = ["Python", "Java", "C++", "C#", "JavaScript", "React", "NodeJS", "Swift", "Kotlin", "Go", "Rust", "PHP", "Ruby", "SQL", "HTML/CSS"];
+        const codingLangs = ["Python", "Java", "C++", "C#", "JavaScript", "React JS", "Node JS", "Swift (iOS)", "Kotlin (Android)", "Go (Golang)", "Rust", "PHP", "Ruby on Rails", "SQL Database", "HTML5 & CSS3"];
         
         const govtTopics = [
-            {t: "UPSC Civil Services", desc: "IAS/IPS Syllabus"},
-            {t: "SSC CGL/CHSL", desc: "Staff Selection"},
-            {t: "Banking (IBPS/SBI)", desc: "PO & Clerk"},
-            {t: "Railways (NTPC)", desc: "Technical & Non-Tech"},
-            {t: "Defence (NDA/CDS)", desc: "Army/Navy/Airforce"},
-            {t: "IMPORTANT PDFs", desc: "Download Monthly Magazines"} // Added as requested
+            {t: "UPSC Civil Services", desc: "Prelims & Mains Syllabus"},
+            {t: "SSC (CGL, CHSL, MTS)", desc: "All Tier Exams"},
+            {t: "Banking (IBPS, SBI, RBI)", desc: "PO, Clerk, SO"},
+            {t: "Railways (RRB NTPC, Group D)", desc: "Technical & Non-Tech"},
+            {t: "Defence (NDA, CDS, AFCAT)", desc: "Written & SSB Interview"},
+            {t: "Teaching (CTET, UGC NET)", desc: "Paper 1 & 2"},
+            {t: "IMPORTANT PDFs Section", desc: "Monthly Magazines, Govt Schemes"}
         ];
 
-        const schoolClasses = [
-            "Class 1", "Class 2", "Class 3", "Class 4", "Class 5",
-            "Class 6", "Class 7", "Class 8", "Class 9", "Class 10",
-            "Class 11 (Science)", "Class 11 (Commerce)", "Class 11 (Arts)",
-            "Class 12 (Science)", "Class 12 (Commerce)", "Class 12 (Arts)"
+        // REAL SCHOOL SUBJECTS DATA (FIXED)
+        const finalSchoolData = [
+            // Primary
+            { cls: "Class 1", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 2", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 3", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 4", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 5", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            // Middle
+            { cls: "Class 6", subs: ["Mathematics", "Science", "Social Science", "Honeysuckle (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            { cls: "Class 7", subs: ["Mathematics", "Science", "Social Science", "Honeycomb (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            { cls: "Class 8", subs: ["Mathematics", "Science", "Social Science", "Honeydew (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            // Secondary
+            { cls: "Class 9", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
+            { cls: "Class 10", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
+            // Senior Secondary
+            { cls: "Class 11 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
+            { cls: "Class 11 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
+            { cls: "Class 11 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Sociology"] },
+            { cls: "Class 12 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
+            { cls: "Class 12 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
+            { cls: "Class 12 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Psychology"] }
         ];
 
         // --- NAVIGATION ---
         function closeAllOverlays() {
             document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
+        }
+
+        function openProfile() {
+            closeAllOverlays();
+            document.getElementById('profile-overlay').style.display = 'block';
         }
 
         // --- SECTIONS ---
@@ -288,24 +372,20 @@
             document.getElementById('overlay-title').innerText = "School Curriculum (1-12)";
             ov.style.display = 'block';
             
-            body.innerHTML = schoolClasses.map(cls => `
+            // RENDER WITH REAL SUBJECTS AND BUTTONS
+            body.innerHTML = finalSchoolData.map(item => `
                 <div class="syllabus-item">
-                    <div class="syllabus-head" onclick="toggleAcc(this)">${cls} <i class="fas fa-chevron-down"></i></div>
+                    <div class="syllabus-head" onclick="toggleAcc(this)">${item.cls} <i class="fas fa-chevron-down"></i></div>
                     <div class="syllabus-body">
-                        <div class="topic-row">
-                            <span>Maths & Science</span>
-                            <div>
-                                <span class="action-btn btn-dl" onclick="dlPDF('${cls} Notes')">Notes</span>
-                                <span class="action-btn btn-bot" onclick="openBot('${cls}')">Old Papers</span>
+                        ${item.subs.map(sub => `
+                            <div class="topic-row">
+                                <span class="subject-name">${sub}</span>
+                                <div class="btn-group">
+                                    <span class="action-btn btn-notes" onclick="dlPDF('${item.cls} - ${sub} Notes')">Notes</span>
+                                    <span class="action-btn btn-papers" onclick="openBot('${item.cls} - ${sub}')">Old Papers</span>
+                                </div>
                             </div>
-                        </div>
-                         <div class="topic-row">
-                            <span>English & Hindi</span>
-                            <div>
-                                <span class="action-btn btn-dl" onclick="dlPDF('${cls} Lang')">Notes</span>
-                                <span class="action-btn btn-bot" onclick="openBot('${cls}')">Old Papers</span>
-                            </div>
-                        </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('');
@@ -323,9 +403,14 @@
                     <div class="syllabus-head" onclick="toggleAcc(this)">${lang} <i class="fas fa-chevron-down"></i></div>
                     <div class="syllabus-body">
                         <div style="color:#aaa; font-size:0.9rem; padding:10px;">
-                            Detailed Syllabus for ${lang} including Syntax, OOPs, Projects.
-                            <br><br>
-                            <span class="action-btn btn-dl" onclick="explainAI('${lang}')"><i class="fas fa-magic"></i> Explain with AI</span>
+                            Detailed Syllabus module for ${lang}. Includes tutorials, examples, and projects.
+                        </div>
+                        <div class="topic-row" style="border:none; padding:0 10px 10px;">
+                             <span>Resources:</span>
+                             <div class="btn-group">
+                                <span class="action-btn btn-notes" onclick="dlPDF('${lang} Docs')">Docs & PDFs</span>
+                                <span class="action-btn btn-notes" style="background:rgba(108, 99, 255, 0.2); color:var(--primary); border-color:var(--primary);" onclick="explainAI('${lang}')"><i class="fas fa-robot"></i> Ask AI</span>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -343,8 +428,14 @@
                 <div class="syllabus-item">
                     <div class="syllabus-head" onclick="toggleAcc(this)">${item.t} <i class="fas fa-chevron-down"></i></div>
                     <div class="syllabus-body">
-                        <p style="color:#888; font-size:0.85rem; margin-bottom:10px;">${item.desc}</p>
-                        <span class="action-btn btn-dl" onclick="dlPDF('${item.t}')">Download Syllabus PDF</span>
+                        <p style="color:#888; font-size:0.85rem; margin-bottom:15px;">${item.desc}</p>
+                         <div class="topic-row" style="border:none; padding:0;">
+                             <span style="font-size:0.9rem;">Study Material:</span>
+                             <div class="btn-group">
+                                <span class="action-btn btn-notes" onclick="dlPDF('${item.t} Syllabus')">Syllabus PDF</span>
+                                <span class="action-btn btn-papers" onclick="openBot('${item.t} PYQs')">PYQ Papers</span>
+                             </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -359,11 +450,11 @@
             
             body.innerHTML = `
                 <div style="padding:20px;">
-                    <p style="color:#ccc; margin-bottom:15px;">Click to join premium channels:</p>
-                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px;"></i> @UPSC_Notes_Official</a>
-                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px;"></i> @Coding_Warriors</a>
-                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px;"></i> @Class10_Toppers</a>
-                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px;"></i> @CurrentAffairs_Daily</a>
+                    <p style="color:#ccc; margin-bottom:15px;">Join premium channels for instant updates & notes:</p>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @UPSC_Notes_Official</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @IIT_JEE_Materials</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @Class10_12_Boards</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @Coding_Community</a>
                 </div>
             `;
         }
@@ -371,19 +462,39 @@
         // --- UTILS ---
         function toggleAcc(el) {
             const body = el.nextElementSibling;
-            body.style.display = body.style.display === 'block' ? 'none' : 'block';
+            const icon = el.querySelector('i');
+            if(body.style.display === 'block') {
+                body.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                body.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
         }
 
         function dlPDF(name) {
-            alert(`Downloading PDF for: ${name}... (Saved to App)`);
+            // Simulation of in-app download
+            const toast = document.createElement('div');
+            toast.innerText = `Downloading: ${name}...`;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '80px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = '#333';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '20px';
+            toast.style.zIndex = '3000';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
         }
         
-        function openBot(cls) {
-            alert(`Redirecting to Telegram Bot for ${cls} Old Question Papers...`);
-            // window.location.href = "https://t.me/YourBot"; 
+        function openBot(name) {
+            alert(`Redirecting to Telegram Bot for: ${name} Question Papers.`);
+            // window.location.href = "https://t.me/YourBotLink"; 
         }
 
-        // --- AI TUTOR (CHAT) ---
+        // --- AI TUTOR ---
         function openAITutor() {
             closeAllOverlays();
             document.getElementById('ai-overlay').style.display = 'block';
@@ -395,22 +506,16 @@
             if(!txt) return;
 
             const box = document.getElementById('chat-box');
-            
-            // User Msg
             box.innerHTML += `<div class="msg user">${txt}</div>`;
             input.value = '';
             box.scrollTop = box.scrollHeight;
 
-            // Simulate AI
             setTimeout(() => {
-                const response = `
-                    <strong>Topic Analysis:</strong><br>
-                    Here is a structured explanation for your query.<br><br>
-                    1. <strong>Concept:</strong> Detailed breakdown of the topic.<br>
-                    2. <strong>Example:</strong> Real world usage.<br>
-                    3. <strong>Summary:</strong> Key takeaways.<br><br>
-                    <em>I can also analyze images if you upload them!</em>
-                `;
+                const response = `Here is a structured explanation for: <strong>"${txt}"</strong><br><br>
+                    • <strong>Concept Overview:</strong> Brief definition of the topic.<br>
+                    • <strong>Key Points:</strong> Important formulas or rules.<br>
+                    • <strong>Example Application:</strong> How it's used in real scenarios.<br><br>
+                    <em>Let me know if you need more details!</em>`;
                 box.innerHTML += `<div class="msg ai">${response}</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 1000);
@@ -419,7 +524,7 @@
         function explainAI(topic) {
              openAITutor();
              setTimeout(() => {
-                 document.getElementById('user-input').value = "Explain " + topic;
+                 document.getElementById('user-input').value = "Explain concept of " + topic;
                  sendMessage();
              }, 500);
         }
@@ -442,35 +547,34 @@
                     </div>
                 `;
                 document.getElementById('tt-sub').value = '';
+                document.getElementById('tt-time').value = '';
             }
         }
 
-        // --- QUIZ (UNLIMITED) ---
+        // --- QUIZ ---
         const quizDB = [
-            {q: "Current PM of UK?", a: "Keir Starmer"},
-            {q: "Capital of Australia?", a: "Canberra"},
-            {q: "Host of 2024 Olympics?", a: "Paris"},
-            {q: "Who owns SpaceX?", a: "Elon Musk"}
+            {q: "Who is the current RBI Governor?", a: "Shaktikanta Das"},
+            {q: "Host country for 2024 Olympics?", a: "France (Paris)"},
+            {q: "Which movie won Best Picture at Oscars 2024?", a: "Oppenheimer"},
+            {q: "What is the new name of Twitter?", a: "X"},
+            {q: "Largest state in India by area?", a: "Rajasthan"}
         ];
 
         function startQuiz() {
             let q = quizDB[Math.floor(Math.random() * quizDB.length)];
-            let ans = prompt(`Daily Quiz (Unlimited)\n\nQ: ${q.q}\n\nType Answer:`);
+            let ans = prompt(`Daily CA Quiz (Unlimited)\n\nQ: ${q.q}\n\nType your answer below:`);
             if(ans) {
-                if(ans.toLowerCase().includes(q.a.toLowerCase().split(' ')[1].toLowerCase())) {
-                    alert("Correct! Loading next...");
+                 // Simple check based on inclusion
+                if(q.a.toLowerCase().includes(ans.toLowerCase()) && ans.length > 2) {
+                    alert(`✅ Correct! The answer is: ${q.a}.\nLoading next question...`);
                     startQuiz();
                 } else {
-                    alert(`Wrong! Correct answer was: ${q.a}. Try again.`);
+                    alert(`❌ Incorrect. Correct answer: ${q.a}.\nTry the next one!`);
                     startQuiz();
                 }
             }
         }
-        
-        function showProfile() {
-            alert("Profile Section: Premium User\nAccess all settings here.");
-        }
 
     </script>
 </body>
-        </html>
+    </html>
