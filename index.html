@@ -2,196 +2,579 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Study Mentor Ultra</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyMentor Plus - 3D Ultimate Fixed</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* --- 🔒 DESIGN LOCKED: PREMIUM GLASS THEME --- */
-        :root { --bg-dark: #000000; --glass: rgba(30, 30, 30, 0.6); --glass-border: rgba(255, 255, 255, 0.1); --primary: #2563eb; --accent: #7c3aed; --text: #ffffff; --stat-blue: #3b82f6; --stat-orange: #f97316; --stat-yellow: #eab308; --gold: #fbbf24; --success: #10b981; --error: #ef4444; }
-        body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top left, #1e1b4b, #000000); color: var(--text); margin: 0; padding: 0; padding-bottom: 90px; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg-dark: #0F1020;
+            --card-bg: #1F2235;
+            --text-light: #E0E0E0;
+            --primary: #6C63FF;
+            --accent: #FF6B6B;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+
+        /* --- 3D Header --- */
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px; position: sticky; top: 0; z-index: 100;
+            background: rgba(15, 16, 32, 0.95); backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(45deg, #6C63FF, #FF6B6B);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .profile-btn-header {
+            width: 45px; height: 45px;
+            background: linear-gradient(145deg, #23263b, #1c1e30);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 5px 5px 10px #0a0b16, -5px -5px 10px #24273e;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* --- 3D Cards --- */
+        .grid-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px 25px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #212438, #1c1e30);
+            border-radius: 20px; padding: 20px; text-align: center;
+            box-shadow: 8px 8px 16px #080911, -8px -8px 16px #262943;
+            transition: transform 0.2s; cursor: pointer; position: relative;
+        }
+        .card:active { transform: scale(0.96); box-shadow: inset 5px 5px 10px #0b0c18, inset -5px -5px 10px #25283e; }
         
-        /* COMPONENTS */
-        .header { padding: 20px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { font-size: 20px; margin: 0; background: linear-gradient(to right, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .profile-pic { width: 35px; height: 35px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
-        .back-btn { font-size: 18px; color: #aaa; cursor: pointer; border: none; background: none; margin-right: 15px; }
+        .card-icon { font-size: 2.2rem; margin-bottom: 10px; }
+        .icon-school { color: #00cec9; text-shadow: 0 0 15px rgba(0,206,201,0.4); }
+        .icon-exams { color: #fdcb6e; text-shadow: 0 0 15px rgba(253,203,110,0.4); }
+        .icon-coding { color: #0984e3; text-shadow: 0 0 15px rgba(9,132,227,0.4); }
+        .icon-quiz { color: #f1c40f; text-shadow: 0 0 15px rgba(241,196,15,0.4); }
 
-        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 15px; text-align: center; backdrop-filter: blur(10px); transition: transform 0.1s; cursor: pointer; position: relative; overflow: hidden; }
-        .card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
-        .card i { font-size: 28px; margin-bottom: 10px; display: block; }
-        .card h3 { font-size: 14px; margin: 0; font-weight: 500; }
-        .card p { font-size: 10px; color: #aaa; margin: 5px 0 0; }
+        /* --- List Resources --- */
+        .list-container { padding: 0 25px; display: flex; flex-direction: column; gap: 15px; }
+        .list-card {
+            background: #1F2235; padding: 18px 20px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 5px 5px 10px #0b0c18, -5px -5px 10px #25283e;
+            cursor: pointer; /* Added cursor pointer */
+        }
 
-        .list-container { padding: 0 20px; margin-top: 10px; }
-        .list-item { background: var(--glass); margin-bottom: 12px; padding: 16px; border-radius: 16px; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .list-item:active { background: rgba(255,255,255,0.1); }
-        .list-left { display: flex; align-items: center; }
-        .list-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 18px; color: var(--primary); }
-        .arrow { color: #555; font-size: 14px; }
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; background: rgba(30, 34, 55, 0.95); backdrop-filter: blur(10px);
+            padding: 15px 30px; border-radius: 30px; display: flex; justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 200; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-item { font-size: 1.4rem; color: #666; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 10px var(--primary); transform: translateY(-3px); }
 
-        .screen { display: none; animation: fadeIn 0.3s; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+        /* --- Overlays (Pages) --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); z-index: 1000; display: none;
+            overflow-y: auto; padding-bottom: 100px;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
 
-        .section-title { padding: 0 20px; margin-top: 15px; font-size: 16px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-        .locked-icon { position: absolute; top: 10px; right: 10px; color: var(--error); font-size: 12px; }
+        .overlay-header {
+            padding: 20px; position: sticky; top: 0; background: rgba(15,16,32,0.95);
+            display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
+        }
 
-        /* SUBSCRIPTION */
-        .sub-card { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; cursor: pointer; }
-        .sub-card.popular { border: 1px solid var(--gold); background: linear-gradient(145deg, rgba(251, 191, 36, 0.1), rgba(0,0,0,0)); }
-        .badge { position: absolute; top: 10px; right: 10px; background: var(--gold); color: black; font-size: 10px; padding: 4px 8px; border-radius: 10px; font-weight: bold; }
-        .price { font-size: 28px; font-weight: bold; margin: 10px 0; color: white; }
-        .features li { color: #ccc; font-size: 13px; margin-bottom: 5px; list-style: none; display: flex; align-items: center; }
-        .features li::before { content: "✓"; color: var(--primary); margin-right: 8px; font-weight: bold; }
+        /* --- Accordion & Buttons Styles --- */
+        .syllabus-item {
+            background: #1F2235; margin: 15px 20px; border-radius: 12px; overflow: hidden;
+            box-shadow: 4px 4px 8px #0b0c18;
+        }
+        .syllabus-head { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
+        .syllabus-body { display: none; padding: 15px; border-top: 1px solid rgba(255,255,255,0.05); background: #181a2e; }
 
-        /* LESSON CONTENT */
-        .lesson-container { padding: 20px; color: #e2e8f0; line-height: 1.7; font-size: 15px; }
-        .lesson-container h1, .lesson-container h2 { color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-top: 20px; }
-        .lesson-container pre { background: #111827; padding: 15px; border-radius: 10px; overflow-x: auto; border-left: 4px solid var(--primary); margin: 15px 0; }
-        .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 50px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* CHAT & QUIZ */
-        .chat-box { height: 60vh; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
-        .msg-bot { align-self: flex-start; background: var(--glass); border: 1px solid var(--glass-border); color: #fff; }
-        .msg-user { align-self: flex-end; background: var(--primary); color: #fff; }
-        .chat-input-area { position: fixed; bottom: 90px; left: 0; width: 100%; padding: 15px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; gap: 10px; box-sizing: border-box; }
-        .chat-input { flex: 1; background: #333; border: 1px solid #555; border-radius: 25px; padding: 12px 20px; color: white; outline: none; }
-        .chat-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .quiz-box { margin: 20px; padding: 20px; background: var(--glass); border-radius: 20px; border: 1px solid var(--glass-border); text-align: center; }
-        .quiz-question { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
-        .option-btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; color: white; text-align: left; cursor: pointer; }
-        .option-btn.correct { background: var(--success) !important; }
-        .option-btn.wrong { background: var(--error) !important; }
-        .next-btn { margin-top: 20px; padding: 12px 30px; background: var(--primary); border: none; border-radius: 25px; color: white; font-weight: bold; cursor: pointer; display: none; }
+        .topic-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);
+        }
+        .topic-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        /* NAV & PROFILE */
-        .nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.9); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); z-index: 1000; }
-        .nav-item { font-size: 22px; color: #888; background: none; border: none; }
-        .nav-item.active { color: #60a5fa; transform: translateY(-2px); }
-        .stats-container { display: flex; justify-content: space-between; padding: 0 20px; margin-bottom: 25px; gap: 10px; }
-        .stat-card { flex: 1; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align: center; }
-        .stat-value { font-size: 24px; font-weight: bold; margin: 0; }
-        .stat-label { font-size: 12px; color: #aaa; margin: 5px 0 0; text-transform: uppercase; }
-        .chart-container { margin: 0 20px 25px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px; padding: 20px; height: 150px; display: flex; align-items: flex-end; justify-content: space-between; }
-        .chart-bar { width: 10%; background: linear-gradient(to top, var(--primary), #60a5fa); border-radius: 4px; position: relative; }
-        .profile-header { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; margin-bottom: 15px; }
-        .profile-name { font-size: 24px; font-weight: bold; margin: 0; }
-        .form-input { width: 100%; padding: 15px; margin-bottom: 15px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; color: white; box-sizing: border-box; }
-        .primary-btn { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 16px; }
+        .subject-name { font-size: 0.95rem; color: #E0E0E0; }
+
+        .btn-group { display: flex; gap: 8px; }
+        .action-btn {
+            font-size: 0.7rem; padding: 6px 12px; border-radius: 6px; text-decoration: none; cursor: pointer;
+            font-weight: 600; letter-spacing: 0.5px; transition: 0.2s;
+        }
+        /* Notes Button (Blueish as in screenshot) */
+        .btn-notes { 
+            background: rgba(74, 105, 189, 0.2); color: #6a89cc; border: 1px solid #4a69bd;
+        }
+        .btn-notes:hover { background: rgba(74, 105, 189, 0.4); }
+        
+        /* Old Papers Button (Reddish as in screenshot) */
+        .btn-papers { 
+            background: rgba(235, 77, 75, 0.2); color: #ff7675; border: 1px solid #eb4d4b; 
+        }
+        .btn-papers:hover { background: rgba(235, 77, 75, 0.4); }
+
+        /* --- AI Tutor Chat Interface --- */
+        .chat-container { display: flex; flex-direction: column; height: calc(100% - 70px); }
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-input-area {
+            padding: 15px; background: #1F2235; display: flex; align-items: center; gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .chat-input {
+            flex: 1; background: #0F1020; border: none; padding: 12px; border-radius: 20px; color: white; outline: none;
+        }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; }
+        .msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .msg.ai { align-self: flex-start; background: #2A2D3E; color: #ddd; border-bottom-left-radius: 2px; }
+
+        /* --- Time Table UI --- */
+        .tt-form { padding: 20px; background: #1F2235; margin: 20px; border-radius: 15px; box-shadow: inset 5px 5px 10px #0b0c18, inset -5px -5px 10px #25283e; }
+        .tt-input { width: 100%; padding: 12px; margin: 5px 0 15px; background: #0F1020; border: 1px solid #333; color: white; border-radius: 10px; outline:none; }
+        .tt-list { padding: 0 20px; }
+        .tt-item { background: #1F2235; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); box-shadow: 5px 5px 10px #0b0c18; }
+
+        /* --- Telegram Buttons --- */
+        .tg-btn {
+            display: flex; align-items: center; width: 100%; background: linear-gradient(45deg, #229ED9, #6DD5FA); color: white;
+            padding: 15px; border-radius: 12px; margin-bottom: 12px; text-decoration: none; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3);
+        }
+
+        /* --- Profile Overlay Specifics --- */
+        .profile-header-section {
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15,16,32,0) 0%, rgba(108, 99, 255, 0.1) 100%);
+        }
+        .profile-big-icon {
+            width: 100px; height: 100px; margin: 0 auto 20px;
+            background: linear-gradient(145deg, #23263b, #1c1e30);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: var(--primary);
+            box-shadow: 8px 8px 16px #080911, -8px -8px 16px #262943;
+            border: 2px solid rgba(108, 99, 255, 0.3);
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="home" class="screen active">
-        <div class="header"><h1>Study Dashboard</h1><div class="profile-pic" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></div></div>
-        <div class="section-title">Learning Hub</div>
-        <div class="card-grid">
-            <div class="card" onclick="openScreen('school-select')"><i class="fa-solid fa-school" style="color:#34d399;"></i><h3>School</h3><p>1-12</p></div>
-            <div class="card" onclick="checkPremium('govt')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-landmark" style="color:#f472b6;"></i><h3>Exams</h3><p>Govt Prep</p></div>
-            <div class="card" onclick="checkPremium('code')"><i class="fa-solid fa-lock locked-icon"></i><i class="fa-solid fa-code" style="color:#60a5fa;"></i><h3>Coding</h3><p>Learn Dev</p></div>
-            <div class="card" onclick="runDailyQuiz()"><i class="fa-solid fa-brain" style="color:#fbbf24;"></i><h3>Daily Quiz</h3><p id="quiz-left">10 Left</p></div>
+    <div class="header">
+        <div class="logo">StudyMentor+</div>
+        <div class="profile-btn-header" onclick="openProfile()">
+            <i class="fas fa-user" style="color:#fff;"></i>
         </div>
-        <div class="section-title">Resources & Tools</div>
+    </div>
+
+    <div style="padding: 10px 25px;">
+        <h2 style="color:white; margin-bottom:5px;">Dashboard</h2>
+        <p style="color:#888; font-size:0.9rem;">3D Premium Learning</p>
+    </div>
+
+    <div class="grid-container">
+        <div class="card" onclick="openSchool()">
+            <div class="card-icon icon-school"><i class="fas fa-graduation-cap"></i></div>
+            <h3>School</h3>
+            <p style="font-size:0.7rem; color:#888;">Class 1-12</p>
+        </div>
+        <div class="card" onclick="openGovt()">
+            <div class="card-icon icon-exams"><i class="fas fa-university"></i></div>
+            <h3>Govt Exams</h3>
+            <p style="font-size:0.7rem; color:#888;">UPSC & More</p>
+        </div>
+        <div class="card" onclick="openCoding()">
+            <div class="card-icon icon-coding"><i class="fas fa-code"></i></div>
+            <h3>Coding</h3>
+            <p style="font-size:0.7rem; color:#888;">15+ Languages</p>
+        </div>
+        <div class="card" onclick="startQuiz()">
+            <div class="card-icon icon-quiz"><i class="fas fa-brain"></i></div>
+            <h3>Daily Quiz</h3>
+            <p style="font-size:0.7rem; color:#888;">Unlimited CA</p>
+        </div>
+    </div>
+
+    <div class="list-container">
+        <div class="list-card" onclick="openTelegram()">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <i class="fab fa-telegram" style="font-size:1.5rem; color:#229ED9;"></i>
+                <span>Study Materials (Telegram)</span>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="list-card" onclick="openTimeTable()">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-calendar-alt" style="font-size:1.5rem; color:#0984E3;"></i>
+                <span>Time Table Generator</span>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="list-card" onclick="openAITutor()">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <i class="fas fa-robot" style="font-size:1.5rem; color:#FF6B6B;"></i>
+                <span>Ask AI Tutor (Chat)</span>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="closeAllOverlays()"><i class="fas fa-home"></i></div>
+        <div class="nav-item" onclick="openCoding()"><i class="fas fa-code"></i></div>
+        <div class="nav-item" onclick="openGovt()"><i class="fas fa-book"></i></div>
+        <div class="nav-item" onclick="openProfile()"><i class="fas fa-user"></i></div>
+    </div>
+
+    <div id="profile-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
+            <h3 style="margin-left:15px; color:white;">My Profile</h3>
+        </div>
+        <div class="profile-header-section">
+            <div class="profile-big-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2 style="color:white;">Student Name</h2>
+            <p style="color:var(--primary); font-weight:bold; margin-top:5px;">Premium Member (Lifetime)</p>
+        </div>
         <div class="list-container">
-            <div class="list-item" onclick="checkPremium('pdf')"><div class="list-left"><div class="list-icon" style="color:#a855f7;"><i class="fa-solid fa-folder-open"></i></div><h3>Study Materials</h3></div><i class="fa-solid fa-lock" style="color:#ef4444; font-size:12px;"></i></div>
-            <div class="list-item" onclick="openScreen('screen-timetable')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-calendar"></i></div><h3>Time Table Generator</h3></div></div>
-            <div class="list-item" onclick="openScreen('screen-ask-ai')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-robot"></i></div><h3>Ask AI Tutor</h3></div></div>
+             <div class="list-card">
+                <span>My Downloads</span><i class="fas fa-chevron-right"></i>
+            </div>
+             <div class="list-card">
+                <span>Saved Notes</span><i class="fas fa-chevron-right"></i>
+            </div>
+             <div class="list-card">
+                <span>Quiz Stats</span><i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="list-card" style="margin-top:20px;">
+                <span>Settings</span><i class="fas fa-cog"></i>
+            </div>
+            <div class="list-card" style="background: rgba(235, 77, 75, 0.1); border: 1px solid rgba(235, 77, 75, 0.3);">
+                <span style="color: #ff7675;">Log Out</span><i class="fas fa-sign-out-alt" style="color: #ff7675;"></i>
+            </div>
         </div>
     </div>
 
-    <div id="subscription" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Upgrade Plan</h1><div></div></div><div style="padding: 20px;"><p style="color:#aaa; text-align:center; margin-bottom:20px;">Unlock Coding, Govt Exams & PDFs.</p><div class="sub-card" onclick="payNow(99)"><div style="display:flex; justify-content:space-between;"><h3>7-Day Trial</h3><span style="color:#34d399;">Starter</span></div><div class="price">₹99 <span>/ 7 days</span></div><ul class="features" style="padding:0; margin-top:10px;"><li>Unlimited Access</li></ul></div><div class="sub-card popular" onclick="payNow(399)"><div class="badge">BEST VALUE</div><div style="display:flex; justify-content:space-between;"><h3>Monthly</h3><span style="color:#fbbf24;">Pro</span></div><div class="price">₹399 <span>/ month</span></div><ul class="features" style="padding:0; margin-top:10px;"><li>Full Content Access</li><li>Unlimited AI Doubts</li></ul></div><div class="sub-card" onclick="payNow(1077)"><div style="display:flex; justify-content:space-between;"><h3>Quarterly</h3><span style="color:#a855f7;">Elite</span></div><div class="price">₹1077 <span>/ 3 months</span></div><p style="font-size:12px; color:#34d399; margin-top:5px;">(10% Discount Applied)</p></div></div></div>
-
-    <div id="school-select" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Class</h1><div></div></div>
-        <div class="list-container" style="margin-top:20px;">
-            <div class="list-item" onclick="loadSchoolSubjects('c9_10')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-atom"></i></div><h3>Class 9th & 10th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
-            <div class="list-item" onclick="openScreen('stream-select')"><div class="list-left"><div class="list-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>Class 11th & 12th</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div>
+    <div id="content-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
+            <h3 id="overlay-title" style="margin-left:15px; color:white;">Title</h3>
         </div>
-    </div>
-    <div id="stream-select" class="screen">
-        <div class="header"><button class="back-btn" onclick="openScreen('school-select')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Stream</h1><div></div></div>
-        <div class="card-grid">
-            <div class="card" onclick="loadSchoolSubjects('sci_11_12')"><i class="fa-solid fa-flask" style="color:#60a5fa;"></i><h3>Science</h3></div>
-            <div class="card" onclick="loadSchoolSubjects('comm_11_12')"><i class="fa-solid fa-chart-pie" style="color:#fbbf24;"></i><h3>Commerce</h3></div>
-            <div class="card" onclick="loadSchoolSubjects('arts_11_12')"><i class="fa-solid fa-palette" style="color:#f472b6;"></i><h3>Arts</h3></div>
-        </div>
+        <div id="overlay-body"></div>
     </div>
 
-    <div id="competitive" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Govt Exams</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="loadSyllabus('upsc')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-solid fa-landmark"></i></div><h3>UPSC / IAS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('jee_neet')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-flask"></i></div><h3>JEE & NEET</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('ssc')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-solid fa-train"></i></div><h3>SSC / RRB</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="loadSyllabus('defense')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-jet-fighter"></i></div><h3>NDA / CDS</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    <div id="coding" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Coding School</h1><div></div></div><div class="list-container" style="margin-top:20px;"><div class="list-item" onclick="showCodingSyllabus('python')"><div class="list-left"><div class="list-icon" style="color:#fbbf24;"><i class="fa-brands fa-python"></i></div><h3>Python</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('java')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-brands fa-java"></i></div><h3>Java</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('cpp')"><div class="list-left"><div class="list-icon" style="color:#60a5fa;"><i class="fa-solid fa-c"></i></div><h3>C++</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('sql')"><div class="list-left"><div class="list-icon" style="color:#34d399;"><i class="fa-solid fa-database"></i></div><h3>SQL / Data</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div><div class="list-item" onclick="showCodingSyllabus('web_dev')"><div class="list-left"><div class="list-icon" style="color:#f472b6;"><i class="fa-brands fa-html5"></i></div><h3>Web Dev</h3></div><i class="fa-solid fa-chevron-right arrow"></i></div></div></div>
-    
-    <div id="dynamic-list-screen" class="screen"><div class="header"><button class="back-btn" onclick="goBackFromList()"><i class="fa-solid fa-arrow-left"></i></button><h1 id="list-title">Topics</h1><div style="width:35px;"></div></div><div id="dynamic-list-container" class="list-container" style="margin-top:10px;"></div></div>
-    <div id="class-selector" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('dynamic-list-screen')"><i class="fa-solid fa-arrow-left"></i></button><h1>Select Grade</h1><div style="width:35px;"></div></div><div id="classes-container" class="card-grid"></div></div>
-    <div id="chapters-screen" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('class-selector')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="chapter-title">Chapters</h1><div style="width:35px;"></div></div><div id="chapters-container" class="list-container" style="margin-top:10px;"></div></div>
-    <div id="coding-syllabus" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('coding')"><i class="fa-solid fa-arrow-left"></i></button><h1 id="syllabus-title">Syllabus</h1><div></div></div><div id="syllabus-container" class="list-container" style="margin-top:10px;"></div></div>
-    
-    <div id="lesson-screen" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('coding-syllabus')"><i class="fa-solid fa-arrow-left"></i></button><h1>Lesson</h1><div></div></div><div id="lesson-loader" class="loader" style="display:none;"></div><div id="lesson-content" class="lesson-container"></div></div>
-    <div id="screen-timetable" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Make Schedule</h1><div></div></div><div style="padding: 20px;"><p style="color:#aaa; margin-bottom:20px;">Enter details.</p><input type="text" id="tt-class" class="form-input" placeholder="Class / Exam"><input type="text" id="tt-hours" class="form-input" placeholder="Study Hours"><button class="primary-btn" onclick="generateTimeTable()">Generate Now ✨</button><div id="tt-loader" class="loader" style="display:none;"></div><div id="tt-result" class="lesson-container" style="margin-top:20px;"></div></div></div>
-    <div id="screen-ask-ai" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>AI Tutor</h1><div></div></div><div id="chat-box" class="chat-box"><div class="message msg-bot">Hello! Ask me anything! 🧠</div></div><div class="chat-input-area"><button class="chat-btn" style="background:#444;" onclick="document.getElementById('img-input').click()"><i class="fa-solid fa-paperclip"></i></button><input type="file" id="img-input" hidden accept="image/*"><input type="text" id="chat-input" class="chat-input" placeholder="Ask something..."><button class="chat-btn" onclick="sendAIChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
-    <div id="screen-quiz" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Daily Quiz</h1><div></div></div><div id="quiz-loader" class="loader" style="display:none; margin-top: 50px;"></div><div id="quiz-content" style="display:none;"><div class="section-title" style="text-align:center; margin-bottom:10px;">Left Today: <span id="quiz-limit-disp">10</span></div><div class="quiz-box"><div id="q-text" class="quiz-question">Loading...</div><button class="option-btn" onclick="checkAnswer(0)" id="opt-0">A</button><button class="option-btn" onclick="checkAnswer(1)" id="opt-1">B</button><button class="option-btn" onclick="checkAnswer(2)" id="opt-2">C</button><button class="option-btn" onclick="checkAnswer(3)" id="opt-3">D</button></div><div style="text-align:center;"><button id="next-q-btn" class="next-btn" onclick="generateQuiz()">Next</button></div></div></div>
-    <div id="materials" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Links</h1><div></div></div><div class="list-container" style="margin-top:10px;"><div class="list-item" onclick="openLink('https://t.me/YourMainChannel')"><div class="list-left"><div class="list-icon" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i></div><div><h3>Main Channel</h3><p style="font-size:11px; color:#aaa;">Join for Updates</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div><div class="list-item" onclick="openLink('https://t.me/YourNotesChannel')"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-file-pdf"></i></div><div><h3>PDF Library</h3><p style="font-size:11px; color:#aaa;">Free Books & Notes</p></div></div><i class="fa-solid fa-arrow-up-right-from-square arrow"></i></div></div></div>
+    <div id="ai-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
+            <h3 style="margin-left:15px; color:white;">AI Tutor</h3>
+        </div>
+        <div class="chat-container">
+            <div class="chat-box" id="chat-box">
+                <div class="msg ai">Hello! I am your AI study partner. Ask me anything or upload a question image.</div>
+            </div>
+            <div class="chat-input-area">
+                <i class="fas fa-image" style="font-size:1.2rem; color:#888; cursor:pointer;" onclick="alert('Image Upload feature coming soon!')"></i>
+                <input type="text" class="chat-input" id="user-input" placeholder="Type your doubt...">
+                <i class="fas fa-paper-plane" style="font-size:1.2rem; color:var(--primary); cursor:pointer;" onclick="sendMessage()"></i>
+            </div>
+        </div>
+    </div>
 
-    <div id="profile" class="screen"><div class="header"><button class="back-btn" onclick="openScreen('home')"><i class="fa-solid fa-arrow-left"></i></button><h1>Profile</h1><div></div></div><div class="profile-header"><div class="profile-avatar"><i class="fa-solid fa-user"></i></div><div style="text-align:center; margin-top:10px;"><h2 class="profile-name" id="username-display" onclick="handleProfileTap()">Student</h2><div id="badge-display" style="color:#aaa; font-size:12px; margin-top:5px;">Free Member</div></div></div><div class="section-title" style="margin-top: 0;">Statistics</div><div class="stats-container"><div class="stat-card"><h3 class="stat-value">0</h3><p class="stat-label">Quiz</p></div><div class="stat-card"><h3 class="stat-value" id="plan-display">Free</h3><p class="stat-label">Plan</p></div></div><div class="list-container" style="margin-top: 20px;"><div class="list-item" onclick="Telegram.WebApp.close()"><div class="list-left"><div class="list-icon" style="color:#ef4444;"><i class="fa-solid fa-power-off"></i></div><h3>Close App</h3></div></div></div></div>
-
-    <div class="nav">
-        <button class="nav-item active" onclick="openScreen('home')"><i class="fa-solid fa-house"></i></button>
-        <button class="nav-item" onclick="checkPremium('code')"><i class="fa-solid fa-code"></i></button>
-        <button class="nav-item" onclick="checkPremium('govt')"><i class="fa-solid fa-book"></i></button>
-        <button class="nav-item" onclick="openScreen('profile')"><i class="fa-solid fa-user"></i></button>
+    <div id="tt-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
+            <h3 style="margin-left:15px; color:white;">Time Table Maker</h3>
+        </div>
+        <div class="tt-form">
+            <label style="color:#ccc; font-size:0.9rem;">Subject / Task</label>
+            <input type="text" id="tt-sub" class="tt-input" placeholder="e.g. Maths Revision">
+            <label style="color:#ccc; font-size:0.9rem;">Time</label>
+            <input type="time" id="tt-time" class="tt-input">
+            <button onclick="addSchedule()" style="width:100%; background:var(--primary); padding:12px; border:none; color:white; border-radius:10px; font-weight:bold; cursor:pointer; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);">Add to Schedule</button>
+        </div>
+        <div id="tt-list" class="tt-list">
+            </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp; tg.ready(); tg.expand();
-        if (tg.initDataUnsafe?.user) { document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name; document.getElementById('username-display').innerText = tg.initDataUnsafe.user.first_name; }
-
-        // ⚠️ API KEYS ⚠️
-        const API_KEYS = { 'gemini': "PASTE_GEMINI_KEY_HERE", 'groq': "PASTE_GROQ_KEY_HERE", 'deepseek': "PASTE_DEEPSEEK_KEY_HERE" };
-
-        // --- SUBSCRIPTION LOGIC ---
-        let isPremium=false; let quizCount=parseInt(localStorage.getItem('quiz_count')||'0'); const QUIZ_LIMIT=10; let devTapCount=0; let tapTimer=null;
-        const savedPlan=localStorage.getItem('study_plan'); if(savedPlan&&savedPlan!=='free') enablePremium();
-        function enablePremium(){ isPremium=true; document.getElementById('badge-display').innerText="Premium Member"; document.getElementById('badge-display').style.color="#fbbf24"; document.getElementById('plan-display').innerText="Pro"; }
-        function disablePremium(){ isPremium=false; document.getElementById('badge-display').innerText="Free Member"; document.getElementById('badge-display').style.color="#aaa"; document.getElementById('plan-display').innerText="Free"; localStorage.setItem('study_plan','free'); localStorage.removeItem('is_dev_mode'); }
-        function handleProfileTap(){ devTapCount++; clearTimeout(tapTimer); tapTimer=setTimeout(()=>{devTapCount=0;},2000); const isDev=localStorage.getItem('is_dev_mode')==='true'; if(!isDev&&devTapCount===50){alert("👨‍💻 Dev Mode ON"); enablePremium(); localStorage.setItem('study_plan','premium'); localStorage.setItem('is_dev_mode','true'); devTapCount=0;} else if(isDev&&devTapCount===5){if(confirm("🔴 Turn OFF Dev Mode?")){disablePremium();alert("Developer Mode Disabled.");devTapCount=0;}} }
-        function checkPremium(f){ if(isPremium){ if(f==='code')openScreen('coding'); if(f==='govt')openScreen('competitive'); if(f==='pdf')openScreen('materials'); } else openScreen('subscription'); }
-        function runDailyQuiz(){ const t=new Date().toDateString(); if(localStorage.getItem('quiz_date')!==t){quizCount=0;localStorage.setItem('quiz_date',t);} if(quizCount>=10&&!isPremium){alert("Limit Reached");openScreen('subscription');}else{openQuiz();} }
-        function payNow(a){ window.location.href=`upi://pay?pa=YOUR_UPI@bank&pn=Study&am=${a}`; setTimeout(()=>{if(confirm("Paid?")){enablePremium();localStorage.setItem('study_plan','premium');location.reload();}},5000); }
-
-        // --- AI LOGIC ---
-        async function callAI(p,img=null){ if(API_KEYS.gemini && !API_KEYS.gemini.includes("PASTE")) { try{let body={contents:[{parts:[{text:p}]}]}; if(img) body.contents[0].parts.push({inline_data:{mime_type:"image/jpeg",data:img}}); const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEYS.gemini}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(r.ok){const d=await r.json(); return d.candidates[0].content.parts[0].text;} } catch(e){} } throw new Error("AI Failed"); }
-        async function generateTimeTable(){ const cls=document.getElementById('tt-class').value; const hrs=document.getElementById('tt-hours').value; if(!cls||!hrs)return; document.getElementById('tt-loader').style.display='block'; try{const text=await callAI(`Time table for ${cls}, ${hrs} hrs. Markdown.`); document.getElementById('tt-result').innerHTML=marked.parse(text);}catch(e){document.getElementById('tt-result').innerText="Offline Mode: Failed.";}finally{document.getElementById('tt-loader').style.display='none';} }
-        async function sendAIChat(){ const i=document.getElementById('chat-input'); const m=i.value; if(!m)return; document.getElementById('chat-box').innerHTML+=`<div class="message msg-user">${m}</div>`; i.value=""; try{const t=await callAI(m); document.getElementById('chat-box').innerHTML+=`<div class="message msg-bot">${marked.parse(t)}</div>`;}catch(e){} }
-        async function generateLesson(t,l){ openScreen('lesson-screen'); document.getElementById('lesson-content').innerHTML=""; document.getElementById('lesson-loader').style.display="block"; try{const txt=await callAI(`Explain ${t} in ${l}. Markdown.`); document.getElementById('lesson-content').innerHTML=marked.parse(txt);}catch(e){} finally{document.getElementById('lesson-loader').style.display="none";} }
-
-        // --- NAVIGATION & DATA ---
-        function openScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-        function goBackFromList() { if(currentMode === 'school') openScreen('school-select'); else if(currentMode === 'govt') openScreen('competitive'); else openScreen('home'); }
+        // --- DATA ---
+        const codingLangs = ["Python", "Java", "C++", "C#", "JavaScript", "React JS", "Node JS", "Swift (iOS)", "Kotlin (Android)", "Go (Golang)", "Rust", "PHP", "Ruby on Rails", "SQL Database", "HTML5 & CSS3"];
         
-        let currentMode="", currentCategory="";
-        // 🔥 RESTORED DATA (FIXED) 🔥
-        const schoolSubjects = { 'c9_10': ['Maths', 'Science', 'Social', 'English', 'Hindi'], 'sci_11_12': ['Physics', 'Chemistry', 'Maths', 'Biology', 'English'], 'comm_11_12': ['Accounts', 'Eco', 'Business', 'Maths'], 'arts_11_12': ['History', 'Polity', 'Geog', 'Sociology'] };
-        const syllabusDB = { 'upsc': ['History', 'Polity', 'Geog', 'Eco'], 'jee_neet': ['Physics', 'Chem', 'Maths', 'Bio'], 'ssc': ['Quant', 'Reasoning', 'English'], 'defense': ['Maths', 'GAT'] };
-        const codingSyllabusList = { 'python': ['Intro', 'Variables', 'Loops', 'OOP'], 'java': ['Syntax', 'OOP', 'Collections'], 'web_dev': ['HTML', 'CSS', 'JS'], 'cpp':['Basics','OOP'], 'sql':['Queries'] };
-        const cbseChapters = ["Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5"];
+        const govtTopics = [
+            {t: "UPSC Civil Services", desc: "Prelims & Mains Syllabus"},
+            {t: "SSC (CGL, CHSL, MTS)", desc: "All Tier Exams"},
+            {t: "Banking (IBPS, SBI, RBI)", desc: "PO, Clerk, SO"},
+            {t: "Railways (RRB NTPC, Group D)", desc: "Technical & Non-Tech"},
+            {t: "Defence (NDA, CDS, AFCAT)", desc: "Written & SSB Interview"},
+            {t: "Teaching (CTET, UGC NET)", desc: "Paper 1 & 2"},
+            {t: "IMPORTANT PDFs Section", desc: "Monthly Magazines, Govt Schemes"}
+        ];
 
-        function loadSchoolSubjects(cat) { currentMode='school'; currentCategory=cat; renderList(schoolSubjects[cat], (sub)=>openClassSelector(sub)); }
-        function openClassSelector(sub) { document.getElementById('classes-container').innerHTML=""; let s=1,e=10; if(currentCategory.includes('11_12')){s=11;e=12;} else if(currentCategory=='c9_10') {s=9;e=10;} for(let i=s; i<=e; i++) { const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>Class ${i}</h3>`; d.onclick=()=>openChapters(sub, `Class ${i}`); document.getElementById('classes-container').appendChild(d); } openScreen('class-selector'); }
-        function openChapters(sub, cls) { document.getElementById('chapters-container').innerHTML=""; ["Chap 1","Chap 2"].forEach(c=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${c}</h3>`; d.onclick=()=>sendToBot(`notes_${sub}_${cls}_${c}`); document.getElementById('chapters-container').appendChild(d); }); openScreen('chapters-screen'); }
-        function loadSyllabus(k){ currentMode='govt'; renderList(syllabusDB[k], (t)=>sendToBot(`govt_${k}_${t}`)); }
-        function showCodingSyllabus(l){ const lst=codingSyllabusList[l]; const c=document.getElementById('syllabus-container'); c.innerHTML=""; lst.forEach(t=>{const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${t}</h3>`; d.onclick=()=>generateLesson(t,l); c.appendChild(d);}); openScreen('coding-syllabus'); }
-        function renderList(items, handler) { const c=document.getElementById('dynamic-list-container'); c.innerHTML=""; items.forEach(i=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<h3>${i}</h3>`; d.onclick=()=>handler(i); c.appendChild(d); }); openScreen('dynamic-list-screen'); }
-        function sendToBot(d){ tg.sendData(d); tg.close(); }
-        function openLink(u){ tg.openTelegramLink(u); }
+        // REAL SCHOOL SUBJECTS DATA (FIXED)
+        const finalSchoolData = [
+            // Primary
+            { cls: "Class 1", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 2", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 3", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 4", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            { cls: "Class 5", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
+            // Middle
+            { cls: "Class 6", subs: ["Mathematics", "Science", "Social Science", "Honeysuckle (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            { cls: "Class 7", subs: ["Mathematics", "Science", "Social Science", "Honeycomb (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            { cls: "Class 8", subs: ["Mathematics", "Science", "Social Science", "Honeydew (Eng)", "Vasant (Hindi)", "Sanskrit"] },
+            // Secondary
+            { cls: "Class 9", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
+            { cls: "Class 10", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
+            // Senior Secondary
+            { cls: "Class 11 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
+            { cls: "Class 11 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
+            { cls: "Class 11 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Sociology"] },
+            { cls: "Class 12 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
+            { cls: "Class 12 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
+            { cls: "Class 12 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Psychology"] }
+        ];
+
+        // --- NAVIGATION ---
+        function closeAllOverlays() {
+            document.querySelectorAll('.overlay').forEach(el => el.style.display = 'none');
+        }
+
+        function openProfile() {
+            closeAllOverlays();
+            document.getElementById('profile-overlay').style.display = 'block';
+        }
+
+        // --- SECTIONS ---
+        function openSchool() {
+            closeAllOverlays();
+            const ov = document.getElementById('content-overlay');
+            const body = document.getElementById('overlay-body');
+            document.getElementById('overlay-title').innerText = "School Curriculum (1-12)";
+            ov.style.display = 'block';
+            
+            // RENDER WITH REAL SUBJECTS AND BUTTONS
+            body.innerHTML = finalSchoolData.map(item => `
+                <div class="syllabus-item">
+                    <div class="syllabus-head" onclick="toggleAcc(this)">${item.cls} <i class="fas fa-chevron-down"></i></div>
+                    <div class="syllabus-body">
+                        ${item.subs.map(sub => `
+                            <div class="topic-row">
+                                <span class="subject-name">${sub}</span>
+                                <div class="btn-group">
+                                    <span class="action-btn btn-notes" onclick="dlPDF('${item.cls} - ${sub} Notes')">Notes</span>
+                                    <span class="action-btn btn-papers" onclick="openBot('${item.cls} - ${sub}')">Old Papers</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openCoding() {
+            closeAllOverlays();
+            const ov = document.getElementById('content-overlay');
+            const body = document.getElementById('overlay-body');
+            document.getElementById('overlay-title').innerText = "Programming Hub";
+            ov.style.display = 'block';
+            
+            body.innerHTML = codingLangs.map(lang => `
+                <div class="syllabus-item">
+                    <div class="syllabus-head" onclick="toggleAcc(this)">${lang} <i class="fas fa-chevron-down"></i></div>
+                    <div class="syllabus-body">
+                        <div style="color:#aaa; font-size:0.9rem; padding:10px;">
+                            Detailed Syllabus module for ${lang}. Includes tutorials, examples, and projects.
+                        </div>
+                        <div class="topic-row" style="border:none; padding:0 10px 10px;">
+                             <span>Resources:</span>
+                             <div class="btn-group">
+                                <span class="action-btn btn-notes" onclick="dlPDF('${lang} Docs')">Docs & PDFs</span>
+                                <span class="action-btn btn-notes" style="background:rgba(108, 99, 255, 0.2); color:var(--primary); border-color:var(--primary);" onclick="explainAI('${lang}')"><i class="fas fa-robot"></i> Ask AI</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openGovt() {
+            closeAllOverlays();
+            const ov = document.getElementById('content-overlay');
+            const body = document.getElementById('overlay-body');
+            document.getElementById('overlay-title').innerText = "Govt Exams Prep";
+            ov.style.display = 'block';
+
+            body.innerHTML = govtTopics.map(item => `
+                <div class="syllabus-item">
+                    <div class="syllabus-head" onclick="toggleAcc(this)">${item.t} <i class="fas fa-chevron-down"></i></div>
+                    <div class="syllabus-body">
+                        <p style="color:#888; font-size:0.85rem; margin-bottom:15px;">${item.desc}</p>
+                         <div class="topic-row" style="border:none; padding:0;">
+                             <span style="font-size:0.9rem;">Study Material:</span>
+                             <div class="btn-group">
+                                <span class="action-btn btn-notes" onclick="dlPDF('${item.t} Syllabus')">Syllabus PDF</span>
+                                <span class="action-btn btn-papers" onclick="openBot('${item.t} PYQs')">PYQ Papers</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openTelegram() {
+            closeAllOverlays();
+            const ov = document.getElementById('content-overlay');
+            const body = document.getElementById('overlay-body');
+            document.getElementById('overlay-title').innerText = "Join Channels";
+            ov.style.display = 'block';
+            
+            body.innerHTML = `
+                <div style="padding:20px;">
+                    <p style="color:#ccc; margin-bottom:15px;">Join premium channels for instant updates & notes:</p>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @UPSC_Notes_Official</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @IIT_JEE_Materials</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @Class10_12_Boards</a>
+                    <a href="#" class="tg-btn"><i class="fab fa-telegram-plane" style="margin-right:10px; font-size:1.2rem;"></i> @Coding_Community</a>
+                </div>
+            `;
+        }
+
+        // --- UTILS ---
+        function toggleAcc(el) {
+            const body = el.nextElementSibling;
+            const icon = el.querySelector('i');
+            if(body.style.display === 'block') {
+                body.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                body.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function dlPDF(name) {
+            // Simulation of in-app download
+            const toast = document.createElement('div');
+            toast.innerText = `Downloading: ${name}...`;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '80px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.background = '#333';
+            toast.style.color = 'white';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '20px';
+            toast.style.zIndex = '3000';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
         
-        let currentQuiz={}; function openQuiz(){ openScreen('screen-quiz'); generateQuiz(); }
-        async function generateQuiz(){ document.getElementById('quiz-loader').style.display='block'; document.getElementById('quiz-content').style.display='none'; try{const raw=await callAI("GK MCQ JSON:{q,o:[],a:0}"); currentQuiz=JSON.parse(raw.replace(/```json|```/g,'').trim()); document.getElementById('q-text').innerText=currentQuiz.q; const b=document.querySelectorAll('.option-btn'); b.forEach((btn,i)=>{btn.innerText=currentQuiz.o[i];btn.className='option-btn';btn.disabled=false;}); document.getElementById('quiz-content').style.display='block';}catch(e){}finally{document.getElementById('quiz-loader').style.display='none';} }
-        function checkAnswer(i){ quizCount++; localStorage.setItem('quiz_count',quizCount); const b=document.querySelectorAll('.option-btn'); if(i===currentQuiz.a) b[i].classList.add('correct'); else b[i].classList.add('wrong'); }
+        function openBot(name) {
+            alert(`Redirecting to Telegram Bot for: ${name} Question Papers.`);
+            // window.location.href = "https://t.me/YourBotLink"; 
+        }
+
+        // --- AI TUTOR ---
+        function openAITutor() {
+            closeAllOverlays();
+            document.getElementById('ai-overlay').style.display = 'block';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const txt = input.value;
+            if(!txt) return;
+
+            const box = document.getElementById('chat-box');
+            box.innerHTML += `<div class="msg user">${txt}</div>`;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            setTimeout(() => {
+                const response = `Here is a structured explanation for: <strong>"${txt}"</strong><br><br>
+                    • <strong>Concept Overview:</strong> Brief definition of the topic.<br>
+                    • <strong>Key Points:</strong> Important formulas or rules.<br>
+                    • <strong>Example Application:</strong> How it's used in real scenarios.<br><br>
+                    <em>Let me know if you need more details!</em>`;
+                box.innerHTML += `<div class="msg ai">${response}</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 1000);
+        }
+
+        function explainAI(topic) {
+             openAITutor();
+             setTimeout(() => {
+                 document.getElementById('user-input').value = "Explain concept of " + topic;
+                 sendMessage();
+             }, 500);
+        }
+
+        // --- TIME TABLE ---
+        function openTimeTable() {
+            closeAllOverlays();
+            document.getElementById('tt-overlay').style.display = 'block';
+        }
+
+        function addSchedule() {
+            const sub = document.getElementById('tt-sub').value;
+            const time = document.getElementById('tt-time').value;
+            if(sub && time) {
+                const list = document.getElementById('tt-list');
+                list.innerHTML += `
+                    <div class="tt-item">
+                        <span>${sub}</span>
+                        <span style="color:var(--primary); font-weight:bold;">${time}</span>
+                    </div>
+                `;
+                document.getElementById('tt-sub').value = '';
+                document.getElementById('tt-time').value = '';
+            }
+        }
+
+        // --- QUIZ ---
+        const quizDB = [
+            {q: "Who is the current RBI Governor?", a: "Shaktikanta Das"},
+            {q: "Host country for 2024 Olympics?", a: "France (Paris)"},
+            {q: "Which movie won Best Picture at Oscars 2024?", a: "Oppenheimer"},
+            {q: "What is the new name of Twitter?", a: "X"},
+            {q: "Largest state in India by area?", a: "Rajasthan"}
+        ];
+
+        function startQuiz() {
+            let q = quizDB[Math.floor(Math.random() * quizDB.length)];
+            let ans = prompt(`Daily CA Quiz (Unlimited)\n\nQ: ${q.q}\n\nType your answer below:`);
+            if(ans) {
+                 // Simple check based on inclusion
+                if(q.a.toLowerCase().includes(ans.toLowerCase()) && ans.length > 2) {
+                    alert(`✅ Correct! The answer is: ${q.a}.\nLoading next question...`);
+                    startQuiz();
+                } else {
+                    alert(`❌ Incorrect. Correct answer: ${q.a}.\nTry the next one!`);
+                    startQuiz();
+                }
+            }
+        }
+
     </script>
 </body>
     </html>
