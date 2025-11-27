@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMentor Plus - 3D Ultimate Fixed</title>
+    <title>StudyMentor Plus - Class 9-12 Premium</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -71,7 +71,7 @@
             background: #1F2235; padding: 18px 20px; border-radius: 16px;
             display: flex; align-items: center; justify-content: space-between;
             box-shadow: 5px 5px 10px #0b0c18, -5px -5px 10px #25283e;
-            cursor: pointer; /* Added cursor pointer */
+            cursor: pointer;
         }
 
         /* --- Bottom Nav --- */
@@ -99,80 +99,87 @@
             z-index: 10;
         }
 
-        /* --- Accordion & Buttons Styles --- */
+        /* --- Updated Accordion Styles for Class/Stream --- */
         .syllabus-item {
             background: #1F2235; margin: 15px 20px; border-radius: 12px; overflow: hidden;
             box-shadow: 4px 4px 8px #0b0c18;
         }
-        .syllabus-head { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; }
-        .syllabus-body { display: none; padding: 15px; border-top: 1px solid rgba(255,255,255,0.05); background: #181a2e; }
+        .syllabus-head { padding: 15px; display: flex; justify-content: space-between; font-weight: 600; cursor: pointer; border-bottom: 1px solid transparent;}
+        .syllabus-body { display: none; padding: 0; background: #181a2e; }
 
-        .topic-row {
+        /* Subject Row inside Class */
+        .subject-row {
+            padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1);
+            cursor: pointer; transition: 0.2s;
         }
-        .topic-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .subject-row:hover { background: #23263b; }
         
-        .subject-name { font-size: 0.95rem; color: #E0E0E0; }
+        /* Chapters Dropdown */
+        .chapters-list { display: none; background: #0F1020; padding: 10px 20px; border-left: 3px solid var(--primary); }
+        .chapter-item {
+            padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); 
+            font-size: 0.9rem; color: #aaa; cursor: pointer; display: flex; justify-content: space-between;
+        }
+        .chapter-item:hover { color: var(--primary); }
+        .chapter-item:last-child { border-bottom: none; }
 
+        /* --- CHAPTER VIEW SPECIFIC STYLES --- */
+        .chapter-container { padding: 20px; }
+        
+        .section-box {
+            background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;
+            box-shadow: 5px 5px 10px #0b0c18, -5px -5px 10px #25283e;
+        }
+        .sec-title { 
+            color: var(--primary); font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;
+        }
+        
+        /* Explanation Text */
+        .read-content { font-size: 0.95rem; line-height: 1.6; color: #d1d1d1; }
+        .highlight { color: #fdcb6e; font-weight: bold; }
+
+        /* Video Cards */
+        .video-card {
+            display: flex; gap: 15px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; margin-bottom: 10px; cursor: pointer;
+        }
+        .vid-thumb {
+            width: 80px; height: 50px; background: #333; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white;
+        }
+
+        /* Action Buttons Grid */
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .res-btn {
+            padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        }
+        .btn-dl-note { background: rgba(9, 132, 227, 0.15); color: #74b9ff; border: 1px solid #0984e3; }
+        .btn-dl-pyq { background: rgba(255, 107, 107, 0.15); color: #ff7675; border: 1px solid #ff6b6b; }
+        
+        /* Quiz Inline */
+        .quiz-inline-card { background: #2A2D3E; padding: 15px; border-radius: 10px; margin-top: 10px; }
+        .quiz-opt { padding: 10px; background: #0F1020; margin: 5px 0; border-radius: 8px; cursor: pointer; border: 1px solid #333;}
+        .quiz-opt:hover { border-color: var(--primary); }
+
+        /* --- Other existing styles preserved --- */
         .btn-group { display: flex; gap: 8px; }
-        .action-btn {
-            font-size: 0.7rem; padding: 6px 12px; border-radius: 6px; text-decoration: none; cursor: pointer;
-            font-weight: 600; letter-spacing: 0.5px; transition: 0.2s;
-        }
-        /* Notes Button (Blueish as in screenshot) */
-        .btn-notes { 
-            background: rgba(74, 105, 189, 0.2); color: #6a89cc; border: 1px solid #4a69bd;
-        }
-        .btn-notes:hover { background: rgba(74, 105, 189, 0.4); }
-        
-        /* Old Papers Button (Reddish as in screenshot) */
-        .btn-papers { 
-            background: rgba(235, 77, 75, 0.2); color: #ff7675; border: 1px solid #eb4d4b; 
-        }
-        .btn-papers:hover { background: rgba(235, 77, 75, 0.4); }
-
-        /* --- AI Tutor Chat Interface --- */
+        .action-btn { font-size: 0.7rem; padding: 6px 12px; border-radius: 6px; text-decoration: none; cursor: pointer; font-weight: 600; letter-spacing: 0.5px; transition: 0.2s; }
+        .btn-notes { background: rgba(74, 105, 189, 0.2); color: #6a89cc; border: 1px solid #4a69bd; }
+        .btn-papers { background: rgba(235, 77, 75, 0.2); color: #ff7675; border: 1px solid #eb4d4b; }
         .chat-container { display: flex; flex-direction: column; height: calc(100% - 70px); }
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .chat-input-area {
-            padding: 15px; background: #1F2235; display: flex; align-items: center; gap: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        .chat-input {
-            flex: 1; background: #0F1020; border: none; padding: 12px; border-radius: 20px; color: white; outline: none;
-        }
+        .chat-input-area { padding: 15px; background: #1F2235; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .chat-input { flex: 1; background: #0F1020; border: none; padding: 12px; border-radius: 20px; color: white; outline: none; }
         .msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 0.95rem; line-height: 1.4; }
         .msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
         .msg.ai { align-self: flex-start; background: #2A2D3E; color: #ddd; border-bottom-left-radius: 2px; }
-
-        /* --- Time Table UI --- */
         .tt-form { padding: 20px; background: #1F2235; margin: 20px; border-radius: 15px; box-shadow: inset 5px 5px 10px #0b0c18, inset -5px -5px 10px #25283e; }
         .tt-input { width: 100%; padding: 12px; margin: 5px 0 15px; background: #0F1020; border: 1px solid #333; color: white; border-radius: 10px; outline:none; }
         .tt-list { padding: 0 20px; }
         .tt-item { background: #1F2235; padding: 15px; margin-bottom: 10px; border-radius: 12px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); box-shadow: 5px 5px 10px #0b0c18; }
-
-        /* --- Telegram Buttons --- */
-        .tg-btn {
-            display: flex; align-items: center; width: 100%; background: linear-gradient(45deg, #229ED9, #6DD5FA); color: white;
-            padding: 15px; border-radius: 12px; margin-bottom: 12px; text-decoration: none; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3);
-        }
-
-        /* --- Profile Overlay Specifics --- */
-        .profile-header-section {
-            padding: 40px 20px;
-            text-align: center;
-            background: linear-gradient(180deg, rgba(15,16,32,0) 0%, rgba(108, 99, 255, 0.1) 100%);
-        }
-        .profile-big-icon {
-            width: 100px; height: 100px; margin: 0 auto 20px;
-            background: linear-gradient(145deg, #23263b, #1c1e30);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 3rem; color: var(--primary);
-            box-shadow: 8px 8px 16px #080911, -8px -8px 16px #262943;
-            border: 2px solid rgba(108, 99, 255, 0.3);
-        }
+        .tg-btn { display: flex; align-items: center; width: 100%; background: linear-gradient(45deg, #229ED9, #6DD5FA); color: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; text-decoration: none; font-weight: bold; box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3); }
+        .profile-header-section { padding: 40px 20px; text-align: center; background: linear-gradient(180deg, rgba(15,16,32,0) 0%, rgba(108, 99, 255, 0.1) 100%); }
+        .profile-big-icon { width: 100px; height: 100px; margin: 0 auto 20px; background: linear-gradient(145deg, #23263b, #1c1e30); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary); box-shadow: 8px 8px 16px #080911, -8px -8px 16px #262943; border: 2px solid rgba(108, 99, 255, 0.3); }
 
     </style>
 </head>
@@ -187,14 +194,14 @@
 
     <div style="padding: 10px 25px;">
         <h2 style="color:white; margin-bottom:5px;">Dashboard</h2>
-        <p style="color:#888; font-size:0.9rem;">3D Premium Learning</p>
+        <p style="color:#888; font-size:0.9rem;">Class 9 to 12 & Exams</p>
     </div>
 
     <div class="grid-container">
         <div class="card" onclick="openSchool()">
             <div class="card-icon icon-school"><i class="fas fa-graduation-cap"></i></div>
             <h3>School</h3>
-            <p style="font-size:0.7rem; color:#888;">Class 1-12</p>
+            <p style="font-size:0.7rem; color:#888;">Class 9-12 (Streams)</p>
         </div>
         <div class="card" onclick="openGovt()">
             <div class="card-icon icon-exams"><i class="fas fa-university"></i></div>
@@ -283,6 +290,18 @@
         <div id="overlay-body"></div>
     </div>
 
+    <div id="chapter-overlay" class="overlay">
+        <div class="overlay-header">
+            <i class="fas fa-arrow-left" onclick="document.getElementById('chapter-overlay').style.display='none'" style="font-size:1.2rem;"></i>
+            <div style="margin-left:15px;">
+                <h3 id="chap-title" style="color:white; font-size:1rem;">Chapter Name</h3>
+                <p id="chap-sub" style="color:#aaa; font-size:0.75rem;">Subject Name</p>
+            </div>
+        </div>
+        <div id="chapter-body" class="chapter-container">
+            </div>
+    </div>
+
     <div id="ai-overlay" class="overlay">
         <div class="overlay-header">
             <i class="fas fa-arrow-left" onclick="closeAllOverlays()" style="font-size:1.2rem;"></i>
@@ -312,14 +331,51 @@
             <input type="time" id="tt-time" class="tt-input">
             <button onclick="addSchedule()" style="width:100%; background:var(--primary); padding:12px; border:none; color:white; border-radius:10px; font-weight:bold; cursor:pointer; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);">Add to Schedule</button>
         </div>
-        <div id="tt-list" class="tt-list">
-            </div>
+        <div id="tt-list" class="tt-list"></div>
     </div>
 
     <script>
-        // --- DATA ---
+        // --- UPDATED DATA STRUCTURE (9-12 Only, Streams) ---
+        // Basic chapters for demo
+        const defaultChapters = ["Chapter 1: Introduction & Basics", "Chapter 2: Core Concepts & Theory", "Chapter 3: Advanced Applications", "Chapter 4: Problem Solving Strategies", "Chapter 5: Important Theorems", "Chapter 6: Previous Year Analysis"];
+
+        const schoolData = [
+            { 
+                cls: "Class 9", 
+                subs: ["Mathematics", "Science", "Social Science", "English Language", "Hindi"] 
+            },
+            { 
+                cls: "Class 10 (Board)", 
+                subs: ["Mathematics", "Science", "Social Science", "English", "Hindi"] 
+            },
+            { 
+                cls: "Class 11 (Science)", 
+                subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core"] 
+            },
+            { 
+                cls: "Class 11 (Commerce)", 
+                subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Mathematics"] 
+            },
+            { 
+                cls: "Class 11 (Arts)", 
+                subs: ["History", "Political Science", "Geography", "Sociology", "Psychology"] 
+            },
+            { 
+                cls: "Class 12 (Science)", 
+                subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core"] 
+            },
+            { 
+                cls: "Class 12 (Commerce)", 
+                subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Mathematics"] 
+            },
+            { 
+                cls: "Class 12 (Arts)", 
+                subs: ["History", "Political Science", "Geography", "Sociology", "Psychology"] 
+            }
+        ];
+
+        // Other Data (Unchanged)
         const codingLangs = ["Python", "Java", "C++", "C#", "JavaScript", "React JS", "Node JS", "Swift (iOS)", "Kotlin (Android)", "Go (Golang)", "Rust", "PHP", "Ruby on Rails", "SQL Database", "HTML5 & CSS3"];
-        
         const govtTopics = [
             {t: "UPSC Civil Services", desc: "Prelims & Mains Syllabus"},
             {t: "SSC (CGL, CHSL, MTS)", desc: "All Tier Exams"},
@@ -328,30 +384,6 @@
             {t: "Defence (NDA, CDS, AFCAT)", desc: "Written & SSB Interview"},
             {t: "Teaching (CTET, UGC NET)", desc: "Paper 1 & 2"},
             {t: "IMPORTANT PDFs Section", desc: "Monthly Magazines, Govt Schemes"}
-        ];
-
-        // REAL SCHOOL SUBJECTS DATA (FIXED)
-        const finalSchoolData = [
-            // Primary
-            { cls: "Class 1", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
-            { cls: "Class 2", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
-            { cls: "Class 3", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
-            { cls: "Class 4", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
-            { cls: "Class 5", subs: ["Maths Magic", "Marigold (English)", "Rimjhim (Hindi)", "Looking Around (EVS)"] },
-            // Middle
-            { cls: "Class 6", subs: ["Mathematics", "Science", "Social Science", "Honeysuckle (Eng)", "Vasant (Hindi)", "Sanskrit"] },
-            { cls: "Class 7", subs: ["Mathematics", "Science", "Social Science", "Honeycomb (Eng)", "Vasant (Hindi)", "Sanskrit"] },
-            { cls: "Class 8", subs: ["Mathematics", "Science", "Social Science", "Honeydew (Eng)", "Vasant (Hindi)", "Sanskrit"] },
-            // Secondary
-            { cls: "Class 9", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
-            { cls: "Class 10", subs: ["Mathematics", "Science", "Social Science", "English Language & Lit.", "Hindi Course A/B"] },
-            // Senior Secondary
-            { cls: "Class 11 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
-            { cls: "Class 11 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
-            { cls: "Class 11 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Sociology"] },
-            { cls: "Class 12 (Science)", subs: ["Physics", "Chemistry", "Mathematics", "Biology", "English Core", "Computer Science"] },
-            { cls: "Class 12 (Commerce)", subs: ["Accountancy", "Business Studies", "Economics", "English Core", "Maths / IP"] },
-            { cls: "Class 12 (Arts)", subs: ["History", "Political Science", "Geography", "Economics", "English Core", "Psychology"] }
         ];
 
         // --- NAVIGATION ---
@@ -364,26 +396,30 @@
             document.getElementById('profile-overlay').style.display = 'block';
         }
 
-        // --- SECTIONS ---
+        // --- NEW: SCHOOL LOGIC (Class -> Subject -> Chapter -> Full View) ---
         function openSchool() {
             closeAllOverlays();
             const ov = document.getElementById('content-overlay');
             const body = document.getElementById('overlay-body');
-            document.getElementById('overlay-title').innerText = "School Curriculum (1-12)";
+            document.getElementById('overlay-title').innerText = "School Curriculum (9-12)";
             ov.style.display = 'block';
             
-            // RENDER WITH REAL SUBJECTS AND BUTTONS
-            body.innerHTML = finalSchoolData.map(item => `
+            body.innerHTML = schoolData.map((item, index) => `
                 <div class="syllabus-item">
                     <div class="syllabus-head" onclick="toggleAcc(this)">${item.cls} <i class="fas fa-chevron-down"></i></div>
                     <div class="syllabus-body">
                         ${item.subs.map(sub => `
-                            <div class="topic-row">
+                            <div class="subject-row" onclick="toggleChapters(this)">
                                 <span class="subject-name">${sub}</span>
-                                <div class="btn-group">
-                                    <span class="action-btn btn-notes" onclick="dlPDF('${item.cls} - ${sub} Notes')">Notes</span>
-                                    <span class="action-btn btn-papers" onclick="openBot('${item.cls} - ${sub}')">Old Papers</span>
-                                </div>
+                                <i class="fas fa-angle-right" style="color:#666;"></i>
+                            </div>
+                            <div class="chapters-list">
+                                ${defaultChapters.map(chap => `
+                                    <div class="chapter-item" onclick="openChapterView('${chap}', '${sub}')">
+                                        <span>${chap}</span>
+                                        <i class="fas fa-play-circle" style="color:var(--primary);"></i>
+                                    </div>
+                                `).join('')}
                             </div>
                         `).join('')}
                     </div>
@@ -391,6 +427,95 @@
             `).join('');
         }
 
+        function toggleAcc(el) {
+            const body = el.nextElementSibling;
+            const icon = el.querySelector('i');
+            if(body.style.display === 'block') {
+                body.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                body.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleChapters(el) {
+            const list = el.nextElementSibling;
+            const icon = el.querySelector('i');
+            if(list.style.display === 'block') {
+                list.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                list.style.display = 'block';
+                icon.style.transform = 'rotate(90deg)';
+            }
+        }
+
+        // --- NEW: CHAPTER VIEW RENDERING ---
+        function openChapterView(chapter, subject) {
+            // Setup Overlay
+            const ov = document.getElementById('chapter-overlay');
+            document.getElementById('chap-title').innerText = chapter;
+            document.getElementById('chap-sub').innerText = subject;
+            const body = document.getElementById('chapter-body');
+
+            // Render Content (Structured: Exp -> Video -> Notes/PYQ -> Quiz)
+            body.innerHTML = `
+                <div class="section-box">
+                    <div class="sec-title"><i class="fas fa-book-open"></i> Structured Explanation</div>
+                    <div class="read-content">
+                        <p style="margin-bottom:10px;"><strong>Basic Concept:</strong> Introduction to ${subject} concepts related to ${chapter}. Understanding the fundamental definitions and core terminologies is essential for this topic.</p>
+                        <p style="margin-bottom:10px;"><strong>Intermediate Theory:</strong> Moving deeper, we analyze the <span class="highlight">key theorems and formulas</span>. Understanding derivation and logic flow.</p>
+                        <p><strong>Advanced Application:</strong> How to apply these concepts in complex problem-solving scenarios, specifically for Board Exams and Competitive Entrance tests.</p>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="sec-title"><i class="fas fa-video"></i> Reference Videos</div>
+                    <div class="video-card">
+                        <div class="vid-thumb"><i class="fas fa-play"></i></div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:600;">Part 1: Basic Introduction</div>
+                            <div style="font-size:0.75rem; color:#888;">15 Mins • HD</div>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <div class="vid-thumb"><i class="fas fa-play"></i></div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:600;">Part 2: Advanced Problems</div>
+                            <div style="font-size:0.75rem; color:#888;">22 Mins • HD</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="sec-title"><i class="fas fa-file-alt"></i> Important Resources</div>
+                    <div class="res-grid">
+                        <div class="res-btn btn-dl-note" onclick="dlPDF('${chapter} Notes')">
+                            <i class="fas fa-download" style="margin-bottom:5px; display:block; font-size:1.2rem;"></i> Download Notes
+                        </div>
+                        <div class="res-btn btn-dl-pyq" onclick="dlPDF('${chapter} PYQs')">
+                            <i class="fas fa-history" style="margin-bottom:5px; display:block; font-size:1.2rem;"></i> Previous Year Qs
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-box">
+                    <div class="sec-title"><i class="fas fa-question-circle"></i> Quick Quiz</div>
+                    <p style="font-size:0.85rem; color:#ccc;">Test your knowledge based on what you just studied.</p>
+                    <div class="quiz-inline-card">
+                        <p style="margin-bottom:10px; font-weight:600;">Q: What is the primary concept of ${chapter}?</p>
+                        <div class="quiz-opt" onclick="this.style.background='#27ae60'; alert('Correct!')">Option A: Fundamental Theory</div>
+                        <div class="quiz-opt" onclick="this.style.background='#c0392b'; alert('Incorrect')">Option B: Unrelated Variable</div>
+                        <div class="quiz-opt" onclick="this.style.background='#c0392b'; alert('Incorrect')">Option C: Abstract Logic</div>
+                    </div>
+                </div>
+            `;
+
+            ov.style.display = 'block';
+        }
+
+        // --- CODING (Unchanged except re-hooking) ---
         function openCoding() {
             closeAllOverlays();
             const ov = document.getElementById('content-overlay');
@@ -405,7 +530,7 @@
                         <div style="color:#aaa; font-size:0.9rem; padding:10px;">
                             Detailed Syllabus module for ${lang}. Includes tutorials, examples, and projects.
                         </div>
-                        <div class="topic-row" style="border:none; padding:0 10px 10px;">
+                        <div class="subject-row" style="border:none; padding:0 10px 10px;">
                              <span>Resources:</span>
                              <div class="btn-group">
                                 <span class="action-btn btn-notes" onclick="dlPDF('${lang} Docs')">Docs & PDFs</span>
@@ -417,6 +542,7 @@
             `).join('');
         }
 
+        // --- GOVT EXAMS (Unchanged) ---
         function openGovt() {
             closeAllOverlays();
             const ov = document.getElementById('content-overlay');
@@ -429,7 +555,7 @@
                     <div class="syllabus-head" onclick="toggleAcc(this)">${item.t} <i class="fas fa-chevron-down"></i></div>
                     <div class="syllabus-body">
                         <p style="color:#888; font-size:0.85rem; margin-bottom:15px;">${item.desc}</p>
-                         <div class="topic-row" style="border:none; padding:0;">
+                         <div class="subject-row" style="border:none; padding:0;">
                              <span style="font-size:0.9rem;">Study Material:</span>
                              <div class="btn-group">
                                 <span class="action-btn btn-notes" onclick="dlPDF('${item.t} Syllabus')">Syllabus PDF</span>
@@ -447,7 +573,6 @@
             const body = document.getElementById('overlay-body');
             document.getElementById('overlay-title').innerText = "Join Channels";
             ov.style.display = 'block';
-            
             body.innerHTML = `
                 <div style="padding:20px;">
                     <p style="color:#ccc; margin-bottom:15px;">Join premium channels for instant updates & notes:</p>
@@ -460,20 +585,7 @@
         }
 
         // --- UTILS ---
-        function toggleAcc(el) {
-            const body = el.nextElementSibling;
-            const icon = el.querySelector('i');
-            if(body.style.display === 'block') {
-                body.style.display = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                body.style.display = 'block';
-                icon.style.transform = 'rotate(180deg)';
-            }
-        }
-
         function dlPDF(name) {
-            // Simulation of in-app download
             const toast = document.createElement('div');
             toast.innerText = `Downloading: ${name}...`;
             toast.style.position = 'fixed';
@@ -488,45 +600,32 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
         }
-        
-        function openBot(name) {
-            alert(`Redirecting to Telegram Bot for: ${name} Question Papers.`);
-            // window.location.href = "https://t.me/YourBotLink"; 
-        }
+        function openBot(name) { alert(`Redirecting to Telegram Bot for: ${name}`); }
 
         // --- AI TUTOR ---
         function openAITutor() {
             closeAllOverlays();
             document.getElementById('ai-overlay').style.display = 'block';
         }
-
         function sendMessage() {
             const input = document.getElementById('user-input');
             const txt = input.value;
             if(!txt) return;
-
             const box = document.getElementById('chat-box');
             box.innerHTML += `<div class="msg user">${txt}</div>`;
             input.value = '';
             box.scrollTop = box.scrollHeight;
-
             setTimeout(() => {
                 const response = `Here is a structured explanation for: <strong>"${txt}"</strong><br><br>
-                    • <strong>Concept Overview:</strong> Brief definition of the topic.<br>
-                    • <strong>Key Points:</strong> Important formulas or rules.<br>
-                    • <strong>Example Application:</strong> How it's used in real scenarios.<br><br>
-                    <em>Let me know if you need more details!</em>`;
+                    • <strong>Concept:</strong> Brief definition.<br>
+                    • <strong>Formula:</strong> Key math/logic.<br><br><em>Let me know if you need more details!</em>`;
                 box.innerHTML += `<div class="msg ai">${response}</div>`;
                 box.scrollTop = box.scrollHeight;
             }, 1000);
         }
-
         function explainAI(topic) {
              openAITutor();
-             setTimeout(() => {
-                 document.getElementById('user-input').value = "Explain concept of " + topic;
-                 sendMessage();
-             }, 500);
+             setTimeout(() => { document.getElementById('user-input').value = "Explain " + topic; sendMessage(); }, 500);
         }
 
         // --- TIME TABLE ---
@@ -534,7 +633,6 @@
             closeAllOverlays();
             document.getElementById('tt-overlay').style.display = 'block';
         }
-
         function addSchedule() {
             const sub = document.getElementById('tt-sub').value;
             const time = document.getElementById('tt-time').value;
@@ -556,25 +654,19 @@
             {q: "Who is the current RBI Governor?", a: "Shaktikanta Das"},
             {q: "Host country for 2024 Olympics?", a: "France (Paris)"},
             {q: "Which movie won Best Picture at Oscars 2024?", a: "Oppenheimer"},
-            {q: "What is the new name of Twitter?", a: "X"},
             {q: "Largest state in India by area?", a: "Rajasthan"}
         ];
-
         function startQuiz() {
             let q = quizDB[Math.floor(Math.random() * quizDB.length)];
-            let ans = prompt(`Daily CA Quiz (Unlimited)\n\nQ: ${q.q}\n\nType your answer below:`);
+            let ans = prompt(`Daily CA Quiz\n\nQ: ${q.q}`);
             if(ans) {
-                 // Simple check based on inclusion
                 if(q.a.toLowerCase().includes(ans.toLowerCase()) && ans.length > 2) {
-                    alert(`✅ Correct! The answer is: ${q.a}.\nLoading next question...`);
-                    startQuiz();
+                    alert(`✅ Correct! ${q.a}.`); startQuiz();
                 } else {
-                    alert(`❌ Incorrect. Correct answer: ${q.a}.\nTry the next one!`);
-                    startQuiz();
+                    alert(`❌ Incorrect. Answer: ${q.a}.`); startQuiz();
                 }
             }
         }
-
     </script>
 </body>
-    </html>
+</html>
