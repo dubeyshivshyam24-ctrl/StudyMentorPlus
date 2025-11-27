@@ -521,29 +521,125 @@
 
         // --- CODING (Unchanged except re-hooking) ---
         function openCoding() {
-            closeAllOverlays();
+            // 1. DATA: Programming Languages & Chapters (Basic to Advance)
+        const codingData = {
+            "Python": ["1. Python Intro & Setup", "2. Variables & Data Types", "3. Control Flow (If/Else)", "4. Loops (For/While)", "5. Functions & Modules", "6. File Handling", "7. OOPs Concepts"],
+            "Java": ["1. Java Basics", "2. JDK & JRE", "3. OOPs Principles", "4. Inheritance", "5. Exception Handling", "6. Multithreading", "7. Collections Framework"],
+            "C++": ["1. C++ Syntax", "2. Pointers & References", "3. Arrays & Strings", "4. Object Oriented C++", "5. STL Library"],
+            "JavaScript": ["1. JS Fundamentals", "2. DOM Manipulation", "3. ES6 Features", "4. Async/Await & Promises", "5. API Fetching"],
+            "React JS": ["1. JSX & Components", "2. Props & State", "3. React Hooks", "4. Routing", "5. Redux Management"]
+        };
+
+        // 2. FUNCTION: Programming Languages ki List Dikhana
+        function openCoding() {
+            closeAllOverlays(); // Baaki sab band karein
             const ov = document.getElementById('content-overlay');
-            const body = document.getElementById('overlay-body');
-            document.getElementById('overlay-title').innerText = "Programming Hub";
+            document.getElementById('overlay-title').innerText = "Programming Languages";
             ov.style.display = 'block';
             
-            body.innerHTML = codingLangs.map(lang => `
+            // Languages ki list render karna (Accordion Style)
+            document.getElementById('overlay-body').innerHTML = Object.keys(codingData).map(lang => `
                 <div class="syllabus-item">
-                    <div class="syllabus-head" onclick="toggleAcc(this)">${lang} <i class="fas fa-chevron-down"></i></div>
+                    <div class="syllabus-head" onclick="toggleAcc(this)">
+                        ${lang} <i class="fas fa-chevron-down"></i>
+                    </div>
                     <div class="syllabus-body">
-                        <div style="color:#aaa; font-size:0.9rem; padding:10px;">
-                            Detailed Syllabus module for ${lang}. Includes tutorials, examples, and projects.
-                        </div>
-                        <div class="subject-row" style="border:none; padding:0 10px 10px;">
-                             <span>Resources:</span>
-                             <div class="btn-group">
-                                <span class="action-btn btn-notes" onclick="dlPDF('${lang} Docs')">Docs & PDFs</span>
-                                <span class="action-btn btn-notes" style="background:rgba(108, 99, 255, 0.2); color:var(--primary); border-color:var(--primary);" onclick="explainAI('${lang}')"><i class="fas fa-robot"></i> Ask AI</span>
-                             </div>
-                        </div>
+                        <p style="color:#888; font-size:0.8rem; margin-bottom:10px; padding-left:10px;">Select a chapter to start learning:</p>
+                        ${codingData[lang].map(chap => `
+                            <div class="topic-row" style="padding:12px; border-bottom:1px dashed #333; cursor:pointer;" onclick="openCodingChapter('${chap}', '${lang}')">
+                                <span>${chap}</span>
+                                <i class="fas fa-play-circle" style="color:var(--primary);"></i>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('');
+        }
+
+        // 3. FUNCTION: Chapter Click karne par 5 Sections wala Page khulna
+        function openCodingChapter(chapter, lang) {
+            const ov = document.getElementById('chapter-overlay');
+            document.getElementById('chap-title').innerText = chapter;
+            document.getElementById('chap-sub').innerText = lang + " Programming";
+            const body = document.getElementById('chapter-body');
+
+            // 5 SECTIONS CONTENT
+            body.innerHTML = `
+                <!-- SECTION 1: Structured Explanation -->
+                <div class="section-box" style="background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;">
+                    <div class="sec-title" style="color:var(--primary); font-size:1.1rem; margin-bottom:15px; font-weight:bold; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <i class="fas fa-book-open"></i> Structured Explanation
+                    </div>
+                    <div style="color:#d1d1d1; line-height:1.6; font-size:0.95rem;">
+                        <p>Welcome to <strong>${chapter}</strong>. In this module, we will cover the core concepts required to master this topic in ${lang}.</p>
+                        <br>
+                        <ul style="margin-left:20px;">
+                            <li><strong>Basic Concept:</strong> Understanding the syntax and logic flow.</li>
+                            <li><strong>Implementation:</strong> How to write and execute this in real-world scenarios.</li>
+                            <li><strong>Best Practices:</strong> Writing clean and efficient code.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Reference Videos -->
+                <div class="section-box" style="background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;">
+                    <div class="sec-title" style="color:var(--primary); font-size:1.1rem; margin-bottom:15px; font-weight:bold; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <i class="fab fa-youtube"></i> Reference Videos
+                    </div>
+                    <div style="display:flex; gap:15px; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; margin-bottom:10px; cursor:pointer;">
+                        <div style="width:80px; height:50px; background:#333; border-radius:6px; display:flex; align-items:center; justify-content:center; color:white;"><i class="fas fa-play"></i></div>
+                        <div>
+                            <div style="font-weight:600; color:white;">${chapter} - Part 1</div>
+                            <div style="font-size:0.8rem; color:#888;">Basic Introduction (10 Mins)</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:15px; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; cursor:pointer;">
+                        <div style="width:80px; height:50px; background:#333; border-radius:6px; display:flex; align-items:center; justify-content:center; color:white;"><i class="fas fa-play"></i></div>
+                        <div>
+                            <div style="font-weight:600; color:white;">${chapter} - Part 2</div>
+                            <div style="font-size:0.8rem; color:#888;">Advanced Examples (15 Mins)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: Important Notes -->
+                <div class="section-box" style="background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;">
+                    <div class="sec-title" style="color:var(--primary); font-size:1.1rem; margin-bottom:15px; font-weight:bold; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <i class="fas fa-sticky-note"></i> Important Notes
+                    </div>
+                    <button style="width:100%; padding:12px; background:rgba(74, 105, 189, 0.2); color:#6a89cc; border:1px solid #4a69bd; border-radius:10px; font-weight:bold; cursor:pointer;">
+                        <i class="fas fa-download"></i> Download Chapter PDF
+                    </button>
+                </div>
+
+                <!-- SECTION 4: Live Coding Practice -->
+                <div class="section-box" style="background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;">
+                    <div class="sec-title" style="color:var(--primary); font-size:1.1rem; margin-bottom:15px; font-weight:bold; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <i class="fas fa-laptop-code"></i> Live Coding Practice
+                    </div>
+                    <div style="background:#0d0d0d; border:1px solid #333; border-radius:8px; overflow:hidden;">
+                        <div style="background:#222; padding:5px 10px; font-size:0.8rem; color:#888;">main.${lang.toLowerCase().substr(0,2)}</div>
+                        <textarea style="width:100%; height:150px; background:#0d0d0d; color:#00ff00; padding:10px; border:none; outline:none; font-family:monospace;">// Write your ${lang} code here...
+print("Hello World");</textarea>
+                    </div>
+                    <button onclick="alert('Output: Hello World\\n(Code Compiled Successfully)')" style="margin-top:10px; background:#27ae60; color:white; padding:8px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; float:right;">Run Code</button>
+                    <div style="clear:both;"></div>
+                </div>
+
+                <!-- SECTION 5: Chapter Quiz -->
+                <div class="section-box" style="background: #1F2235; border-radius: 15px; padding: 20px; margin-bottom: 25px;">
+                    <div class="sec-title" style="color:var(--primary); font-size:1.1rem; margin-bottom:15px; font-weight:bold; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <i class="fas fa-question-circle"></i> Chapter Quiz
+                    </div>
+                    <div style="background:#2A2D3E; padding:15px; border-radius:10px;">
+                        <p style="margin-bottom:10px; color:white;">Q: What is the primary function of ${chapter}?</p>
+                        <div onclick="alert('Correct Answer!')" style="padding:10px; background:#0F1020; margin:5px 0; border-radius:8px; cursor:pointer; border:1px solid #333; color:#ccc;">Option A: To define logic</div>
+                        <div onclick="alert('Wrong Answer!')" style="padding:10px; background:#0F1020; margin:5px 0; border-radius:8px; cursor:pointer; border:1px solid #333; color:#ccc;">Option B: To clear memory</div>
+                    </div>
+                </div>
+            `;
+            
+            ov.style.display = 'block'; // Overlay open karna
         }
 
         // --- GOVT EXAMS (Unchanged) ---
