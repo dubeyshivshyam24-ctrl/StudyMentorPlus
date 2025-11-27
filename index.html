@@ -290,17 +290,21 @@
         <div id="overlay-body"></div>
     </div>
 
-    <div id="chapter-overlay" class="overlay">
+     <div id="chapter-overlay" class="overlay">
         <div class="overlay-header">
-            <i class="fas fa-arrow-left" onclick="document.getElementById('chapter-overlay').style.display='none'" style="font-size:1.2rem;"></i>
+            <!-- Back Button -->
+            <i class="fas fa-arrow-left" onclick="document.getElementById('chapter-overlay').style.display='none'" style="font-size:1.2rem; cursor:pointer;"></i>
             <div style="margin-left:15px;">
                 <h3 id="chap-title" style="color:white; font-size:1rem;">Chapter Name</h3>
                 <p id="chap-sub" style="color:#aaa; font-size:0.75rem;">Subject Name</p>
             </div>
         </div>
-        <div id="chapter-body" class="chapter-container">
-            </div>
-    </div>
+        
+        <!-- Yahan par Chapter ka content load hoga -->
+        <div id="chapter-body" class="chapter-container" style="padding: 20px;">
+            <!-- Content Javascript se aayega -->
+        </div>
+     </div>
 
     <div id="ai-overlay" class="overlay">
         <div class="overlay-header">
